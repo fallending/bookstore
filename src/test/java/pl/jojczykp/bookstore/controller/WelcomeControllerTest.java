@@ -1,4 +1,4 @@
-package bookstore.mvc.controller;
+package pl.jojczykp.bookstore.controller;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -11,12 +11,17 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration("file:src/main/webapp/WEB-INF/mvc-dispatcher-servlet.xml")
+@ContextConfiguration({
+		"file:src/main/webapp/WEB-INF/mvc-dispatcher-servlet.xml",
+		"classpath:spring/repository-mock-context.xml"
+})
 public class WelcomeControllerTest {
 	private MockMvc mockMvc;
 
@@ -33,6 +38,6 @@ public class WelcomeControllerTest {
 				.andExpect(status().isFound())
 				.andExpect(view().name("redirect:books/list"))
 				.andExpect(model().attribute("offset", 0))
-				.andExpect(model().attribute("limit", 10));
+				.andExpect(model().attribute("size", 10));
 	}
 }

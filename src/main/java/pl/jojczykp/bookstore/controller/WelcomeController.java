@@ -1,4 +1,4 @@
-package bookstore.mvc.controller;
+package pl.jojczykp.bookstore.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -11,7 +11,7 @@ public class WelcomeController {
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String redirectToWelcomePage(ModelMap model) {
 		model.addAttribute("offset", 0);
-		model.addAttribute("limit", 10);
+		model.addAttribute("size", 10);
 
 		return "redirect:books/list";
 	}
