@@ -53,8 +53,8 @@ public class BookRepository {
 		getCurrentSession().delete(new Book(id));
 	}
 
-	public int count() {
-		Long count = (Long) getCurrentSession().createCriteria(Book.class).setProjection(rowCount()).uniqueResult();
-		return checkedCast(count);
+	public int totalCount() {
+		Long result = (Long) getCurrentSession().createCriteria(Book.class).setProjection(rowCount()).uniqueResult();
+		return checkedCast(result);
 	}
 }

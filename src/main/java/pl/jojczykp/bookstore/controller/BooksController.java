@@ -10,6 +10,10 @@ import org.springframework.web.servlet.ModelAndView;
 import pl.jojczykp.bookstore.domain.Book;
 import pl.jojczykp.bookstore.repository.BookRepository;
 
+import java.util.List;
+
+import static java.lang.Math.max;
+
 @Controller
 @RequestMapping("/books")
 public class BooksController {
@@ -22,17 +26,19 @@ public class BooksController {
 
 	@RequestMapping(value = "list", method = RequestMethod.GET)
 	public ModelAndView list(
-			@RequestParam(value = "offset", defaultValue = DEFAULT_OFFSET) int offset,
-			@RequestParam(value = "size", defaultValue = DEFAULT_SIZE) int size)
+			@RequestParam(value = "offset", defaultValue = DEFAULT_OFFSET) int paramOffset,
+			@RequestParam(value = "size", defaultValue = DEFAULT_SIZE) int paramSize)
 	{
-		int count = bookRepository.count();
+		int totalCount = bookRepository.totalCount();
 
-		Iterable<Book> books = bookRepository.read(offset, size);
+		List<Book> books = bookRepository.read(paramOffset, paramSize);
+		int size = books.size();
+		int offset = max(0, paramOffset + size > totalCount ? totalCount - size : paramOffset);
 
 		ModelMap model = new ModelMap();
 		model.addAttribute("offset", offset);
 		model.addAttribute("size", size);
-		model.addAttribute("count", count);
+		model.addAttribute("totalCount", totalCount);
 		model.addAttribute("books", books);
 
 		return new ModelAndView("booksList", model);

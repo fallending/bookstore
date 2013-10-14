@@ -21,13 +21,13 @@ import static org.hamcrest.Matchers.nullValue;
 @Transactional
 public class BookRepositoryTest {
 
-	public static final int TEST_DATABASE_SIZE = 15;
+	public static final int TOTAL_TEST_BOOKS_COUNT = 15;
 
 	@Autowired private BookRepository repository;
 
 	@Test
-	public void shouldCountBooks() {
-		assertThat(repository.count(), is(TEST_DATABASE_SIZE));
+	public void shouldComputeTotalCountOfBooks() {
+		assertThat(repository.totalCount(), is(TOTAL_TEST_BOOKS_COUNT));
 	}
 
 	@Test
@@ -51,7 +51,7 @@ public class BookRepositoryTest {
 	@Test
 	public void shouldListBooksWhenOffsetInRangeAndSizeOverRange() {
 		final int offset = 2;
-		final int expectedSize = TEST_DATABASE_SIZE - offset;
+		final int expectedSize = TOTAL_TEST_BOOKS_COUNT - offset;
 
 		List<Book> books = repository.read(offset, MAX_VALUE);
 
@@ -63,7 +63,7 @@ public class BookRepositoryTest {
 
 	@Test
 	public void shouldListNoBooksWhenOffsetOverRange() {
-		List<Book> books = repository.read(TEST_DATABASE_SIZE, 1);
+		List<Book> books = repository.read(TOTAL_TEST_BOOKS_COUNT, 1);
 
 		assertThat(books.size(), is(0));
 	}
@@ -72,9 +72,9 @@ public class BookRepositoryTest {
 	public void shouldTreatNegativeOffsetAsZero() {
 		final int offset = -2;
 
-		List<Book> books = repository.read(offset, TEST_DATABASE_SIZE);
+		List<Book> books = repository.read(offset, TOTAL_TEST_BOOKS_COUNT);
 
-		assertThat(books.size(), is(TEST_DATABASE_SIZE));
+		assertThat(books.size(), is(TOTAL_TEST_BOOKS_COUNT));
 	}
 
 	@Test
@@ -83,7 +83,7 @@ public class BookRepositoryTest {
 
 		List<Book> books = repository.read(0, size);
 
-		assertThat(books.size(), is(TEST_DATABASE_SIZE));
+		assertThat(books.size(), is(TOTAL_TEST_BOOKS_COUNT));
 	}
 
 	@Test
@@ -94,9 +94,9 @@ public class BookRepositoryTest {
 
 		int id = repository.create(book);
 
-		assertThat(repository.count(), is(TEST_DATABASE_SIZE + 1));
-		assertThat(repository.get(TEST_DATABASE_SIZE).getId(), is(id));
-		assertThat(repository.get(TEST_DATABASE_SIZE).getTitle(), is(title));
+		assertThat(repository.totalCount(), is(TOTAL_TEST_BOOKS_COUNT + 1));
+		assertThat(repository.get(TOTAL_TEST_BOOKS_COUNT).getId(), is(id));
+		assertThat(repository.get(TOTAL_TEST_BOOKS_COUNT).getTitle(), is(title));
 	}
 
 	@Test
