@@ -47,9 +47,9 @@ public class BooksControllerTest {
 	private ResultActions mockMvcPerformResult;
 	private List<Book> mockedBooksList;
 
-	private int repoOffset;
-	private int repoSize;
-	private int repoTotalCount;
+	private int firstRecordOffsetReturnedByRepoMock;
+	private int booksListSizeReturnedByRepoMock;
+	private int totalCountReturnedByRepoMock;
 
 	@Before
 	public void setup() {
@@ -58,9 +58,9 @@ public class BooksControllerTest {
 
 	@Test
 	public void shouldDisplayBooksListViewWithDefaultsOffsetWhenNoParameterGiven() throws Exception {
-		repoOffset = 5;
-		repoSize = 12;
-		repoTotalCount = 23;
+		totalCountReturnedByRepoMock = 23;
+		firstRecordOffsetReturnedByRepoMock = 5;
+		booksListSizeReturnedByRepoMock = 12;
 		givenRepositoryMockConfigured();
 
 		mockMvc.perform(get("/books/list"))
@@ -69,9 +69,9 @@ public class BooksControllerTest {
 
 	@Test
 	public void shouldDisplayBooksListViewWithDefaultsSizeWhenNoParameterGiven() throws Exception {
-		repoOffset = 5;
-		repoSize = 10;
-		repoTotalCount = 23;
+		totalCountReturnedByRepoMock = 23;
+		firstRecordOffsetReturnedByRepoMock = 5;
+		booksListSizeReturnedByRepoMock = 10;
 		givenRepositoryMockConfigured();
 
 		mockMvc.perform(get("/books/list"))
@@ -80,67 +80,67 @@ public class BooksControllerTest {
 
 	@Test
 	public void shouldDisplayBooksListViewForRegularParameters() {
-		repoOffset = 5;
-		repoSize = 11;
-		repoTotalCount = 23;
+		totalCountReturnedByRepoMock = 23;
+		firstRecordOffsetReturnedByRepoMock = 5;
+		booksListSizeReturnedByRepoMock = 11;
 		givenRepositoryMockConfigured();
 
-		whenControllerPerformedWithParams(repoOffset, repoSize);
+		whenControllerPerformedWithParams(firstRecordOffsetReturnedByRepoMock, booksListSizeReturnedByRepoMock);
 
-		thenExpectBookRepositoryAccessFor(repoOffset, repoSize);
+		thenExpectBookRepositoryAccessFor(firstRecordOffsetReturnedByRepoMock, booksListSizeReturnedByRepoMock);
 		thenExpectCorrectViewSelectedAndModelSet();
 	}
 
 	@Test
 	public void shouldDisplayBooksListViewWhenParamSizeAboveRange() {
-		repoTotalCount = 20;
-		repoOffset = 15;
-		repoSize = repoTotalCount - repoOffset;
+		totalCountReturnedByRepoMock = 20;
+		firstRecordOffsetReturnedByRepoMock = 15;
+		booksListSizeReturnedByRepoMock = totalCountReturnedByRepoMock - firstRecordOffsetReturnedByRepoMock;
 		givenRepositoryMockConfigured();
-		final int paramSize = repoTotalCount + 1;
+		final int paramSize = totalCountReturnedByRepoMock + 1;
 
-		whenControllerPerformedWithParams(repoOffset, paramSize);
+		whenControllerPerformedWithParams(firstRecordOffsetReturnedByRepoMock, paramSize);
 
-		thenExpectBookRepositoryAccessFor(repoOffset, paramSize);
+		thenExpectBookRepositoryAccessFor(firstRecordOffsetReturnedByRepoMock, paramSize);
 		thenExpectCorrectViewSelectedAndModelSet();
 	}
 
 	@Test
 	public void shouldDisplayBooksListViewWhenParamOffsetBelowRange() {
-		repoTotalCount = 20;
-		repoOffset = 0;
-		repoSize = 10;
+		totalCountReturnedByRepoMock = 20;
+		firstRecordOffsetReturnedByRepoMock = 0;
+		booksListSizeReturnedByRepoMock = 10;
 		givenRepositoryMockConfigured();
 		final int paramOffset = -2;
 
-		whenControllerPerformedWithParams(paramOffset, repoSize);
+		whenControllerPerformedWithParams(paramOffset, booksListSizeReturnedByRepoMock);
 
-		thenExpectBookRepositoryAccessFor(paramOffset, repoSize);
+		thenExpectBookRepositoryAccessFor(paramOffset, booksListSizeReturnedByRepoMock);
 		thenExpectCorrectViewSelectedAndModelSet();
 	}
 
 	@Test
 	public void shouldScrollToLastPageWhenOffsetAboveRangeForGivenSize() {
-		repoTotalCount = 20;
-		repoOffset = 12;
-		repoSize = repoTotalCount - repoOffset;
+		totalCountReturnedByRepoMock = 20;
+		firstRecordOffsetReturnedByRepoMock = 12;
+		booksListSizeReturnedByRepoMock = totalCountReturnedByRepoMock - firstRecordOffsetReturnedByRepoMock;
 		givenRepositoryMockConfigured();
-		final int paramOffset = repoOffset + 2;
+		final int paramOffset = firstRecordOffsetReturnedByRepoMock + 2;
 
-		whenControllerPerformedWithParams(paramOffset, repoSize);
+		whenControllerPerformedWithParams(paramOffset, booksListSizeReturnedByRepoMock);
 
-		thenExpectBookRepositoryAccessFor(paramOffset, repoSize);
+		thenExpectBookRepositoryAccessFor(paramOffset, booksListSizeReturnedByRepoMock);
 		thenExpectCorrectViewSelectedAndModelSet();
 	}
 
 	@Test
 	public void shouldScrollToOnlyPageWhenSizeAboveAndOffsetBelowRange() {
-		repoTotalCount = 20;
-		repoOffset = 0;
-		repoSize = repoTotalCount;
+		totalCountReturnedByRepoMock = 20;
+		firstRecordOffsetReturnedByRepoMock = 0;
+		booksListSizeReturnedByRepoMock = totalCountReturnedByRepoMock;
 		givenRepositoryMockConfigured();
 		final int paramOffset = -2;
-		final int paramSize = repoTotalCount + 3;
+		final int paramSize = totalCountReturnedByRepoMock + 3;
 
 		whenControllerPerformedWithParams(paramOffset, paramSize);
 
@@ -150,22 +150,22 @@ public class BooksControllerTest {
 
 	@Test
 	public void shouldReturnEmptyResultWhenSizeIsNegative() {
-		repoTotalCount = 20;
-		repoOffset = 1;
-		repoSize = 0;
+		totalCountReturnedByRepoMock = 20;
+		firstRecordOffsetReturnedByRepoMock = 1;
+		booksListSizeReturnedByRepoMock = 0;
 		givenRepositoryMockConfigured();
 		final int paramSize = -2;
 
-		whenControllerPerformedWithParams(repoOffset, paramSize);
+		whenControllerPerformedWithParams(firstRecordOffsetReturnedByRepoMock, paramSize);
 
-		thenExpectBookRepositoryAccessFor(repoOffset, paramSize);
+		thenExpectBookRepositoryAccessFor(firstRecordOffsetReturnedByRepoMock, paramSize);
 		thenExpectCorrectViewSelectedAndModelSet();
 	}
 
 	private void givenRepositoryMockConfigured() {
-		mockedBooksList = createMockedBooksListOfSize(repoSize);
+		mockedBooksList = createMockedBooksListOfSize(booksListSizeReturnedByRepoMock);
 		reset(bookRepositoryMock);
-		given(bookRepositoryMock.totalCount()).willReturn(repoTotalCount);
+		given(bookRepositoryMock.totalCount()).willReturn(totalCountReturnedByRepoMock);
 		given(bookRepositoryMock.read(anyInt(), anyInt())).willReturn(mockedBooksList);
 	}
 
@@ -203,9 +203,9 @@ public class BooksControllerTest {
 			mockMvcPerformResult
 					.andExpect(status().isOk())
 					.andExpect(view().name("booksList"))
-					.andExpect(model().attribute("offset", equalTo(repoOffset)))
-					.andExpect(model().attribute("size", equalTo(repoSize)))
-					.andExpect(model().attribute("totalCount", equalTo(repoTotalCount)))
+					.andExpect(model().attribute("offset", equalTo(firstRecordOffsetReturnedByRepoMock)))
+					.andExpect(model().attribute("size", equalTo(booksListSizeReturnedByRepoMock)))
+					.andExpect(model().attribute("totalCount", equalTo(totalCountReturnedByRepoMock)))
 					.andExpect(model().attribute("books", equalTo(mockedBooksList)));
 		} catch (Exception e) {
 			throw new RuntimeException(e);

@@ -33,7 +33,7 @@ public class BooksController {
 
 		List<Book> books = bookRepository.read(paramOffset, paramSize);
 		int size = books.size();
-		int offset = max(0, paramOffset + size > totalCount ? totalCount - size : paramOffset);
+		int offset = computeOffset(paramOffset, totalCount, size);
 
 		ModelMap model = new ModelMap();
 		model.addAttribute("offset", offset);
@@ -42,6 +42,10 @@ public class BooksController {
 		model.addAttribute("books", books);
 
 		return new ModelAndView("booksList", model);
+	}
+
+	private int computeOffset(int paramOffset, int totalCount, int readSize) {
+		return max(0, paramOffset + readSize > totalCount ? totalCount - readSize : paramOffset);
 	}
 
 }
