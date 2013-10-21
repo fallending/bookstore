@@ -38,11 +38,14 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 })
 public class BooksControllerTest {
 
+	private static final int DEFAULT_OFFSET = 0;
+	private static final int DEFAULT_SIZE = 10;
+
 	@Autowired private BookRepository bookRepositoryMock;
 	@Autowired private WebApplicationContext wac;
 	private MockMvc mockMvc;
 	private ResultActions mockMvcPerformResult;
-	private List<Book> booksFromRepoMock;
+	private List<Book> mockedBooksList;
 
 	private int repoOffset;
 	private int repoSize;
@@ -50,9 +53,7 @@ public class BooksControllerTest {
 
 	@Before
 	public void setup() {
-		mockMvc = webAppContextSetup(wac)
-				.alwaysExpect(status().isOk())
-				.build();
+		mockMvc = webAppContextSetup(wac).build();
 	}
 
 	@Test
@@ -61,10 +62,9 @@ public class BooksControllerTest {
 		repoSize = 12;
 		repoTotalCount = 23;
 		givenRepositoryMockConfigured();
-		final int defaultOffset = 0;
 
 		mockMvc.perform(get("/books/list"))
-				.andExpect(model().attribute("offset", equalTo(defaultOffset)));
+				.andExpect(model().attribute("offset", equalTo(DEFAULT_OFFSET)));
 	}
 
 	@Test
@@ -73,10 +73,9 @@ public class BooksControllerTest {
 		repoSize = 10;
 		repoTotalCount = 23;
 		givenRepositoryMockConfigured();
-		final int defaultSize = 10;
 
 		mockMvc.perform(get("/books/list"))
-				.andExpect(model().attribute("size", equalTo(defaultSize)));
+				.andExpect(model().attribute("size", equalTo(DEFAULT_SIZE)));
 	}
 
 	@Test
@@ -88,8 +87,8 @@ public class BooksControllerTest {
 
 		whenControllerPerformedWithParams(repoOffset, repoSize);
 
-		thenExpectBookRepositoryReadFor(repoOffset, repoSize);
-		thenExpectViewAndModel();
+		thenExpectBookRepositoryAccessFor(repoOffset, repoSize);
+		thenExpectCorrectViewSelectedAndModelSet();
 	}
 
 	@Test
@@ -102,8 +101,8 @@ public class BooksControllerTest {
 
 		whenControllerPerformedWithParams(repoOffset, paramSize);
 
-		thenExpectBookRepositoryReadFor(repoOffset, paramSize);
-		thenExpectViewAndModel();
+		thenExpectBookRepositoryAccessFor(repoOffset, paramSize);
+		thenExpectCorrectViewSelectedAndModelSet();
 	}
 
 	@Test
@@ -116,8 +115,8 @@ public class BooksControllerTest {
 
 		whenControllerPerformedWithParams(paramOffset, repoSize);
 
-		thenExpectBookRepositoryReadFor(paramOffset, repoSize);
-		thenExpectViewAndModel();
+		thenExpectBookRepositoryAccessFor(paramOffset, repoSize);
+		thenExpectCorrectViewSelectedAndModelSet();
 	}
 
 	@Test
@@ -130,8 +129,8 @@ public class BooksControllerTest {
 
 		whenControllerPerformedWithParams(paramOffset, repoSize);
 
-		thenExpectBookRepositoryReadFor(paramOffset, repoSize);
-		thenExpectViewAndModel();
+		thenExpectBookRepositoryAccessFor(paramOffset, repoSize);
+		thenExpectCorrectViewSelectedAndModelSet();
 	}
 
 	@Test
@@ -145,8 +144,8 @@ public class BooksControllerTest {
 
 		whenControllerPerformedWithParams(paramOffset, paramSize);
 
-		thenExpectViewAndModel();
-		thenExpectBookRepositoryReadFor(paramOffset, paramSize);
+		thenExpectCorrectViewSelectedAndModelSet();
+		thenExpectBookRepositoryAccessFor(paramOffset, paramSize);
 	}
 
 	@Test
@@ -159,18 +158,18 @@ public class BooksControllerTest {
 
 		whenControllerPerformedWithParams(repoOffset, paramSize);
 
-		thenExpectBookRepositoryReadFor(repoOffset, paramSize);
-		thenExpectViewAndModel();
+		thenExpectBookRepositoryAccessFor(repoOffset, paramSize);
+		thenExpectCorrectViewSelectedAndModelSet();
 	}
 
 	private void givenRepositoryMockConfigured() {
-		booksFromRepoMock = booksMockFor(repoSize);
+		mockedBooksList = createMockedBooksListOfSize(repoSize);
 		reset(bookRepositoryMock);
 		given(bookRepositoryMock.totalCount()).willReturn(repoTotalCount);
-		given(bookRepositoryMock.read(anyInt(), anyInt())).willReturn(booksFromRepoMock);
+		given(bookRepositoryMock.read(anyInt(), anyInt())).willReturn(mockedBooksList);
 	}
 
-	private List<Book> booksMockFor(int size) {
+	private List<Book> createMockedBooksListOfSize(int size) {
 		List<Book> books = new ArrayList<>();
 		for (int i = 0; i < size; i++) {
 			books.add(new Book());
@@ -189,7 +188,7 @@ public class BooksControllerTest {
 		}
 	}
 
-	private void thenExpectBookRepositoryReadFor(int offset, int size) {
+	private void thenExpectBookRepositoryAccessFor(int offset, int size) {
 		ArgumentCaptor<Integer> offsetCaptor = ArgumentCaptor.forClass(Integer.class);
 		ArgumentCaptor<Integer> sizeCaptor = ArgumentCaptor.forClass(Integer.class);
 
@@ -199,14 +198,15 @@ public class BooksControllerTest {
 		assertThat(sizeCaptor.getValue(), equalTo(size));
 	}
 
-	private void thenExpectViewAndModel() {
+	private void thenExpectCorrectViewSelectedAndModelSet() {
 		try {
 			mockMvcPerformResult
+					.andExpect(status().isOk())
 					.andExpect(view().name("booksList"))
 					.andExpect(model().attribute("offset", equalTo(repoOffset)))
 					.andExpect(model().attribute("size", equalTo(repoSize)))
 					.andExpect(model().attribute("totalCount", equalTo(repoTotalCount)))
-					.andExpect(model().attribute("books", equalTo(booksFromRepoMock)));
+					.andExpect(model().attribute("books", equalTo(mockedBooksList)));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
