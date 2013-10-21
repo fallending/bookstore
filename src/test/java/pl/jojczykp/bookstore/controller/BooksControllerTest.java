@@ -97,11 +97,10 @@ public class BooksControllerTest {
 		firstRecordOffsetReturnedByRepoMock = 15;
 		booksListSizeReturnedByRepoMock = totalCountReturnedByRepoMock - firstRecordOffsetReturnedByRepoMock;
 		givenRepositoryMockConfigured();
-		final int paramSize = totalCountReturnedByRepoMock + 1;
 
-		whenControllerPerformedWithParams(firstRecordOffsetReturnedByRepoMock, paramSize);
+		whenControllerPerformedWithParams(firstRecordOffsetReturnedByRepoMock, totalCountReturnedByRepoMock + 1);
 
-		thenExpectBookRepositoryAccessFor(firstRecordOffsetReturnedByRepoMock, paramSize);
+		thenExpectBookRepositoryAccessFor(firstRecordOffsetReturnedByRepoMock, booksListSizeReturnedByRepoMock);
 		thenExpectCorrectViewSelectedAndModelSet();
 	}
 
@@ -111,25 +110,10 @@ public class BooksControllerTest {
 		firstRecordOffsetReturnedByRepoMock = 0;
 		booksListSizeReturnedByRepoMock = 10;
 		givenRepositoryMockConfigured();
-		final int paramOffset = -2;
 
-		whenControllerPerformedWithParams(paramOffset, booksListSizeReturnedByRepoMock);
+		whenControllerPerformedWithParams(-2, booksListSizeReturnedByRepoMock);
 
-		thenExpectBookRepositoryAccessFor(paramOffset, booksListSizeReturnedByRepoMock);
-		thenExpectCorrectViewSelectedAndModelSet();
-	}
-
-	@Test
-	public void shouldScrollToLastPageWhenOffsetAboveRangeForGivenSize() {
-		totalCountReturnedByRepoMock = 20;
-		firstRecordOffsetReturnedByRepoMock = 12;
-		booksListSizeReturnedByRepoMock = totalCountReturnedByRepoMock - firstRecordOffsetReturnedByRepoMock;
-		givenRepositoryMockConfigured();
-		final int paramOffset = firstRecordOffsetReturnedByRepoMock + 2;
-
-		whenControllerPerformedWithParams(paramOffset, booksListSizeReturnedByRepoMock);
-
-		thenExpectBookRepositoryAccessFor(paramOffset, booksListSizeReturnedByRepoMock);
+		thenExpectBookRepositoryAccessFor(0, booksListSizeReturnedByRepoMock);
 		thenExpectCorrectViewSelectedAndModelSet();
 	}
 
@@ -139,13 +123,11 @@ public class BooksControllerTest {
 		firstRecordOffsetReturnedByRepoMock = 0;
 		booksListSizeReturnedByRepoMock = totalCountReturnedByRepoMock;
 		givenRepositoryMockConfigured();
-		final int paramOffset = -2;
-		final int paramSize = totalCountReturnedByRepoMock + 3;
 
-		whenControllerPerformedWithParams(paramOffset, paramSize);
+		whenControllerPerformedWithParams(-2, totalCountReturnedByRepoMock + 3);
 
+		thenExpectBookRepositoryAccessFor(firstRecordOffsetReturnedByRepoMock, booksListSizeReturnedByRepoMock);
 		thenExpectCorrectViewSelectedAndModelSet();
-		thenExpectBookRepositoryAccessFor(paramOffset, paramSize);
 	}
 
 	@Test
@@ -154,11 +136,10 @@ public class BooksControllerTest {
 		firstRecordOffsetReturnedByRepoMock = 1;
 		booksListSizeReturnedByRepoMock = 0;
 		givenRepositoryMockConfigured();
-		final int paramSize = -2;
 
-		whenControllerPerformedWithParams(firstRecordOffsetReturnedByRepoMock, paramSize);
+		whenControllerPerformedWithParams(firstRecordOffsetReturnedByRepoMock, -1);
 
-		thenExpectBookRepositoryAccessFor(firstRecordOffsetReturnedByRepoMock, paramSize);
+		thenExpectBookRepositoryAccessFor(firstRecordOffsetReturnedByRepoMock, booksListSizeReturnedByRepoMock);
 		thenExpectCorrectViewSelectedAndModelSet();
 	}
 
