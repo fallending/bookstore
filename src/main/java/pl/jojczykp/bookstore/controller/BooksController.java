@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import pl.jojczykp.bookstore.domain.Book;
 import pl.jojczykp.bookstore.repository.BookRepository;
+import pl.jojczykp.bookstore.utils.ScrollParamsLimiter;
+import pl.jojczykp.bookstore.utils.ScrollParamsLimits;
 
 import java.util.List;
-
-import static java.lang.Math.max;
 
 @Controller
 @RequestMapping("/books")
@@ -21,8 +21,9 @@ public class BooksController {
 	private static final String DEFAULT_OFFSET = "0";
 	private static final String DEFAULT_SIZE = "10";
 
+	@Autowired BookRepository bookRepository;
 	@Autowired
-	BookRepository bookRepository;
+	ScrollParamsLimiter scrollParamsLimiter;
 
 	@RequestMapping(value = "list", method = RequestMethod.GET)
 	public ModelAndView list(
@@ -30,19 +31,19 @@ public class BooksController {
 			@RequestParam(value = "size", defaultValue = DEFAULT_SIZE) int paramSize)
 	{
 		int totalCount = bookRepository.totalCount();
+		ScrollParamsLimits limits = scrollParamsLimiter.computeLimitsFor(paramOffset, paramSize, totalCount);
+		List<Book> books = bookRepository.read(limits.getOffset(), limits.getSize());
+		return new ModelAndView("booksList", createModel(totalCount, limits, books));
+	}
 
-		int offset = max(0, paramOffset > totalCount ? totalCount : paramOffset);
-		int size = max(0, offset + paramSize > totalCount ? totalCount - offset : paramSize);
-
-		List<Book> books = bookRepository.read(offset, size);
-
+	private ModelMap createModel(int totalCount, ScrollParamsLimits limits, List<Book> books) {
 		ModelMap model = new ModelMap();
-		model.addAttribute("offset", offset);
-		model.addAttribute("size", size);
+		model.addAttribute("offset", limits.getOffset());
+		model.addAttribute("size", limits.getSize());
 		model.addAttribute("totalCount", totalCount);
 		model.addAttribute("books", books);
 
-		return new ModelAndView("booksList", model);
+		return model;
 	}
 
 }
