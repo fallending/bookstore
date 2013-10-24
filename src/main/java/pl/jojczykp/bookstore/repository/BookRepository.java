@@ -11,6 +11,7 @@ import pl.jojczykp.bookstore.domain.Book;
 import java.util.List;
 
 import static com.google.common.primitives.Ints.checkedCast;
+import static java.util.Collections.emptyList;
 import static org.hibernate.criterion.Projections.rowCount;
 
 @Repository
@@ -33,6 +34,14 @@ public class BookRepository {
 	}
 
 	public List<Book> read(int offset, int size) {
+		if (size <= 0) {
+			return emptyList();
+		} else {
+			return readWithPositiveSize(offset, size);
+		}
+	}
+
+	private List<Book> readWithPositiveSize(int offset, int size) {
 		Criteria criteria = getCurrentSession().createCriteria(Book.class);
 		criteria.setFirstResult(offset);
 		criteria.setMaxResults(size);

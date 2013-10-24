@@ -13,6 +13,7 @@ import java.util.List;
 
 import static java.lang.Integer.MAX_VALUE;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.emptyCollectionOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
@@ -78,12 +79,21 @@ public class BookRepositoryTest {
 	}
 
 	@Test
-	public void shouldListAllForNegativeSize() {
+	public void shouldListEmptyForNegativeSize() {
 		final int size = -1;
 
-		List<Book> books = repository.read(0, size);
+		List<Book> books = repository.read(2, size);
 
-		assertThat(books.size(), is(TOTAL_TEST_BOOKS_COUNT));
+		assertThat(books, emptyCollectionOf(Book.class));
+	}
+
+	@Test
+	public void shouldListEmptyForZeroSize() {
+		final int size = 0;
+
+		List<Book> books = repository.read(3, size);
+
+		assertThat(books, emptyCollectionOf(Book.class));
 	}
 
 	@Test
