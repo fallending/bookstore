@@ -13,12 +13,14 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.context.WebApplicationContext;
 import pl.jojczykp.bookstore.domain.Book;
 import pl.jojczykp.bookstore.repository.BookRepository;
+import pl.jojczykp.bookstore.utils.ScrollParams;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasProperty;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
@@ -51,22 +53,25 @@ public class BooksControllerAddTest {
 		whenControllerAddPerformedWithParam(offset, size, title);
 
 		thenExpectCreatedBookWith(title);
+	}
+
+	@Test
+	public void shouldRedirectAfterAdding() throws Exception {
+		final Integer offset = 4;
+		final Integer size = 9;
+		final String title = "anotherTitle";
+
+		whenControllerAddPerformedWithParam(offset, size, title);
+
 		thenExpectHttpRedirect(offset, size);
 	}
 
 	private void whenControllerAddPerformedWithParam(Integer offset, Integer size, String title) throws Exception {
-		mvcMockPerformResult = mvcMock.perform(post("/books/add")
-				.sessionAttr("offset", offset)
-				.sessionAttr("size", size)
-				.param("title", title));
-	}
+		final int totalCount = offset + size + 1;
 
-	private void thenExpectHttpRedirect(Integer offset, Integer size) throws Exception {
-		mvcMockPerformResult
-				.andExpect(status().isFound())
-				.andExpect(redirectedUrl("list?offset=" + offset + "&size=" + size))
-				.andExpect(model().attribute("offset", offset))
-				.andExpect(model().attribute("size", size));
+		mvcMockPerformResult = mvcMock.perform(post("/books/add")
+				.flashAttr("scrollParams", new ScrollParams(offset, size, totalCount))
+				.flashAttr("newBook", new Book(title)));
 	}
 
 	private void thenExpectCreatedBookWith(String title) {
@@ -74,6 +79,14 @@ public class BooksControllerAddTest {
 
 		verify(bookRepositoryMock).create(newBookCaptor.capture());
 		assertThat(newBookCaptor.getValue().getTitle(), equalTo(title));
+	}
+
+	private void thenExpectHttpRedirect(Integer offset, Integer size) throws Exception {
+		mvcMockPerformResult
+				.andExpect(status().isFound())
+				.andExpect(redirectedUrl("/books/list"))
+				.andExpect(flash().attribute("scrollParams", hasProperty("offset", equalTo(offset))))
+				.andExpect(flash().attribute("scrollParams", hasProperty("size", equalTo(size))));
 	}
 
 }

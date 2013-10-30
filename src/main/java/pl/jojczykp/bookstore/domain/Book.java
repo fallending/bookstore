@@ -66,4 +66,9 @@ public class Book {
 	public int hashCode() {
 		return Long.valueOf(id).hashCode();
 	}
+
+	@Override
+	public String toString() {
+		return "Book{id=" + id + ", title='" + title + "'}";
+	}
 }

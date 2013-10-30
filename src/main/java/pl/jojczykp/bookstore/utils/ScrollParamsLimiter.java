@@ -7,7 +7,11 @@ import static java.lang.Math.max;
 @Service
 public class ScrollParamsLimiter {
 
-	public ScrollParamsLimits computeLimitsFor(int offset, int size, int totalCount) {
+	public void limit(ScrollParams scrollParams) {
+		int offset = scrollParams.getOffset();
+		int size = scrollParams.getSize();
+		int totalCount = scrollParams.getTotalCount();
+
 		int limitedOffset = max(0, offset > totalCount ? totalCount : offset);
 		int limitedSize = max(0, limitedOffset + size > totalCount ? totalCount - limitedOffset : size);
 
@@ -15,7 +19,8 @@ public class ScrollParamsLimiter {
 			limitedSize += offset;
 		}
 
-		return new ScrollParamsLimits(limitedOffset, limitedSize);
+		scrollParams.setOffset(limitedOffset);
+		scrollParams.setSize(limitedSize);
 	}
 
 }

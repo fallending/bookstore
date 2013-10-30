@@ -11,9 +11,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -36,8 +35,6 @@ public class WelcomeControllerTest {
 	public void shouldRedirectToWelcomeViewWithDefaultAttributesSet() throws Exception {
 		mockMvc.perform(get("/"))
 				.andExpect(status().isFound())
-				.andExpect(view().name("redirect:books/list"))
-				.andExpect(model().attribute("offset", 0))
-				.andExpect(model().attribute("size", 10));
+				.andExpect(redirectedUrl("/books/list"));
 	}
 }

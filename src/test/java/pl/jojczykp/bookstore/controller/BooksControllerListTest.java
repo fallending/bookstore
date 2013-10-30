@@ -4,8 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -15,14 +13,15 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.context.WebApplicationContext;
 import pl.jojczykp.bookstore.domain.Book;
 import pl.jojczykp.bookstore.repository.BookRepository;
+import pl.jojczykp.bookstore.utils.ScrollParams;
 import pl.jojczykp.bookstore.utils.ScrollParamsLimiter;
-import pl.jojczykp.bookstore.utils.ScrollParamsLimits;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.String.valueOf;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.core.IsSame.sameInstance;
 import static org.junit.Assert.assertThat;
@@ -31,7 +30,6 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -46,9 +44,6 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 		"classpath:spring/scroll-params-limiter-mock-context.xml"
 })
 public class BooksControllerListTest {
-
-	private static final int DEFAULT_PARAM_OFFSET = 0;
-	private static final int DEFAULT_PARAM_SIZE = 10;
 
 	private static final int REPO_TOTAL_COUNT = 23;
 	private static final int REPO_FIRST_RETURNED_RECORD_OFFSET = 14;
@@ -77,30 +72,20 @@ public class BooksControllerListTest {
 
 	private void givenRepeatingScrollParamsLimiter() {
 		reset(scrollParamsLimiterMock);
-		when(scrollParamsLimiterMock.computeLimitsFor(anyInt(), anyInt(), anyInt()))
-				.thenAnswer(new Answer<ScrollParamsLimits>() {
-					@Override
-					public ScrollParamsLimits answer(InvocationOnMock invocation) {
-						Object[] args = invocation.getArguments();
-						int offset = (int) args[0];
-						int size = (int) args[1];
-						return new ScrollParamsLimits(offset, size);
-					}
-				});
 	}
 
 	@Test
 	public void shouldUseDefaultValueWhenNoOffsetParameterGiven() throws Exception {
 		mvcMock.perform(get("/books/list"))
 				.andExpect(status().isOk())
-				.andExpect(model().attribute("offset", equalTo(DEFAULT_PARAM_OFFSET)));
+				.andExpect(model().attribute("scrollParams", hasProperty("offset", equalTo(0))));
 	}
 
 	@Test
 	public void shouldUseDefaultValueWhenNoSizeParameterGiven() throws Exception {
 		mvcMock.perform(get("/books/list"))
 				.andExpect(status().isOk())
-				.andExpect(model().attribute("size", equalTo(DEFAULT_PARAM_SIZE)));
+				.andExpect(model().attribute("scrollParams", hasProperty("size", equalTo(10))));
 	}
 
 	@Test
@@ -124,15 +109,12 @@ public class BooksControllerListTest {
 	}
 
 	private void thenExpectParametersLimitationUsage() {
-		ArgumentCaptor<Integer> offsetCaptor = ArgumentCaptor.forClass(Integer.class);
-		ArgumentCaptor<Integer> sizeCaptor = ArgumentCaptor.forClass(Integer.class);
-		ArgumentCaptor<Integer> totalCountCaptor = ArgumentCaptor.forClass(Integer.class);
+		ArgumentCaptor<ScrollParams> scrollParamsCaptor = ArgumentCaptor.forClass(ScrollParams.class);
 
-		verify(scrollParamsLimiterMock, times(1))
-				.computeLimitsFor(offsetCaptor.capture(), sizeCaptor.capture(), totalCountCaptor.capture());
-		assertThat(totalCountCaptor.getValue(), equalTo(REPO_TOTAL_COUNT));
-		assertThat(offsetCaptor.getValue(), equalTo(REPO_FIRST_RETURNED_RECORD_OFFSET));
-		assertThat(sizeCaptor.getValue(), equalTo(REPO_RESULT_SIZE));
+		verify(scrollParamsLimiterMock, times(1)).limit(scrollParamsCaptor.capture());
+		assertThat(scrollParamsCaptor.getValue().getOffset(), equalTo(REPO_FIRST_RETURNED_RECORD_OFFSET));
+		assertThat(scrollParamsCaptor.getValue().getSize(), equalTo(REPO_RESULT_SIZE));
+		assertThat(scrollParamsCaptor.getValue().getTotalCount(), equalTo(REPO_TOTAL_COUNT));
 	}
 
 	private void thenExpectBookRepositoryRead() {
@@ -149,12 +131,13 @@ public class BooksControllerListTest {
 		try {
 			mvcMockPerformResult
 					.andExpect(status().isOk())
-					.andExpect(view().name("booksList"))
-					.andExpect(model().attribute("offset", equalTo(REPO_FIRST_RETURNED_RECORD_OFFSET)))
-					.andExpect(model().attribute("size", equalTo(REPO_RESULT_SIZE)))
-					.andExpect(model().attribute("totalCount", equalTo(REPO_TOTAL_COUNT)))
+					.andExpect(view().name("books"))
 					.andExpect(model().attribute("books", sameInstance(REPO_RESULT_DATA)))
-					.andExpect(model().attribute("newBook", instanceOf(Book.class)));
+					.andExpect(model().attribute("newBook", instanceOf(Book.class)))
+					.andExpect(model().attribute("scrollParams", hasProperty("size", equalTo(REPO_RESULT_SIZE))))
+					.andExpect(model().attribute("scrollParams", hasProperty("totalCount", equalTo(REPO_TOTAL_COUNT))))
+					.andExpect(model().attribute("scrollParams", hasProperty("offset",
+							equalTo(REPO_FIRST_RETURNED_RECORD_OFFSET))));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
