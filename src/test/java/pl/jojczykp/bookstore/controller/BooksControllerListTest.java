@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -41,7 +42,8 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 @ContextConfiguration({
 		"file:src/main/webapp/WEB-INF/mvc-dispatcher-servlet.xml",
 		"classpath:spring/repository-mock-context.xml",
-		"classpath:spring/scroll-params-limiter-mock-context.xml"
+		"classpath:spring/scroll-params-limiter-mock-context.xml",
+		"classpath:spring/config-test-context.xml"
 })
 public class BooksControllerListTest {
 
@@ -55,6 +57,9 @@ public class BooksControllerListTest {
 	@Autowired private WebApplicationContext wac;
 	private MockMvc mvcMock;
 	private ResultActions mvcMockPerformResult;
+
+	@Value("${view.books.defaultOffset}") int defaultOffset;
+	@Value("${view.books.defaultSize}") int defaultSize;
 
 	@Before
 	public void setUp() {
@@ -75,17 +80,17 @@ public class BooksControllerListTest {
 	}
 
 	@Test
-	public void shouldUseDefaultValueWhenNoOffsetParameterGiven() throws Exception {
+	public void shouldUseDefaultValueFromConfigWhenNoOffsetParameterGiven() throws Exception {
 		mvcMock.perform(get("/books/list"))
 				.andExpect(status().isOk())
-				.andExpect(model().attribute("scrollParams", hasProperty("offset", equalTo(0))));
+				.andExpect(model().attribute("scrollParams", hasProperty("offset", equalTo(defaultOffset))));
 	}
 
 	@Test
-	public void shouldUseDefaultValueWhenNoSizeParameterGiven() throws Exception {
+	public void shouldUseDefaultValueFromConfigWhenNoSizeParameterGiven() throws Exception {
 		mvcMock.perform(get("/books/list"))
 				.andExpect(status().isOk())
-				.andExpect(model().attribute("scrollParams", hasProperty("size", equalTo(10))));
+				.andExpect(model().attribute("scrollParams", hasProperty("size", equalTo(defaultSize))));
 	}
 
 	@Test

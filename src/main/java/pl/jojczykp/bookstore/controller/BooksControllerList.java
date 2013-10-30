@@ -1,6 +1,7 @@
 package pl.jojczykp.bookstore.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -26,9 +27,12 @@ public class BooksControllerList {
 	@Autowired BookRepository bookRepository;
 	@Autowired ScrollParamsLimiter scrollParamsLimiter;
 
+	@Value("${view.books.defaultOffset}") int defaultOffset;
+	@Value("${view.books.defaultSize}") int defaultSize;
+
 	@ModelAttribute(MODEL_ATTR_SCROLL_PARAMS)
 	public ScrollParams getDefaultScrollParams() {
-		return new ScrollParams(0, 10, 0);
+		return new ScrollParams(defaultOffset, defaultSize, 0);
 	}
 
 	@RequestMapping(value = URL_ACTION_LIST, method = GET)

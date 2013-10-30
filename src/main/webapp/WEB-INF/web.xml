@@ -13,6 +13,7 @@
 			<param-value>
 				/WEB-INF/mvc-dispatcher-servlet.xml,
 				classpath:spring/repository-context.xml
+				classpath:spring/config-context.xml
 			</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>

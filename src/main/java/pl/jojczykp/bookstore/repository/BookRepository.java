@@ -18,8 +18,7 @@ import static org.hibernate.criterion.Projections.rowCount;
 @Transactional
 public class BookRepository {
 
-	@Autowired
-	SessionFactory sessionFactory;
+	@Autowired SessionFactory sessionFactory;
 
 	public Session getCurrentSession() {
 		return sessionFactory.getCurrentSession();
