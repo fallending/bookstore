@@ -23,6 +23,7 @@ import java.util.List;
 
 import static java.lang.String.valueOf;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.core.IsSame.sameInstance;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -44,7 +45,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 		"classpath:spring/repository-mock-context.xml",
 		"classpath:spring/scroll-params-limiter-mock-context.xml"
 })
-public class BooksControllerTest {
+public class BooksControllerListTest {
 
 	private static final int DEFAULT_PARAM_OFFSET = 0;
 	private static final int DEFAULT_PARAM_SIZE = 10;
@@ -57,12 +58,12 @@ public class BooksControllerTest {
 	@Autowired private BookRepository bookRepositoryMock;
 	@Autowired private ScrollParamsLimiter scrollParamsLimiterMock;
 	@Autowired private WebApplicationContext wac;
-	private MockMvc mockMvc;
-	private ResultActions mockMvcPerformResult;
+	private MockMvc mvcMock;
+	private ResultActions mvcMockPerformResult;
 
 	@Before
 	public void setUp() {
-		mockMvc = webAppContextSetup(wac).build();
+		mvcMock = webAppContextSetup(wac).build();
 		givenRepositoryMockConfigured();
 		givenRepeatingScrollParamsLimiter();
 
@@ -90,32 +91,34 @@ public class BooksControllerTest {
 
 	@Test
 	public void shouldUseDefaultValueWhenNoOffsetParameterGiven() throws Exception {
-		mockMvc.perform(get("/books/list"))
+		mvcMock.perform(get("/books/list"))
+				.andExpect(status().isOk())
 				.andExpect(model().attribute("offset", equalTo(DEFAULT_PARAM_OFFSET)));
 	}
 
 	@Test
 	public void shouldUseDefaultValueWhenNoSizeParameterGiven() throws Exception {
-		mockMvc.perform(get("/books/list"))
+		mvcMock.perform(get("/books/list"))
+				.andExpect(status().isOk())
 				.andExpect(model().attribute("size", equalTo(DEFAULT_PARAM_SIZE)));
 	}
 
 	@Test
 	public void shouldUseLimitationOfOffsetAndSizeParameters() throws Exception {
-		whenControllerPerformedWithParams();
+		whenControllerListPerformedWithParams();
 		thenExpectParametersLimitationUsage();
 	}
 
 	@Test
 	public void shouldDirectToProperViewWithModelCreatedForRepositoryData() throws Exception {
-		whenControllerPerformedWithParams();
+		whenControllerListPerformedWithParams();
 
-		thenExpectBookRepositoryAccess();
+		thenExpectBookRepositoryRead();
 		thenExpectCorrectViewSelectedAndModelSet();
 	}
 
-	private void whenControllerPerformedWithParams() throws Exception {
-		mockMvcPerformResult = mockMvc.perform(get("/books/list")
+	private void whenControllerListPerformedWithParams() throws Exception {
+		mvcMockPerformResult = mvcMock.perform(get("/books/list")
 				.param("offset", valueOf(REPO_FIRST_RETURNED_RECORD_OFFSET))
 				.param("size", valueOf(REPO_RESULT_SIZE)));
 	}
@@ -132,7 +135,7 @@ public class BooksControllerTest {
 		assertThat(sizeCaptor.getValue(), equalTo(REPO_RESULT_SIZE));
 	}
 
-	private void thenExpectBookRepositoryAccess() {
+	private void thenExpectBookRepositoryRead() {
 		ArgumentCaptor<Integer> offsetCaptor = ArgumentCaptor.forClass(Integer.class);
 		ArgumentCaptor<Integer> sizeCaptor = ArgumentCaptor.forClass(Integer.class);
 
@@ -144,13 +147,14 @@ public class BooksControllerTest {
 
 	private void thenExpectCorrectViewSelectedAndModelSet() {
 		try {
-			mockMvcPerformResult
+			mvcMockPerformResult
 					.andExpect(status().isOk())
 					.andExpect(view().name("booksList"))
 					.andExpect(model().attribute("offset", equalTo(REPO_FIRST_RETURNED_RECORD_OFFSET)))
 					.andExpect(model().attribute("size", equalTo(REPO_RESULT_SIZE)))
 					.andExpect(model().attribute("totalCount", equalTo(REPO_TOTAL_COUNT)))
-					.andExpect(model().attribute("books", sameInstance(REPO_RESULT_DATA)));
+					.andExpect(model().attribute("books", sameInstance(REPO_RESULT_DATA)))
+					.andExpect(model().attribute("newBook", instanceOf(Book.class)));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

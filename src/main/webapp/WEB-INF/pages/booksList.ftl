@@ -21,5 +21,11 @@
 				</#list>
 			</table>
 		</#if>
+
+		<form action="add" method="POST">
+			<h2>Add new book:</h2>
+			Title: <@spring.formInput "newBook.title"/>
+			 <input type="submit" value="add"/>
+		</form>
 	</body>
 </html>
