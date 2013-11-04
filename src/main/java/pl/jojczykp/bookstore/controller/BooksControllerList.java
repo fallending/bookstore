@@ -7,19 +7,15 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-import pl.jojczykp.bookstore.domain.Book;
+import pl.jojczykp.bookstore.command.BooksCommand;
 import pl.jojczykp.bookstore.repository.BookRepository;
 import pl.jojczykp.bookstore.utils.ScrollParams;
 import pl.jojczykp.bookstore.utils.ScrollParamsLimiter;
 
-import java.util.List;
-
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static pl.jojczykp.bookstore.controller.BooksConsts.MODEL_ATTR_BOOKS;
-import static pl.jojczykp.bookstore.controller.BooksConsts.MODEL_ATTR_NEW_BOOK;
-import static pl.jojczykp.bookstore.controller.BooksConsts.MODEL_ATTR_SCROLL_PARAMS;
+import static pl.jojczykp.bookstore.controller.BooksConsts.BOOKS_COMMAND;
+import static pl.jojczykp.bookstore.controller.BooksConsts.BOOKS_VIEW;
 import static pl.jojczykp.bookstore.controller.BooksConsts.URL_ACTION_LIST;
-import static pl.jojczykp.bookstore.controller.BooksConsts.VIEW_BOOKS;
 
 @Controller
 public class BooksControllerList {
@@ -30,31 +26,28 @@ public class BooksControllerList {
 	@Value("${view.books.defaultOffset}") int defaultOffset;
 	@Value("${view.books.defaultSize}") int defaultSize;
 
-	@ModelAttribute(MODEL_ATTR_SCROLL_PARAMS)
-	public ScrollParams getDefaultScrollParams() {
-		return new ScrollParams(defaultOffset, defaultSize, 0);
+	@ModelAttribute(BOOKS_COMMAND)
+	public BooksCommand getDefaultBooksCommand() {
+		BooksCommand booksCommand = new BooksCommand();
+		booksCommand.getOriginalScrollParams().setOffset(defaultOffset);
+		booksCommand.getOriginalScrollParams().setSize(defaultSize);
+		booksCommand.setPageSize(defaultSize);
+		return booksCommand;
 	}
 
 	@RequestMapping(value = URL_ACTION_LIST, method = GET)
 	public ModelAndView list(
-			@ModelAttribute(MODEL_ATTR_SCROLL_PARAMS) ScrollParams scrollParams)
+			@ModelAttribute(BOOKS_COMMAND) BooksCommand booksCommand)
 	{
-		scrollParams.setTotalCount(bookRepository.totalCount());
-		scrollParamsLimiter.limit(scrollParams);
+		int totalCount = bookRepository.totalCount();
+		booksCommand.setTotalCount(totalCount);
+		ScrollParams originalScrollParams = booksCommand.getOriginalScrollParams();
+		originalScrollParams.setSize(booksCommand.getPageSize());
+		ScrollParams limitedScrollParams = scrollParamsLimiter.limit(originalScrollParams, totalCount);
+		booksCommand.setLimitedScrollParams(limitedScrollParams);
+		booksCommand.setBooks(bookRepository.read(limitedScrollParams.getOffset(), limitedScrollParams.getSize()));
 
-		List<Book> books = bookRepository.read(scrollParams.getOffset(), scrollParams.getSize());
-
-		return new ModelAndView(VIEW_BOOKS, createModelFor(scrollParams, books));
-	}
-
-	private ModelMap createModelFor(ScrollParams scrollParams, List<Book> books) {
-		ModelMap model = new ModelMap();
-
-		model.addAttribute(MODEL_ATTR_SCROLL_PARAMS, scrollParams);
-		model.addAttribute(MODEL_ATTR_NEW_BOOK, new Book());
-		model.addAttribute(MODEL_ATTR_BOOKS, books);
-
-		return model;
+		return new ModelAndView(BOOKS_VIEW, new ModelMap().addAttribute(BOOKS_COMMAND, booksCommand));
 	}
 
 }

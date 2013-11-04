@@ -9,10 +9,9 @@ public class ScrollParamsTest {
 
 	private static final int ANY_OFFSET = 7;
 	private static final int ANY_SIZE = 12;
-	private static final int ANY_TOTAL_COUNT = 123;
 
 	@Test
-	public void shouldHaveDefaultConstructorForSpring() {
+	public void shouldHaveDefaultConstructor() {
 		new ScrollParams();
 	}
 
@@ -20,7 +19,7 @@ public class ScrollParamsTest {
 	public void shouldCreateInstanceWithGivenOffset() {
 		final int givenOffset = 12;
 
-		ScrollParams testee = new ScrollParams(givenOffset, ANY_SIZE, ANY_TOTAL_COUNT);
+		ScrollParams testee = new ScrollParams(givenOffset, ANY_SIZE);
 
 		assertThat(testee.getOffset(), equalTo(givenOffset));
 	}
@@ -29,18 +28,9 @@ public class ScrollParamsTest {
 	public void shouldCreateInstanceWithGivenSize() {
 		final int givenSize = 6;
 
-		ScrollParams testee = new ScrollParams(ANY_OFFSET, givenSize, ANY_TOTAL_COUNT);
+		ScrollParams testee = new ScrollParams(ANY_OFFSET, givenSize);
 
 		assertThat(testee.getSize(), equalTo(givenSize));
-	}
-
-	@Test
-	public void shouldCreateInstanceWithGivenTotalCount() {
-		final int givenTotalCount = 84;
-
-		ScrollParams testee = new ScrollParams(ANY_OFFSET, ANY_SIZE, givenTotalCount);
-
-		assertThat(testee.getTotalCount(), equalTo(givenTotalCount));
 	}
 
 	@Test
@@ -63,13 +53,4 @@ public class ScrollParamsTest {
 		assertThat(testee.getSize(), equalTo(givenSize));
 	}
 
-	@Test
-	public void shouldSetTotalCount() {
-		final int givenTotalCount = 91;
-		ScrollParams testee = new ScrollParams();
-
-		testee.setTotalCount(givenTotalCount);
-
-		assertThat(testee.getTotalCount(), equalTo(givenTotalCount));
-	}
 }

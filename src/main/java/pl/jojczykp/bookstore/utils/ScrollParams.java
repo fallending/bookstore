@@ -4,15 +4,13 @@ public class ScrollParams {
 
 	private int offset;
 	private int size;
-	private int totalCount;
 
 	public ScrollParams() {
 	}
 
-	public ScrollParams(int offset, int size, int totalCount) {
+	public ScrollParams(int offset, int size) {
 		this.offset = offset;
 		this.size = size;
-		this.totalCount = totalCount;
 	}
 
 	public void setOffset(int offset) {
@@ -31,16 +29,8 @@ public class ScrollParams {
 		return size;
 	}
 
-	public void setTotalCount(int totalCount) {
-		this.totalCount = totalCount;
-	}
-
-	public int getTotalCount() {
-		return totalCount;
-	}
-
 	@Override
 	public String toString() {
-		return "[" + offset + ", " + size + ", " + totalCount + "]";
+		return "[" + offset + ", " + size + "]";
 	}
 }

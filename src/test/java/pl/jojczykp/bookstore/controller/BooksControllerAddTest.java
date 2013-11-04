@@ -68,10 +68,8 @@ public class BooksControllerAddTest {
 	}
 
 	private void whenControllerAddPerformedWithParam(Integer offset, Integer size, String title) throws Exception {
-		final int totalCount = offset + size + 1;
-
 		mvcMockPerformResult = mvcMock.perform(post("/books/add")
-				.flashAttr("scrollParams", new ScrollParams(offset, size, totalCount))
+				.flashAttr("scrollParams", new ScrollParams(offset, size))
 				.flashAttr("newBook", new Book(title)));
 	}
 

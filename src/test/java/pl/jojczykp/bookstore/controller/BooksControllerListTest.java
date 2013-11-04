@@ -115,11 +115,12 @@ public class BooksControllerListTest {
 
 	private void thenExpectParametersLimitationUsage() {
 		ArgumentCaptor<ScrollParams> scrollParamsCaptor = ArgumentCaptor.forClass(ScrollParams.class);
+		ArgumentCaptor<Integer> totalCountCaptor = ArgumentCaptor.forClass(Integer.class);
 
-		verify(scrollParamsLimiterMock, times(1)).limit(scrollParamsCaptor.capture());
+		verify(scrollParamsLimiterMock, times(1)).limit(scrollParamsCaptor.capture(), totalCountCaptor.capture());
 		assertThat(scrollParamsCaptor.getValue().getOffset(), equalTo(REPO_FIRST_RETURNED_RECORD_OFFSET));
 		assertThat(scrollParamsCaptor.getValue().getSize(), equalTo(REPO_RESULT_SIZE));
-		assertThat(scrollParamsCaptor.getValue().getTotalCount(), equalTo(REPO_TOTAL_COUNT));
+		assertThat(totalCountCaptor.getValue(), equalTo(REPO_TOTAL_COUNT));
 	}
 
 	private void thenExpectBookRepositoryRead() {

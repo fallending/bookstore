@@ -21,56 +21,60 @@ public class ScrollParamsLimiterTest {
 	public void shouldPropagateGivenParametersWhenNoLimitationNeeded() {
 		final int offset = 5;
 		final int size = 11;
-		ScrollParams scrollParams = new ScrollParams(offset, size, TOTAL_COUNT);
 
-		testee.limit(scrollParams);
+		ScrollParams limited = testee.limit(new ScrollParams(offset, size), TOTAL_COUNT);
 
-		assertThat(scrollParams.getOffset(), equalTo(offset));
-		assertThat(scrollParams.getSize(), equalTo(size));
+		assertThat(limited.getOffset(), equalTo(offset));
+		assertThat(limited.getSize(), equalTo(size));
 	}
 
 	@Test
 	public void shouldLimitSizeWhenAboveRange() {
 		final int offset = 15;
-		ScrollParams scrollParams = new ScrollParams(offset, TOTAL_COUNT + 2, TOTAL_COUNT);
 
-		testee.limit(scrollParams);
+		ScrollParams limited = testee.limit(new ScrollParams(offset, TOTAL_COUNT + 2), TOTAL_COUNT);
 
-		assertThat(scrollParams.getOffset(), equalTo(offset));
-		assertThat(scrollParams.getSize(), equalTo(TOTAL_COUNT - offset));
+		assertThat(limited.getOffset(), equalTo(offset));
+		assertThat(limited.getSize(), equalTo(TOTAL_COUNT - offset));
 	}
 
 	@Test
 	public void shouldLimitOffsetWhenBelowRange() {
 		final int offset = -2;
 		final int size = 10;
-		ScrollParams scrollParams = new ScrollParams(offset, size, TOTAL_COUNT);
 
-		testee.limit(scrollParams);
+		ScrollParams limited = testee.limit(new ScrollParams(offset, size), TOTAL_COUNT);
 
-		assertThat(scrollParams.getOffset(), equalTo(0));
-		assertThat(scrollParams.getSize(), equalTo(size + offset));
+		assertThat(limited.getOffset(), equalTo(0));
+		assertThat(limited.getSize(), equalTo(size + offset));
 	}
 
 	@Test
 	public void shouldLimitOffsetAndSize() {
-		ScrollParams scrollParams = new ScrollParams(-2, TOTAL_COUNT + 1, TOTAL_COUNT);
+		ScrollParams limited = testee.limit(new ScrollParams(-2, TOTAL_COUNT + 1), TOTAL_COUNT);
 
-		testee.limit(scrollParams);
-
-		assertThat(scrollParams.getOffset(), equalTo(0));
-		assertThat(scrollParams.getSize(), equalTo(TOTAL_COUNT));
+		assertThat(limited.getOffset(), equalTo(0));
+		assertThat(limited.getSize(), equalTo(TOTAL_COUNT));
 	}
 
 	@Test
 	public void shouldReturnEmptyResultWhenSizeIsNegative() {
 		final int offset = 7;
-		ScrollParams scrollParams = new ScrollParams(offset, -3, TOTAL_COUNT);
 
-		testee.limit(scrollParams);
+		ScrollParams limited = testee.limit(new ScrollParams(offset, -3), TOTAL_COUNT);
 
-		assertThat(scrollParams.getOffset(), equalTo(offset));
-		assertThat(scrollParams.getSize(), equalTo(0));
+		assertThat(limited.getOffset(), equalTo(offset));
+		assertThat(limited.getSize(), equalTo(0));
+	}
+
+	@Test
+	public void shouldReturnEmptyResultWhenOffsetIsMoreNegativeThanSizeIsPositiveBelowTotalCount() {
+		final int size = 6;
+
+		ScrollParams limited = testee.limit(new ScrollParams(-size - 1, size), TOTAL_COUNT);
+
+		assertThat(limited.getOffset(), equalTo(0));
+		assertThat(limited.getSize(), equalTo(0));
 	}
 
 }
