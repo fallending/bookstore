@@ -11,12 +11,12 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.context.WebApplicationContext;
+import pl.jojczykp.bookstore.command.BooksCommand;
 import pl.jojczykp.bookstore.domain.Book;
 import pl.jojczykp.bookstore.repository.BookRepository;
-import pl.jojczykp.bookstore.utils.ScrollParams;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -47,30 +47,27 @@ public class BooksControllerAddTest {
 
 	@Test
 	public void shouldAddBook() throws Exception {
-		final Integer offset = 3;
-		final Integer size = 11;
 		final String title = "aTitle";
+		final BooksCommand command = new BooksCommand();
+		command.setNewBook(new Book(title));
 
-		whenControllerAddPerformedWithParam(offset, size, title);
+		whenControllerAddPerformedWithCommand(command);
 
 		thenExpectCreatedBookWith(title);
 	}
 
 	@Test
 	public void shouldRedirectAfterAdding() throws Exception {
-		final Integer offset = 4;
-		final Integer size = 9;
-		final String title = "anotherTitle";
+		final BooksCommand command = new BooksCommand();
 
-		whenControllerAddPerformedWithParam(offset, size, title);
+		whenControllerAddPerformedWithCommand(command);
 
-		thenExpectHttpRedirect(offset, size);
+		thenExpectHttpRedirect(command);
 	}
 
-	private void whenControllerAddPerformedWithParam(Integer offset, Integer size, String title) throws Exception {
+	private void whenControllerAddPerformedWithCommand(BooksCommand command) throws Exception {
 		mvcMockPerformResult = mvcMock.perform(post("/books/add")
-				.flashAttr("scrollParams", new ScrollParams(offset, size))
-				.flashAttr("newBook", new Book(title)));
+				.flashAttr("booksCommand", command));
 	}
 
 	private void thenExpectCreatedBookWith(String title) {
@@ -80,12 +77,11 @@ public class BooksControllerAddTest {
 		assertThat(newBookCaptor.getValue().getTitle(), equalTo(title));
 	}
 
-	private void thenExpectHttpRedirect(Integer offset, Integer size) throws Exception {
+	private void thenExpectHttpRedirect(BooksCommand command) throws Exception {
 		mvcMockPerformResult
 				.andExpect(status().isFound())
 				.andExpect(redirectedUrl("/books/list"))
-				.andExpect(flash().attribute("scrollParams", hasProperty("offset", equalTo(offset))))
-				.andExpect(flash().attribute("scrollParams", hasProperty("size", equalTo(size))));
+				.andExpect(flash().attribute("booksCommand", sameInstance(command)));
 	}
 
 }

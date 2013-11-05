@@ -12,6 +12,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.context.WebApplicationContext;
+import pl.jojczykp.bookstore.command.BooksCommand;
 import pl.jojczykp.bookstore.domain.Book;
 import pl.jojczykp.bookstore.repository.BookRepository;
 import pl.jojczykp.bookstore.utils.ScrollParams;
@@ -20,13 +21,13 @@ import pl.jojczykp.bookstore.utils.ScrollParamsLimiter;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.lang.String.valueOf;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.core.IsSame.sameInstance;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
@@ -36,6 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
+import static pl.jojczykp.bookstore.utils.matchers.HasBeanProperty.hasBeanProperty;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -51,6 +53,18 @@ public class BooksControllerListTest {
 	private static final int REPO_FIRST_RETURNED_RECORD_OFFSET = 14;
 	private static final int REPO_RESULT_SIZE = 7;
 	private static final List<Book> REPO_RESULT_DATA = new ArrayList<>();
+
+	private static final int LIMITED_FIRST_RETURNED_RECORD_OFFSET = 16;
+	private static final int LIMITED_RESULT_SIZE = 6;
+	private static final ScrollParams LIMITED_SCROLL_PARAMS = limitedScrollParams();
+
+	private static ScrollParams limitedScrollParams() {
+		ScrollParams scrollParams = new ScrollParams();
+		scrollParams.setOffset(LIMITED_FIRST_RETURNED_RECORD_OFFSET);
+		scrollParams.setSize(LIMITED_RESULT_SIZE);
+
+		return scrollParams;
+	}
 
 	@Autowired private BookRepository bookRepositoryMock;
 	@Autowired private ScrollParamsLimiter scrollParamsLimiterMock;
@@ -77,40 +91,46 @@ public class BooksControllerListTest {
 
 	private void givenRepeatingScrollParamsLimiter() {
 		reset(scrollParamsLimiterMock);
+		given(scrollParamsLimiterMock.limit(any(ScrollParams.class), anyInt())).willReturn(LIMITED_SCROLL_PARAMS);
 	}
 
 	@Test
 	public void shouldUseDefaultValueFromConfigWhenNoOffsetParameterGiven() throws Exception {
 		mvcMock.perform(get("/books/list"))
 				.andExpect(status().isOk())
-				.andExpect(model().attribute("scrollParams", hasProperty("offset", equalTo(defaultOffset))));
+				.andExpect(model().attribute("booksCommand",
+						hasBeanProperty("scroll.current.offset", equalTo(defaultOffset))));
 	}
 
 	@Test
 	public void shouldUseDefaultValueFromConfigWhenNoSizeParameterGiven() throws Exception {
 		mvcMock.perform(get("/books/list"))
 				.andExpect(status().isOk())
-				.andExpect(model().attribute("scrollParams", hasProperty("size", equalTo(defaultSize))));
+				.andExpect(model().attribute("booksCommand",
+						hasBeanProperty("scroll.current.size", equalTo(defaultSize))));
 	}
 
 	@Test
 	public void shouldUseLimitationOfOffsetAndSizeParameters() throws Exception {
-		whenControllerListPerformedWithParams();
+		whenControllerListPerformedWithCommand();
 		thenExpectParametersLimitationUsage();
 	}
 
 	@Test
 	public void shouldDirectToProperViewWithModelCreatedForRepositoryData() throws Exception {
-		whenControllerListPerformedWithParams();
+		whenControllerListPerformedWithCommand();
 
 		thenExpectBookRepositoryRead();
 		thenExpectCorrectViewSelectedAndModelSet();
 	}
 
-	private void whenControllerListPerformedWithParams() throws Exception {
+	private void whenControllerListPerformedWithCommand() throws Exception {
+		BooksCommand command = new BooksCommand();
+		command.getScroll().getCurrent().setOffset(REPO_FIRST_RETURNED_RECORD_OFFSET);
+		command.getScroll().getCurrent().setSize(REPO_RESULT_SIZE);
+
 		mvcMockPerformResult = mvcMock.perform(get("/books/list")
-				.param("offset", valueOf(REPO_FIRST_RETURNED_RECORD_OFFSET))
-				.param("size", valueOf(REPO_RESULT_SIZE)));
+				.flashAttr("booksCommand", command));
 	}
 
 	private void thenExpectParametersLimitationUsage() {
@@ -129,21 +149,27 @@ public class BooksControllerListTest {
 
 		verify(bookRepositoryMock).totalCount();
 		verify(bookRepositoryMock).read(offsetCaptor.capture(), sizeCaptor.capture());
-		assertThat(offsetCaptor.getValue(), equalTo(REPO_FIRST_RETURNED_RECORD_OFFSET));
-		assertThat(sizeCaptor.getValue(), equalTo(REPO_RESULT_SIZE));
+		assertThat(offsetCaptor.getValue(), equalTo(LIMITED_FIRST_RETURNED_RECORD_OFFSET));
+		assertThat(sizeCaptor.getValue(), equalTo(LIMITED_RESULT_SIZE));
 	}
 
 	private void thenExpectCorrectViewSelectedAndModelSet() {
 		try {
 			mvcMockPerformResult
-					.andExpect(status().isOk())
-					.andExpect(view().name("books"))
-					.andExpect(model().attribute("books", sameInstance(REPO_RESULT_DATA)))
-					.andExpect(model().attribute("newBook", instanceOf(Book.class)))
-					.andExpect(model().attribute("scrollParams", hasProperty("size", equalTo(REPO_RESULT_SIZE))))
-					.andExpect(model().attribute("scrollParams", hasProperty("totalCount", equalTo(REPO_TOTAL_COUNT))))
-					.andExpect(model().attribute("scrollParams", hasProperty("offset",
-							equalTo(REPO_FIRST_RETURNED_RECORD_OFFSET))));
+				.andExpect(status().isOk())
+				.andExpect(view().name("books"))
+				.andExpect(model().attribute("booksCommand", hasProperty("books", sameInstance(REPO_RESULT_DATA))))
+				.andExpect(model().attribute("booksCommand", hasProperty("newBook", instanceOf(Book.class))))
+				.andExpect(model().attribute("booksCommand", hasBeanProperty("scroll.totalCount", equalTo(
+						REPO_TOTAL_COUNT))))
+				.andExpect(model().attribute("booksCommand", hasBeanProperty("scroll.current.size", equalTo(
+						REPO_RESULT_SIZE))))
+				.andExpect(model().attribute("booksCommand", hasBeanProperty("scroll.current.offset", equalTo(
+						REPO_FIRST_RETURNED_RECORD_OFFSET))))
+				.andExpect(model().attribute("booksCommand", hasBeanProperty("scroll.limited.size", equalTo(
+						LIMITED_RESULT_SIZE))))
+				.andExpect(model().attribute("booksCommand", hasBeanProperty("scroll.limited.offset", equalTo(
+						LIMITED_FIRST_RETURNED_RECORD_OFFSET))));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

@@ -14,10 +14,6 @@ public class ScrollParamsLimiter {
 		int limitedOffset = max(0, offset > totalCount ? totalCount : offset);
 		int limitedSize = max(0, limitedOffset + size > totalCount ? totalCount - limitedOffset : size);
 
-		if (offset < 0 && size <= totalCount) {
-			limitedSize = max(0, limitedSize + offset);
-		}
-
 		return new ScrollParams(limitedOffset, limitedSize);
 	}
 

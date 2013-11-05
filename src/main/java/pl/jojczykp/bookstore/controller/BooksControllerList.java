@@ -29,9 +29,8 @@ public class BooksControllerList {
 	@ModelAttribute(BOOKS_COMMAND)
 	public BooksCommand getDefaultBooksCommand() {
 		BooksCommand booksCommand = new BooksCommand();
-		booksCommand.getOriginalScrollParams().setOffset(defaultOffset);
-		booksCommand.getOriginalScrollParams().setSize(defaultSize);
-		booksCommand.setPageSize(defaultSize);
+		booksCommand.getScroll().getCurrent().setOffset(defaultOffset);
+		booksCommand.getScroll().getCurrent().setSize(defaultSize);
 		return booksCommand;
 	}
 
@@ -40,11 +39,9 @@ public class BooksControllerList {
 			@ModelAttribute(BOOKS_COMMAND) BooksCommand booksCommand)
 	{
 		int totalCount = bookRepository.totalCount();
-		booksCommand.setTotalCount(totalCount);
-		ScrollParams originalScrollParams = booksCommand.getOriginalScrollParams();
-		originalScrollParams.setSize(booksCommand.getPageSize());
-		ScrollParams limitedScrollParams = scrollParamsLimiter.limit(originalScrollParams, totalCount);
-		booksCommand.setLimitedScrollParams(limitedScrollParams);
+		booksCommand.getScroll().setTotalCount(totalCount);
+		ScrollParams limitedScrollParams = scrollParamsLimiter.limit(booksCommand.getScroll().getCurrent(), totalCount);
+		booksCommand.getScroll().setLimited(limitedScrollParams);
 		booksCommand.setBooks(bookRepository.read(limitedScrollParams.getOffset(), limitedScrollParams.getSize()));
 
 		return new ModelAndView(BOOKS_VIEW, new ModelMap().addAttribute(BOOKS_COMMAND, booksCommand));

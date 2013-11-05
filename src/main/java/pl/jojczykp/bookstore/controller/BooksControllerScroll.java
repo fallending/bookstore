@@ -29,8 +29,8 @@ public class BooksControllerScroll {
 			@ModelAttribute(BOOKS_COMMAND) BooksCommand booksCommand,
 			RedirectAttributes redirectAttributes)
 	{
-		ScrollParams originalScrollParams = booksCommand.getOriginalScrollParams();
-		originalScrollParams.setOffset(originalScrollParams.getOffset() - originalScrollParams.getSize());
+		ScrollParams currentScrollParams = booksCommand.getScroll().getCurrent();
+		currentScrollParams.setOffset(currentScrollParams.getOffset() - currentScrollParams.getSize());
 
 		return redirectToList(booksCommand, redirectAttributes);
 	}
@@ -40,8 +40,8 @@ public class BooksControllerScroll {
 			@ModelAttribute(BOOKS_COMMAND) BooksCommand booksCommand,
 			RedirectAttributes redirectAttributes)
 	{
-		ScrollParams originalScrollParams = booksCommand.getOriginalScrollParams();
-		originalScrollParams.setOffset(originalScrollParams.getOffset() + originalScrollParams.getSize());
+		ScrollParams currentScrollParams = booksCommand.getScroll().getCurrent();
+		currentScrollParams.setOffset(currentScrollParams.getOffset() + currentScrollParams.getSize());
 
 		return redirectToList(booksCommand, redirectAttributes);
 	}
@@ -58,4 +58,5 @@ public class BooksControllerScroll {
 		redirectAttributes.addFlashAttribute(BOOKS_COMMAND, booksCommand);
 		return new RedirectView(URL_ACTION_LIST);
 	}
+
 }

@@ -3,13 +3,13 @@ package pl.jojczykp.bookstore.command;
 import org.junit.Before;
 import org.junit.Test;
 import pl.jojczykp.bookstore.domain.Book;
-import pl.jojczykp.bookstore.utils.ScrollParams;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.hamcrest.Matchers.empty;
 import static org.junit.Assert.assertThat;
 
 public class BooksCommandTest {
@@ -22,44 +22,19 @@ public class BooksCommandTest {
 	}
 
 	@Test
-	public void shouldHaveDefaultConstructor() {
-		new BooksCommand();
+	public void shouldBeSetUpByDefaultConstructor() {
+		assertThat(testee.getScroll(), notNullValue());
+		assertThat(testee.getNewBook(), notNullValue());
+		assertThat(testee.getBooks(), empty());
 	}
 
 	@Test
-	public void shouldSetOriginalScrollParams() {
-		final ScrollParams scrollParams = new ScrollParams();
+	public void shouldSetScroll() {
+		final ScrollCommand scroll = new ScrollCommand();
 
-		testee.setOriginalScrollParams(scrollParams);
+		testee.setScroll(scroll);
 
-		assertThat(testee.getOriginalScrollParams(), sameInstance(scrollParams));
-	}
-
-	@Test
-	public void shouldSetLimitedScrollParams() {
-		final ScrollParams scrollParams = new ScrollParams();
-
-		testee.setLimitedScrollParams(scrollParams);
-
-		assertThat(testee.getLimitedScrollParams(), sameInstance(scrollParams));
-	}
-
-	@Test
-	public void shouldSetPageSize() {
-		final int pageSize = 7;
-
-		testee.setPageSize(pageSize);
-
-		assertThat(testee.getPageSize(), equalTo(pageSize));
-	}
-
-	@Test
-	public void shouldSetTotalCount() {
-		final int totalCount = 4;
-
-		testee.setTotalCount(totalCount);
-
-		assertThat(testee.getTotalCount(), equalTo(totalCount));
+		assertThat(testee.getScroll(), sameInstance(scroll));
 	}
 
 	@Test

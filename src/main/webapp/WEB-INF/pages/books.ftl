@@ -1,8 +1,8 @@
 <#import "/spring.ftl" as spring>
 
-<#assign offset = booksCommand.limitedScrollParams.offset>
-<#assign size = booksCommand.limitedScrollParams.size>
-<#assign totalCount = booksCommand.totalCount>
+<#assign offset = booksCommand.scroll.limited.offset>
+<#assign size = booksCommand.scroll.limited.size>
+<#assign totalCount = booksCommand.scroll.totalCount>
 <#assign limit = offset + size>
 
 <html>
@@ -10,12 +10,9 @@
 		<title>Bookstore</title>
 	</head>
 	<body>
-		originalScrollParams = ${booksCommand.originalScrollParams}<br/>
-		totalCount = ${booksCommand.totalCount}<br/>
-		limitedScrollParams = ${booksCommand.limitedScrollParams}<br/>
 		<@sectionTitle/>
 		<@sectionScroll/>
-		<@sectionTable/>
+		<@sectionDataTable/>
 		<@sectionAdd/>
 	</body>
 </html>
@@ -46,10 +43,9 @@
 
 <#macro formScrollPrev>
 	<form action="prev" method="POST">
-		<@spring.formHiddenInput "booksCommand.originalScrollParams.offset"/>
-		<@spring.formHiddenInput "booksCommand.originalScrollParams.size"/>
-		<@spring.formHiddenInput "booksCommand.pageSize"/>
-		<#if (booksCommand.originalScrollParams.offset <= 0) >
+		<@spring.formHiddenInput "booksCommand.scroll.current.offset"/>
+		<@spring.formHiddenInput "booksCommand.scroll.current.size"/>
+		<#if (booksCommand.scroll.current.offset <= 0) >
 			<input type="submit" value="&lt;" disabled="true" />
 		<#else>
 			<input type="submit" value="&lt;" />
@@ -59,18 +55,16 @@
 
 <#macro formScrollSetPageSize>
 	<form action="setPageSize" method="POST">
-		<@spring.formHiddenInput "booksCommand.originalScrollParams.offset"/>
-		<@spring.formHiddenInput "booksCommand.originalScrollParams.size"/>
-		<@spring.formInput "booksCommand.pageSize"/>
+		<@spring.formHiddenInput "booksCommand.scroll.current.offset"/>
+		<@spring.formInput "booksCommand.scroll.current.size"/>
 		<input type="submit" value="set page size" />
 	</form>
 </#macro>
 
 <#macro formScrollNext>
 	<form action="next" method="POST">
-		<@spring.formHiddenInput "booksCommand.originalScrollParams.offset"/>
-		<@spring.formHiddenInput "booksCommand.originalScrollParams.size"/>
-		<@spring.formHiddenInput "booksCommand.pageSize"/>
+		<@spring.formHiddenInput "booksCommand.scroll.current.offset"/>
+		<@spring.formHiddenInput "booksCommand.scroll.current.size"/>
 		<#if (limit >= totalCount) >
 			<input type="submit" value="&gt;" disabled="true" />
 		<#else>
@@ -79,7 +73,7 @@
 	</form>
 </#macro>
 
-<#macro sectionTable>
+<#macro sectionDataTable>
 	<#if (size > 0) >
 	<table>
 		<th>Id</th><th>Title</th>
@@ -97,9 +91,8 @@
 	<form action="add" method="POST">
 		<h2>Add new book:</h2>
 		Title: <@spring.formInput "booksCommand.newBook.title"/>
-		<@spring.formHiddenInput "booksCommand.originalScrollParams.offset"/>
-		<@spring.formHiddenInput "booksCommand.originalScrollParams.size"/>
-		<@spring.formHiddenInput "booksCommand.pageSize"/>
+		<@spring.formHiddenInput "booksCommand.scroll.current.offset"/>
+		<@spring.formHiddenInput "booksCommand.scroll.current.size"/>
 		<input type="submit" value="add"/>
 	</form>
 </#macro>
