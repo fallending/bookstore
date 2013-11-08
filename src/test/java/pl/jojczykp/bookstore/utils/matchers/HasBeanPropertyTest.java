@@ -12,12 +12,21 @@ import static pl.jojczykp.bookstore.utils.matchers.HasBeanProperty.hasBeanProper
 public class HasBeanPropertyTest {
 
 	private class Bean {
-		public String property;
-		public Bean bean;
 
-		private Bean(String property, Bean bean) {
+		private String property;
+		private Bean bean;
+
+		public Bean(String property, Bean bean) {
 			this.property = property;
 			this.bean = bean;
+		}
+
+		public String getProperty() {
+			return property;
+		}
+
+		public Bean getBean() {
+			return bean;
 		}
 	}
 

@@ -8,7 +8,7 @@ import static org.junit.Assert.assertThat;
 
 public class ScrollParamsLimiterTest {
 
-	private static int TOTAL_COUNT = 23;
+	private static final int TOTAL_COUNT = 23;
 
 	private ScrollParamsLimiter testee;
 
@@ -31,19 +31,31 @@ public class ScrollParamsLimiterTest {
 	@Test
 	public void shouldLimitSizeWhenAboveRange() {
 		final int offset = 15;
+		final int sizeAboveRange = TOTAL_COUNT + 2;
 
-		ScrollParams limited = testee.limit(new ScrollParams(offset, TOTAL_COUNT + 2), TOTAL_COUNT);
+		ScrollParams limited = testee.limit(new ScrollParams(offset, sizeAboveRange), TOTAL_COUNT);
 
 		assertThat(limited.getOffset(), equalTo(offset));
 		assertThat(limited.getSize(), equalTo(TOTAL_COUNT - offset));
 	}
 
 	@Test
+	public void shouldLimitOffsetWhenAboveRange() {
+		final int offsetAboveRange = TOTAL_COUNT + 2;
+		final int size = 2;
+
+		ScrollParams limited = testee.limit(new ScrollParams(offsetAboveRange, size), TOTAL_COUNT);
+
+		assertThat(limited.getOffset(), equalTo(TOTAL_COUNT));
+		assertThat(limited.getSize(), equalTo(0));
+	}
+
+	@Test
 	public void shouldLimitOffsetWhenBelowRange() {
-		final int offset = -2;
+		final int offsetBelowRange = -2;
 		final int size = 10;
 
-		ScrollParams limited = testee.limit(new ScrollParams(offset, size), TOTAL_COUNT);
+		ScrollParams limited = testee.limit(new ScrollParams(offsetBelowRange, size), TOTAL_COUNT);
 
 		assertThat(limited.getOffset(), equalTo(0));
 		assertThat(limited.getSize(), equalTo(size));
@@ -51,7 +63,10 @@ public class ScrollParamsLimiterTest {
 
 	@Test
 	public void shouldLimitOffsetAndSize() {
-		ScrollParams limited = testee.limit(new ScrollParams(-2, TOTAL_COUNT + 1), TOTAL_COUNT);
+		final int offsetBelowRange = -2;
+		final int sizeOverRange = TOTAL_COUNT + 1;
+
+		ScrollParams limited = testee.limit(new ScrollParams(offsetBelowRange, sizeOverRange), TOTAL_COUNT);
 
 		assertThat(limited.getOffset(), equalTo(0));
 		assertThat(limited.getSize(), equalTo(TOTAL_COUNT));
@@ -60,8 +75,9 @@ public class ScrollParamsLimiterTest {
 	@Test
 	public void shouldReturnEmptyResultWhenSizeIsNegative() {
 		final int offset = 7;
+		final int negativeSize = -3;
 
-		ScrollParams limited = testee.limit(new ScrollParams(offset, -3), TOTAL_COUNT);
+		ScrollParams limited = testee.limit(new ScrollParams(offset, negativeSize), TOTAL_COUNT);
 
 		assertThat(limited.getOffset(), equalTo(offset));
 		assertThat(limited.getSize(), equalTo(0));

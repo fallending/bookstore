@@ -28,6 +28,12 @@ import static pl.jojczykp.bookstore.utils.matchers.HasBeanProperty.hasBeanProper
 })
 public class BooksControllerScrollTest {
 
+	private static final String BOOKS_COMMAND = "booksCommand";
+
+	private static final String URL_ACTION_PREV = "/books/prev";
+	private static final String URL_ACTION_NEXT = "/books/next";
+	private static final String URL_ACTION_SET_PAGE_SIZE = "/books/setPageSize";
+
 	private static final int INITIAL_OFFSET = 25;
 	private static final int INITIAL_SIZE = 15;
 
@@ -42,27 +48,27 @@ public class BooksControllerScrollTest {
 
 	@Test
 	public void shouldScrollPrev() throws Exception {
-		mvcMockPerformResult = mvcMock.perform(post("/books/prev")
-				.flashAttr("booksCommand", aBooksCommand(INITIAL_OFFSET, INITIAL_SIZE)));
+		mvcMockPerformResult = mvcMock.perform(post(URL_ACTION_PREV)
+				.flashAttr(BOOKS_COMMAND, aBooksCommand(INITIAL_OFFSET, INITIAL_SIZE)));
 
 		mvcMockPerformResult
 				.andExpect(status().isFound())
-				.andExpect(flash().attribute("booksCommand",
+				.andExpect(flash().attribute(BOOKS_COMMAND,
 						hasBeanProperty("scroll.current.offset", equalTo(INITIAL_OFFSET - INITIAL_SIZE))))
-				.andExpect(flash().attribute("booksCommand",
+				.andExpect(flash().attribute(BOOKS_COMMAND,
 						hasBeanProperty("scroll.current.size", equalTo(INITIAL_SIZE))));
 	}
 
 	@Test
 	public void shouldScrollNext() throws Exception {
-		mvcMockPerformResult = mvcMock.perform(post("/books/next")
-				.flashAttr("booksCommand", aBooksCommand(INITIAL_OFFSET, INITIAL_SIZE)));
+		mvcMockPerformResult = mvcMock.perform(post(URL_ACTION_NEXT)
+				.flashAttr(BOOKS_COMMAND, aBooksCommand(INITIAL_OFFSET, INITIAL_SIZE)));
 
 		mvcMockPerformResult
 				.andExpect(status().isFound())
-				.andExpect(flash().attribute("booksCommand",
+				.andExpect(flash().attribute(BOOKS_COMMAND,
 						hasBeanProperty("scroll.current.offset", equalTo(INITIAL_OFFSET + INITIAL_SIZE))))
-				.andExpect(flash().attribute("booksCommand",
+				.andExpect(flash().attribute(BOOKS_COMMAND,
 						hasBeanProperty("scroll.current.size", equalTo(INITIAL_SIZE))));
 	}
 
@@ -71,12 +77,12 @@ public class BooksControllerScrollTest {
 		final int anyOffset = 1;
 		final int pageSize = 4;
 
-		mvcMockPerformResult = mvcMock.perform(post("/books/setPageSize")
-				.flashAttr("booksCommand", aBooksCommand(anyOffset, pageSize)));
+		mvcMockPerformResult = mvcMock.perform(post(URL_ACTION_SET_PAGE_SIZE)
+				.flashAttr(BOOKS_COMMAND, aBooksCommand(anyOffset, pageSize)));
 
 		mvcMockPerformResult
 				.andExpect(status().isFound())
-				.andExpect(flash().attribute("booksCommand", hasBeanProperty("scroll.current.size", equalTo(pageSize))));
+				.andExpect(flash().attribute(BOOKS_COMMAND, hasBeanProperty("scroll.current.size", equalTo(pageSize))));
 	}
 
 	private BooksCommand aBooksCommand(int offset, int size) {

@@ -8,7 +8,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 import pl.jojczykp.bookstore.command.BooksCommand;
 import pl.jojczykp.bookstore.repository.BookRepository;
-import pl.jojczykp.bookstore.utils.ScrollParamsLimiter;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static pl.jojczykp.bookstore.controller.BooksConsts.BOOKS_COMMAND;
@@ -18,8 +17,7 @@ import static pl.jojczykp.bookstore.controller.BooksConsts.URL_ACTION_LIST;
 @Controller
 public class BooksControllerAdd {
 
-	@Autowired BookRepository bookRepository;
-	@Autowired ScrollParamsLimiter scrollParamsLimiter;
+	@Autowired private BookRepository bookRepository;
 
 	@RequestMapping(value = URL_ACTION_ADD, method = POST)
 	public RedirectView add(

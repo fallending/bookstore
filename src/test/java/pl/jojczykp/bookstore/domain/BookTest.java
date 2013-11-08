@@ -3,10 +3,14 @@ package pl.jojczykp.bookstore.domain;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.Test;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class BookTest {
+
+	private static final int ID = 8;
+	private static final String TITLE = "some title";
 
 	@Test
 	public void shouldHaveNoParameterConstructorForHibernate() {
@@ -18,33 +22,44 @@ public class BookTest {
 
 	@Test
 	public void shouldHaveOnlyIdConstructor() {
-		final int id = 2;
+		Book book = new Book(ID);
 
-		Book book = new Book(id);
-
-		assertThat(book.getId(), is(id));
+		assertThat(book.getId(), is(ID));
 		assertThat(book.getTitle(), is(""));
 	}
 
 	@Test
 	public void shouldHaveNoIdConstructor() {
-		final String title = "A Title";
-
-		Book book = new Book(title);
+		Book book = new Book(TITLE);
 
 		assertThat(book.getId(), is(0));
-		assertThat(book.getTitle(), is(title));
+		assertThat(book.getTitle(), is(TITLE));
 	}
 
 	@Test
 	public void shouldCreateBookWithTitlePassedToConstructor() {
-		final int id = 7;
-		final String title = "A Title";
+		Book book = new Book(ID, TITLE);
 
-		Book book = new Book(id, title);
+		assertThat(book.getId(), is(ID));
+		assertThat(book.getTitle(), is(TITLE));
+	}
 
-		assertThat(book.getId(), is(id));
-		assertThat(book.getTitle(), is(title));
+	@Test
+	public void shouldSetId() {
+		Book book = new Book();
+
+		book.setId(ID);
+
+		assertThat(book.getId(), is(ID));
+	}
+
+	@Test
+	public void shouldSetTitle() {
+		Book book = new Book();
+
+		book.setTitle(TITLE);
+
+		assertThat(book.getTitle(), is(TITLE));
 	}
 
 	@Test
@@ -53,4 +68,15 @@ public class BookTest {
 				.usingGetClass()
 				.verify();
 	}
+
+	@Test
+	public void shouldHaveToStringWithDetailsForDiagnostic() {
+		Book testee = new Book(ID, TITLE);
+
+		String toStringResult = testee.toString();
+
+		assertThat(toStringResult, containsString("id=" + ID));
+		assertThat(toStringResult, containsString("title='" + TITLE + "'"));
+	}
+
 }

@@ -42,12 +42,15 @@ public class BookRepositoryTest {
 
 	@Test
 	public void shouldListBooksByOffsetAndSize() {
-		List<Book> books = repository.read(2, 3);
+		final int offset = 2;
+		final int size = 3;
 
-		assertThat(books.size(), is(3));
-		assertThat(books.get(0).getId(), is(2));
-		assertThat(books.get(1).getId(), is(3));
-		assertThat(books.get(2).getId(), is(4));
+		List<Book> books = repository.read(offset, size);
+
+		assertThat(books.size(), is(size));
+		assertThat(books.get(0).getId(), is(offset));
+		assertThat(books.get(1).getId(), is(offset + 1));
+		assertThat(books.get(2).getId(), is(offset + 2));
 	}
 	@Test
 	public void shouldListBooksWhenOffsetInRangeAndSizeOverRange() {
@@ -64,7 +67,9 @@ public class BookRepositoryTest {
 
 	@Test
 	public void shouldListNoBooksWhenOffsetOverRange() {
-		List<Book> books = repository.read(TOTAL_TEST_BOOKS_COUNT, 1);
+		final int anySize = 8;
+
+		List<Book> books = repository.read(TOTAL_TEST_BOOKS_COUNT, anySize);
 
 		assertThat(books.size(), is(0));
 	}
@@ -89,9 +94,9 @@ public class BookRepositoryTest {
 
 	@Test
 	public void shouldListEmptyForZeroSize() {
-		final int size = 0;
+		final int offset = 7;
 
-		List<Book> books = repository.read(3, size);
+		List<Book> books = repository.read(offset, 0);
 
 		assertThat(books, emptyCollectionOf(Book.class));
 	}

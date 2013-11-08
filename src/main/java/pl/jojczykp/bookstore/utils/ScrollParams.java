@@ -31,6 +31,6 @@ public class ScrollParams {
 
 	@Override
 	public String toString() {
-		return "[" + offset + ", " + size + "]";
+		return "ScrollParams{offset=" + offset + ", size=" + size + "}";
 	}
 }

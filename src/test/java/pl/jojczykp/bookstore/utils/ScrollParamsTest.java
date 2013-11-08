@@ -2,6 +2,7 @@ package pl.jojczykp.bookstore.utils;
 
 import org.junit.Test;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -53,4 +54,15 @@ public class ScrollParamsTest {
 		assertThat(testee.getSize(), equalTo(givenSize));
 	}
 
+	@Test
+	public void shouldHaveToStringWithDetailsForDiagnostic() {
+		final int givenOffset = 12443;
+		final int givenSize = 11876;
+		ScrollParams testee = new ScrollParams(givenOffset, givenSize);
+
+		String toStringResult = testee.toString();
+
+		assertThat(toStringResult, containsString("offset=" + givenOffset));
+		assertThat(toStringResult, containsString("size=" + givenSize));
+	}
 }

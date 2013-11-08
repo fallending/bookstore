@@ -1,6 +1,5 @@
 package pl.jojczykp.bookstore.domain;
 
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -32,8 +31,8 @@ public class Book {
 	}
 
 	public Book(int id, String title) {
-		setId(id);
-		setTitle(title);
+		this.id = id;
+		this.title = title;
 	}
 
 	public int getId() {

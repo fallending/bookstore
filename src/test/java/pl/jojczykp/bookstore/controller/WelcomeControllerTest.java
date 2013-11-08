@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 public class WelcomeControllerTest {
 	private MockMvc mockMvc;
 
-	@Autowired protected WebApplicationContext wac;
+	@Autowired private WebApplicationContext wac;
 
 	@Before
 	public void setup() {

@@ -20,11 +20,11 @@ import static pl.jojczykp.bookstore.controller.BooksConsts.URL_ACTION_LIST;
 @Controller
 public class BooksControllerList {
 
-	@Autowired BookRepository bookRepository;
-	@Autowired ScrollParamsLimiter scrollParamsLimiter;
+	@Autowired private BookRepository bookRepository;
+	@Autowired private ScrollParamsLimiter scrollParamsLimiter;
 
-	@Value("${view.books.defaultOffset}") int defaultOffset;
-	@Value("${view.books.defaultSize}") int defaultSize;
+	@Value("${view.books.defaultOffset}") private int defaultOffset;
+	@Value("${view.books.defaultSize}") private int defaultSize;
 
 	@ModelAttribute(BOOKS_COMMAND)
 	public BooksCommand getDefaultBooksCommand() {
