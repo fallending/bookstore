@@ -1,4 +1,4 @@
-package pl.jojczykp.bookstore.utils.matchers;
+package pl.jojczykp.bookstore.testutils.matchers;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -7,7 +7,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
-import static pl.jojczykp.bookstore.utils.matchers.HasBeanProperty.hasBeanProperty;
+import static pl.jojczykp.bookstore.testutils.matchers.HasBeanProperty.hasBeanProperty;
 
 public class HasBeanPropertyTest {
 

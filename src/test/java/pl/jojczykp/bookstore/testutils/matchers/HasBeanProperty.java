@@ -1,4 +1,4 @@
-package pl.jojczykp.bookstore.utils.matchers;
+package pl.jojczykp.bookstore.testutils.matchers;
 
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
