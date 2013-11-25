@@ -58,7 +58,8 @@ public class BookRepository {
 	}
 
 	public void delete(int id) {
-		getCurrentSession().delete(new Book(id));
+		Book book = (Book) getCurrentSession().load(Book.class, id);
+		getCurrentSession().delete(book);
 	}
 
 	public int totalCount() {

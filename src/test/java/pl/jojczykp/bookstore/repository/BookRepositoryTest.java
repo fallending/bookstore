@@ -1,6 +1,9 @@
 package pl.jojczykp.bookstore.repository;
 
+import org.hibernate.ObjectNotFoundException;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
@@ -15,7 +18,7 @@ import static java.lang.Integer.MAX_VALUE;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyCollectionOf;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
+import static org.junit.rules.ExpectedException.none;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:spring/repository-test-context.xml")
@@ -25,6 +28,10 @@ public class BookRepositoryTest {
 	public static final int TOTAL_TEST_BOOKS_COUNT = 15;
 
 	@Autowired private BookRepository repository;
+
+	//CHECKSTYLE:OFF: VisibilityModifierCheck - must be public for SpringJUnit4ClassRunner
+	@Rule public ExpectedException exception = none();
+	//CHECKSTYLE:ON: VisibilityModifierCheck
 
 	@Test
 	public void shouldComputeTotalCountOfBooks() {
@@ -132,7 +139,8 @@ public class BookRepositoryTest {
 
 		repository.delete(id);
 
-		assertThat(repository.get(id), is(nullValue()));
+		exception.expect(ObjectNotFoundException.class);
+		repository.get(id);
 	}
 
 }
