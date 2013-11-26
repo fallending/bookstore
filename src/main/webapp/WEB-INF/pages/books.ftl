@@ -82,7 +82,7 @@
 				<tr>
 					<td>
 						<@spring.formHiddenInput path="booksCommand.books[" + book_index + "].id"/>
-						<@spring.formCheckbox path="booksCommand.books[" + book_index + "].checked" attributes="checked='checked'"/>
+						<@spring.formCheckbox path="booksCommand.books[" + book_index + "].checked"/>
 					</td>
 					<td>#${book.id}</td>
 					<td>${book.title}</td>
