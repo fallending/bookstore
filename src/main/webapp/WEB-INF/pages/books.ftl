@@ -75,15 +75,25 @@
 
 <#macro sectionDataTable>
 	<#if (size > 0) >
-	<table>
-		<th>Id</th><th>Title</th>
-		<#list booksCommand.books as book>
-			<tr>
-				<td>#${book.id}</td>
-				<td>${book.title}</td>
-			</tr>
-		</#list>
-	</table>
+	<form action="del" method="POST">
+		<table>
+			<th></th><th>Id</th><th>Title</th>
+			<#list booksCommand.books as book>
+				<tr>
+					<td>
+						<@spring.formHiddenInput path="booksCommand.books[" + book_index + "].id"/>
+						<@spring.formCheckbox path="booksCommand.books[" + book_index + "].checked" attributes="checked='checked'"/>
+					</td>
+					<td>#${book.id}</td>
+					<td>${book.title}</td>
+				</tr>
+			</#list>
+		</table>
+		<br/>
+		<input type="submit" value="delete selected"/>
+		<@spring.formHiddenInput "booksCommand.scroll.current.offset"/>
+		<@spring.formHiddenInput "booksCommand.scroll.current.size"/>
+	</form>
 	</#if>
 </#macro>
 

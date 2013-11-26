@@ -23,8 +23,8 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 		"classpath:spring/config-test-context.xml"
 })
 public class WelcomeControllerTest {
-	private MockMvc mockMvc;
 
+	private MockMvc mockMvc;
 	@Autowired private WebApplicationContext wac;
 
 	@Before

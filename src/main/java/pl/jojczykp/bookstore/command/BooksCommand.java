@@ -1,19 +1,17 @@
 package pl.jojczykp.bookstore.command;
 
-import pl.jojczykp.bookstore.domain.Book;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class BooksCommand {
 
 	private ScrollCommand scroll;
-	private Book newBook;
-	private List<Book> books;
+	private BookCommand newBook;
+	private List<BookCommand> books;
 
 	public BooksCommand() {
 		scroll = new ScrollCommand();
-		newBook = new Book();
+		newBook = new BookCommand();
 		books = new ArrayList<>();
 	}
 
@@ -25,19 +23,19 @@ public class BooksCommand {
 		this.scroll = scroll;
 	}
 
-	public Book getNewBook() {
+	public BookCommand getNewBook() {
 		return newBook;
 	}
 
-	public void setNewBook(Book newBook) {
+	public void setNewBook(BookCommand newBook) {
 		this.newBook = newBook;
 	}
 
-	public List<Book> getBooks() {
+	public List<BookCommand> getBooks() {
 		return books;
 	}
 
-	public void setBooks(List<Book> books) {
+	public void setBooks(List<BookCommand> books) {
 		this.books = books;
 	}
 }

@@ -7,10 +7,14 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+import pl.jojczykp.bookstore.assembler.BookAssembler;
 import pl.jojczykp.bookstore.command.BooksCommand;
+import pl.jojczykp.bookstore.domain.Book;
 import pl.jojczykp.bookstore.repository.BookRepository;
 import pl.jojczykp.bookstore.utils.ScrollParams;
 import pl.jojczykp.bookstore.utils.ScrollParamsLimiter;
+
+import java.util.List;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static pl.jojczykp.bookstore.controller.BooksConsts.BOOKS_COMMAND;
@@ -22,6 +26,7 @@ public class BooksControllerList {
 
 	@Autowired private BookRepository bookRepository;
 	@Autowired private ScrollParamsLimiter scrollParamsLimiter;
+	@Autowired private BookAssembler bookAssembler;
 
 	@Value("${view.books.defaultOffset}") private int defaultOffset;
 	@Value("${view.books.defaultSize}") private int defaultSize;
@@ -42,7 +47,9 @@ public class BooksControllerList {
 		booksCommand.getScroll().setTotalCount(totalCount);
 		ScrollParams limitedScrollParams = scrollParamsLimiter.limit(booksCommand.getScroll().getCurrent(), totalCount);
 		booksCommand.getScroll().setLimited(limitedScrollParams);
-		booksCommand.setBooks(bookRepository.read(limitedScrollParams.getOffset(), limitedScrollParams.getSize()));
+
+		List<Book> books = bookRepository.read(limitedScrollParams.getOffset(), limitedScrollParams.getSize());
+		booksCommand.setBooks(bookAssembler.toCommands(books));
 
 		return new ModelAndView(BOOKS_VIEW, new ModelMap().addAttribute(BOOKS_COMMAND, booksCommand));
 	}

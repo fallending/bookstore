@@ -2,7 +2,6 @@ package pl.jojczykp.bookstore.command;
 
 import org.junit.Before;
 import org.junit.Test;
-import pl.jojczykp.bookstore.domain.Book;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +38,7 @@ public class BooksCommandTest {
 
 	@Test
 	public void shouldSetNewBook() {
-		final Book book = new Book();
+		final BookCommand book = new BookCommand();
 
 		testee.setNewBook(book);
 
@@ -48,7 +47,7 @@ public class BooksCommandTest {
 
 	@Test
 	public void shouldSetBooks() {
-		final List<Book> books = new ArrayList<>();
+		final List<BookCommand> books = new ArrayList<>();
 
 		testee.setBooks(books);
 

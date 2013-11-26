@@ -37,9 +37,9 @@ public class BooksControllerScrollTest {
 	private static final int INITIAL_OFFSET = 25;
 	private static final int INITIAL_SIZE = 15;
 
-	@Autowired private WebApplicationContext wac;
 	private MockMvc mvcMock;
 	private ResultActions mvcMockPerformResult;
+	@Autowired private WebApplicationContext wac;
 
 	@Before
 	public void setUp() {

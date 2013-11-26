@@ -13,13 +13,15 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.context.WebApplicationContext;
+import pl.jojczykp.bookstore.command.BookCommand;
 import pl.jojczykp.bookstore.command.BooksCommand;
-import pl.jojczykp.bookstore.domain.Book;
 import pl.jojczykp.bookstore.repository.BookRepository;
 
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
@@ -35,55 +37,68 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 		"classpath:spring/scroll-params-limiter-mock-context.xml",
 		"classpath:spring/config-test-context.xml"
 })
-public class BooksControllerAddTest {
+public class BooksControllerDelTest {
 
 	private MockMvc mvcMock;
 	private ResultActions mvcMockPerformResult;
 	@Autowired private BookRepository bookRepositoryMock;
 	@Autowired private WebApplicationContext wac;
 
-	@Captor private ArgumentCaptor<Book> newBookCaptor;
+	@Captor private ArgumentCaptor<Integer> idOfBookToRemove;
 
 	@Before
 	public void setUp() {
 		mvcMock = webAppContextSetup(wac).build();
 		MockitoAnnotations.initMocks(this);
+		reset(bookRepositoryMock);
 	}
 
 	@Test
-	public void shouldAddBook() throws Exception {
-		final String title = "aTitle";
-		final BooksCommand command = aCommandWith(title);
+	public void shouldDeleteBook() throws Exception {
+		final int id1 = 9;
+		final int id2 = 78;
+		final BooksCommand command = aCommandToRemoveByIds(id1, id2);
 
-		whenControllerAddPerformedWithCommand(command);
+		whenControllerDelPerformedWithCommand(command);
 
-		thenExpectCreatedBookWith(title);
+		thenExpectDeletedBooksWithIds(id1, id2);
 	}
 
 	@Test
-	public void shouldRedirectAfterAdding() throws Exception {
-		final BooksCommand command = aCommandWith("anyTitle");
+	public void shouldRedirectAfterDeleting() throws Exception {
+		final int anyId = 5;
+		final BooksCommand command = aCommandToRemoveByIds(anyId);
 
-		whenControllerAddPerformedWithCommand(command);
+		whenControllerDelPerformedWithCommand(command);
 
 		thenExpectHttpRedirect(command);
 	}
 
-	private BooksCommand aCommandWith(String title) {
+	private BooksCommand aCommandToRemoveByIds(int... ids) {
 		BooksCommand command = new BooksCommand();
-		command.getNewBook().setTitle(title);
+		for (int i = 0; i < ids.length; i++) {
+			command.getBooks().add(aDeletableBookCommandForId(ids[i]));
+		}
 
 		return command;
 	}
 
-	private void whenControllerAddPerformedWithCommand(BooksCommand command) throws Exception {
-		mvcMockPerformResult = mvcMock.perform(post("/books/add")
+	private BookCommand aDeletableBookCommandForId(int id) {
+		BookCommand bookCommand = new BookCommand();
+		bookCommand.setChecked(true);
+		bookCommand.setId(id);
+
+		return bookCommand;
+	}
+
+	private void whenControllerDelPerformedWithCommand(BooksCommand command) throws Exception {
+		mvcMockPerformResult = mvcMock.perform(post("/books/del")
 				.flashAttr("booksCommand", command));
 	}
 
-	private void thenExpectCreatedBookWith(String title) {
-		verify(bookRepositoryMock).create(newBookCaptor.capture());
-		assertThat(newBookCaptor.getValue().getTitle(), equalTo(title));
+	private void thenExpectDeletedBooksWithIds(Integer... ids) {
+		verify(bookRepositoryMock, times(ids.length)).delete(idOfBookToRemove.capture());
+		assertThat(idOfBookToRemove.getAllValues(), hasItems(ids));
 	}
 
 	private void thenExpectHttpRedirect(BooksCommand command) throws Exception {
@@ -92,5 +107,6 @@ public class BooksControllerAddTest {
 				.andExpect(redirectedUrl("/books/list"))
 				.andExpect(flash().attribute("booksCommand", sameInstance(command)));
 	}
+
 
 }

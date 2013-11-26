@@ -4,6 +4,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
@@ -12,6 +14,8 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.context.WebApplicationContext;
+import pl.jojczykp.bookstore.assembler.BookAssembler;
+import pl.jojczykp.bookstore.command.BookCommand;
 import pl.jojczykp.bookstore.command.BooksCommand;
 import pl.jojczykp.bookstore.domain.Book;
 import pl.jojczykp.bookstore.repository.BookRepository;
@@ -44,6 +48,7 @@ import static pl.jojczykp.bookstore.testutils.matchers.HasBeanProperty.hasBeanPr
 @ContextConfiguration({
 		"file:src/main/webapp/WEB-INF/mvc-dispatcher-servlet.xml",
 		"classpath:spring/repository-mock-context.xml",
+		"classpath:spring/assembler-mock-context.xml",
 		"classpath:spring/scroll-params-limiter-mock-context.xml",
 		"classpath:spring/config-test-context.xml"
 })
@@ -57,6 +62,8 @@ public class BooksControllerListTest {
 	private static final int REPO_RESULT_SIZE = 7;
 	private static final List<Book> REPO_RESULT_DATA = new ArrayList<>();
 
+	private static final List<BookCommand> ASSEMBLER_RESULT_DATA = new ArrayList<>();
+
 	private static final int LIMITED_FIRST_RETURNED_RECORD_OFFSET = 16;
 	private static final int LIMITED_RESULT_SIZE = 6;
 	private static final ScrollParams LIMITED_SCROLL_PARAMS = limitedScrollParams();
@@ -69,21 +76,30 @@ public class BooksControllerListTest {
 		return scrollParams;
 	}
 
-	@Autowired private BookRepository bookRepositoryMock;
-	@Autowired private ScrollParamsLimiter scrollParamsLimiterMock;
-	@Autowired private WebApplicationContext wac;
 	private MockMvc mvcMock;
 	private ResultActions mvcMockPerformResult;
+	@Autowired private BookRepository bookRepositoryMock;
+	@Autowired private BookAssembler bookAssemblerMock;
+	@Autowired private ScrollParamsLimiter scrollParamsLimiterMock;
+	@Autowired private WebApplicationContext wac;
 
 	@Value("${view.books.defaultOffset}") private int defaultOffset;
 	@Value("${view.books.defaultSize}") private int defaultSize;
 
+	@Captor private ArgumentCaptor<List<Book>> assembledListCaptor;
+	@Captor private ArgumentCaptor<ScrollParams> scrollParamsCaptor;
+	@Captor private ArgumentCaptor<Integer> totalCountCaptor;
+	@Captor private ArgumentCaptor<Integer> offsetCaptor;
+	@Captor private ArgumentCaptor<Integer> sizeCaptor;
+
 	@Before
 	public void setUp() {
 		mvcMock = webAppContextSetup(wac).build();
-		givenRepositoryMockConfigured();
-		givenRepeatingScrollParamsLimiter();
 
+		MockitoAnnotations.initMocks(this);
+		givenRepositoryMockConfigured();
+		givenBookAssemblerMockConfigured();
+		givenRepeatingScrollParamsLimiterMockConfigured();
 	}
 
 	private void givenRepositoryMockConfigured() {
@@ -92,7 +108,12 @@ public class BooksControllerListTest {
 		given(bookRepositoryMock.read(anyInt(), anyInt())).willReturn(REPO_RESULT_DATA);
 	}
 
-	private void givenRepeatingScrollParamsLimiter() {
+	private void givenBookAssemblerMockConfigured() {
+		reset(bookAssemblerMock);
+		given(bookAssemblerMock.toCommands(REPO_RESULT_DATA)).willReturn(ASSEMBLER_RESULT_DATA);
+	}
+
+	private void givenRepeatingScrollParamsLimiterMockConfigured() {
 		reset(scrollParamsLimiterMock);
 		given(scrollParamsLimiterMock.limit(any(ScrollParams.class), anyInt())).willReturn(LIMITED_SCROLL_PARAMS);
 	}
@@ -124,6 +145,7 @@ public class BooksControllerListTest {
 		whenControllerListPerformedWithCommand();
 
 		thenExpectBookRepositoryRead();
+		thenExpectBookAssemblerInvoked();
 		thenExpectCorrectViewSelectedAndModelSet();
 	}
 
@@ -137,9 +159,6 @@ public class BooksControllerListTest {
 	}
 
 	private void thenExpectParametersLimitationUsage() {
-		ArgumentCaptor<ScrollParams> scrollParamsCaptor = ArgumentCaptor.forClass(ScrollParams.class);
-		ArgumentCaptor<Integer> totalCountCaptor = ArgumentCaptor.forClass(Integer.class);
-
 		verify(scrollParamsLimiterMock, times(1)).limit(scrollParamsCaptor.capture(), totalCountCaptor.capture());
 		assertThat(scrollParamsCaptor.getValue().getOffset(), equalTo(REPO_FIRST_RETURNED_RECORD_OFFSET));
 		assertThat(scrollParamsCaptor.getValue().getSize(), equalTo(REPO_RESULT_SIZE));
@@ -147,21 +166,23 @@ public class BooksControllerListTest {
 	}
 
 	private void thenExpectBookRepositoryRead() {
-		ArgumentCaptor<Integer> offsetCaptor = ArgumentCaptor.forClass(Integer.class);
-		ArgumentCaptor<Integer> sizeCaptor = ArgumentCaptor.forClass(Integer.class);
-
 		verify(bookRepositoryMock).totalCount();
 		verify(bookRepositoryMock).read(offsetCaptor.capture(), sizeCaptor.capture());
 		assertThat(offsetCaptor.getValue(), equalTo(LIMITED_FIRST_RETURNED_RECORD_OFFSET));
 		assertThat(sizeCaptor.getValue(), equalTo(LIMITED_RESULT_SIZE));
 	}
 
+	private void thenExpectBookAssemblerInvoked() {
+		verify(bookAssemblerMock).toCommands(assembledListCaptor.capture());
+		assertThat(assembledListCaptor.getValue(), sameInstance(REPO_RESULT_DATA));
+	}
+
 	private void thenExpectCorrectViewSelectedAndModelSet() throws Exception {
 		mvcMockPerformResult
 			.andExpect(status().isOk())
 			.andExpect(view().name("books"))
-			.andExpect(model().attribute(BOOKS_COMMAND, hasProperty("books", sameInstance(REPO_RESULT_DATA))))
-			.andExpect(model().attribute(BOOKS_COMMAND, hasProperty("newBook", instanceOf(Book.class))))
+			.andExpect(model().attribute(BOOKS_COMMAND, hasProperty("books", sameInstance(ASSEMBLER_RESULT_DATA))))
+			.andExpect(model().attribute(BOOKS_COMMAND, hasProperty("newBook", instanceOf(BookCommand.class))))
 			.andExpect(model().attribute(BOOKS_COMMAND, hasBeanProperty("scroll.totalCount", equalTo(
 					REPO_TOTAL_COUNT))))
 			.andExpect(model().attribute(BOOKS_COMMAND, hasBeanProperty("scroll.current.size", equalTo(
