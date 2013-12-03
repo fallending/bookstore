@@ -1,5 +1,6 @@
 package pl.jojczykp.bookstore.controller;
 
+import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -27,11 +28,19 @@ public class BooksControllerDel {
 	{
 		for (BookCommand bookCommand : booksCommand.getBooks()) {
 			if (bookCommand.isChecked()) {
-				bookRepository.delete(bookCommand.getId());
+				deleteBookFromRepository(bookCommand.getId());
 			}
 		}
 
 		redirectAttributes.addFlashAttribute(BOOKS_COMMAND, booksCommand);
 		return new RedirectView(URL_ACTION_LIST);
 	}
+
+	private void deleteBookFromRepository(int bookId) {
+		try {
+			bookRepository.delete(bookId);
+		} catch (ObjectNotFoundException ignoreDeletedByOtherSessions) {
+		}
+	}
+
 }

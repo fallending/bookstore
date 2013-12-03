@@ -56,7 +56,7 @@ public class BooksControllerDelTest {
 	@Test
 	public void shouldDeleteBook() throws Exception {
 		final int id1 = 9;
-		final int id2 = 78;
+		final int id2 = 11;
 		final BooksCommand command = aCommandToRemoveByIds(id1, id2);
 
 		whenControllerDelPerformedWithCommand(command);
@@ -65,9 +65,19 @@ public class BooksControllerDelTest {
 	}
 
 	@Test
-	public void shouldRedirectAfterDeleting() throws Exception {
-		final int anyId = 5;
-		final BooksCommand command = aCommandToRemoveByIds(anyId);
+	public void shouldRedirectAfterDeletingExisting() throws Exception {
+		final int existingId = 5;
+		final BooksCommand command = aCommandToRemoveByIds(existingId);
+
+		whenControllerDelPerformedWithCommand(command);
+
+		thenExpectHttpRedirect(command);
+	}
+
+	@Test
+	public void shouldRedirectAfterDeletingNotExisting() throws Exception {
+		final int notExistingId = 98;
+		final BooksCommand command = aCommandToRemoveByIds(notExistingId);
 
 		whenControllerDelPerformedWithCommand(command);
 
@@ -76,14 +86,14 @@ public class BooksControllerDelTest {
 
 	private BooksCommand aCommandToRemoveByIds(int... ids) {
 		BooksCommand command = new BooksCommand();
-		for (int i = 0; i < ids.length; i++) {
-			command.getBooks().add(aDeletableBookCommandForId(ids[i]));
+		for (int id : ids) {
+			command.getBooks().add(aCommandToDeleteBookWithId(id));
 		}
 
 		return command;
 	}
 
-	private BookCommand aDeletableBookCommandForId(int id) {
+	private BookCommand aCommandToDeleteBookWithId(int id) {
 		BookCommand bookCommand = new BookCommand();
 		bookCommand.setChecked(true);
 		bookCommand.setId(id);
@@ -107,6 +117,5 @@ public class BooksControllerDelTest {
 				.andExpect(redirectedUrl("/books/list"))
 				.andExpect(flash().attribute("booksCommand", sameInstance(command)));
 	}
-
 
 }
