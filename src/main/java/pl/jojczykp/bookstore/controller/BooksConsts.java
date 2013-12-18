@@ -11,7 +11,9 @@ public abstract class BooksConsts {
 	static final String URL_ACTION_ADD = "/books/add";
 	static final String URL_ACTION_DEL = "/books/del";
 
-	static final String BOOKS_COMMAND = "booksCommand";
+	static final String EXCEPTION_VIEW = "exception";
 
 	static final String BOOKS_VIEW = "books";
+
+	static final String BOOKS_COMMAND = "booksCommand";
 }
