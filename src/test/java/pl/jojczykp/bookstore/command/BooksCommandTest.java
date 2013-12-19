@@ -53,4 +53,13 @@ public class BooksCommandTest {
 
 		assertThat(testee.getBooks(), sameInstance(books));
 	}
+
+	@Test
+	public void shouldSetMessage() {
+		final String message = "some message";
+
+		testee.setMessage(message);
+
+		assertThat(testee.getMessage(), sameInstance(message));
+	}
 }

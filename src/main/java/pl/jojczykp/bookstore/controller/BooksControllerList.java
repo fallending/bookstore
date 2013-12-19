@@ -51,7 +51,11 @@ public class BooksControllerList {
 		List<Book> books = bookRepository.read(limitedScrollParams.getOffset(), limitedScrollParams.getSize());
 		booksCommand.setBooks(bookAssembler.toCommands(books));
 
-		return new ModelAndView(BOOKS_VIEW, new ModelMap().addAttribute(BOOKS_COMMAND, booksCommand));
+		return new ModelAndView(BOOKS_VIEW, aModelFor(booksCommand));
+	}
+
+	private ModelMap aModelFor(BooksCommand booksCommand) {
+		return new ModelMap().addAttribute(BOOKS_COMMAND, booksCommand);
 	}
 
 }

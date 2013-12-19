@@ -1,5 +1,6 @@
 package pl.jojczykp.bookstore.controller;
 
+import org.hibernate.ObjectNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,9 +18,11 @@ import pl.jojczykp.bookstore.command.BookCommand;
 import pl.jojczykp.bookstore.command.BooksCommand;
 import pl.jojczykp.bookstore.repository.BookRepository;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -28,6 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
+import static pl.jojczykp.bookstore.testutils.matchers.HasBeanProperty.hasBeanProperty;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -38,6 +42,9 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 		"classpath:spring/config-test-context.xml"
 })
 public class BooksControllerDelTest {
+
+	private static final int NOT_EXISTING_ID = 98;
+	private static final int EXISTING_ID = 7;
 
 	private MockMvc mvcMock;
 	private ResultActions mvcMockPerformResult;
@@ -50,7 +57,12 @@ public class BooksControllerDelTest {
 	public void setUp() {
 		mvcMock = webAppContextSetup(wac).build();
 		MockitoAnnotations.initMocks(this);
+		setUpBookRepositoryMock();
+	}
+
+	private void setUpBookRepositoryMock() {
 		reset(bookRepositoryMock);
+		doThrow(ObjectNotFoundException.class).when(bookRepositoryMock).delete(NOT_EXISTING_ID);
 	}
 
 	@Test
@@ -66,8 +78,7 @@ public class BooksControllerDelTest {
 
 	@Test
 	public void shouldRedirectAfterDeletingExisting() throws Exception {
-		final int existingId = 5;
-		final BooksCommand command = aCommandToRemoveByIds(existingId);
+		final BooksCommand command = aCommandToRemoveByIds(EXISTING_ID);
 
 		whenControllerDelPerformedWithCommand(command);
 
@@ -75,13 +86,30 @@ public class BooksControllerDelTest {
 	}
 
 	@Test
+	public void shouldDisplayMessageAfterDeletingExisting() throws Exception {
+		final BooksCommand command = aCommandToRemoveByIds(EXISTING_ID);
+
+		whenControllerDelPerformedWithCommand(command);
+
+		thenExpectDisplayedMessage("Object deleted.");
+	}
+
+	@Test
 	public void shouldRedirectAfterDeletingNotExisting() throws Exception {
-		final int notExistingId = 98;
-		final BooksCommand command = aCommandToRemoveByIds(notExistingId);
+		final BooksCommand command = aCommandToRemoveByIds(NOT_EXISTING_ID);
 
 		whenControllerDelPerformedWithCommand(command);
 
 		thenExpectHttpRedirect(command);
+	}
+
+	@Test
+	public void shouldDisplayMessageAfterDeletingNotExisting() throws Exception {
+		final BooksCommand command = aCommandToRemoveByIds(NOT_EXISTING_ID);
+
+		whenControllerDelPerformedWithCommand(command);
+
+		thenExpectDisplayedMessage("Object already deleted.");
 	}
 
 	private BooksCommand aCommandToRemoveByIds(int... ids) {
@@ -116,6 +144,12 @@ public class BooksControllerDelTest {
 				.andExpect(status().isFound())
 				.andExpect(redirectedUrl("/books/list"))
 				.andExpect(flash().attribute("booksCommand", sameInstance(command)));
+	}
+
+	private void thenExpectDisplayedMessage(String expectedMessage) throws Exception {
+		mvcMockPerformResult
+				.andExpect(flash().attribute("booksCommand",
+						hasBeanProperty("message", equalTo(expectedMessage))));
 	}
 
 }

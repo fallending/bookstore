@@ -8,6 +8,7 @@ public class BooksCommand {
 	private ScrollCommand scroll;
 	private BookCommand newBook;
 	private List<BookCommand> books;
+	private String message;
 
 	public BooksCommand() {
 		scroll = new ScrollCommand();
@@ -38,4 +39,13 @@ public class BooksCommand {
 	public void setBooks(List<BookCommand> books) {
 		this.books = books;
 	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
 }

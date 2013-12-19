@@ -11,6 +11,7 @@
 	</head>
 	<body>
 		<@sectionTitle/>
+		<@sectionMessages/>
 		<@sectionScroll/>
 		<@sectionDataTable/>
 		<@sectionAdd/>
@@ -29,6 +30,12 @@
 		</#if>
 	</#if>
 </h1>
+</#macro>
+
+<#macro sectionMessages>
+	<#if (booksCommand.message)??>
+		${booksCommand.message}<br/><br/>
+	</#if>
 </#macro>
 
 <#macro sectionScroll>

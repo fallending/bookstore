@@ -28,7 +28,7 @@ public class BooksControllerDel {
 	{
 		for (BookCommand bookCommand : booksCommand.getBooks()) {
 			if (bookCommand.isChecked()) {
-				deleteBookFromRepository(bookCommand.getId());
+				deleteBookFromRepository(bookCommand.getId(), booksCommand);
 			}
 		}
 
@@ -36,10 +36,12 @@ public class BooksControllerDel {
 		return new RedirectView(URL_ACTION_LIST);
 	}
 
-	private void deleteBookFromRepository(int bookId) {
+	private void deleteBookFromRepository(int bookId, BooksCommand messagesContainer) {
 		try {
 			bookRepository.delete(bookId);
-		} catch (ObjectNotFoundException ignoreDeletedByOtherSessions) {
+			messagesContainer.setMessage("Object deleted.");
+		} catch (ObjectNotFoundException ex) {
+			messagesContainer.setMessage("Object already deleted.");
 		}
 	}
 
