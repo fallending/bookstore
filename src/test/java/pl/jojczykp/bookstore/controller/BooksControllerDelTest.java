@@ -86,21 +86,21 @@ public class BooksControllerDelTest {
 	}
 
 	@Test
-	public void shouldDisplayMessageAfterDeletingExisting() throws Exception {
-		final BooksCommand command = aCommandToRemoveByIds(EXISTING_ID);
-
-		whenControllerDelPerformedWithCommand(command);
-
-		thenExpectDisplayedMessage("Object deleted.");
-	}
-
-	@Test
 	public void shouldRedirectAfterDeletingNotExisting() throws Exception {
 		final BooksCommand command = aCommandToRemoveByIds(NOT_EXISTING_ID);
 
 		whenControllerDelPerformedWithCommand(command);
 
 		thenExpectHttpRedirect(command);
+	}
+
+	@Test
+	public void shouldDisplayMessageAfterDeletingExisting() throws Exception {
+		final BooksCommand command = aCommandToRemoveByIds(EXISTING_ID);
+
+		whenControllerDelPerformedWithCommand(command);
+
+		thenExpectDisplayedMessage("Object deleted.");
 	}
 
 	@Test

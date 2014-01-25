@@ -28,6 +28,8 @@ public class BooksControllerUpdate {
 		int id = booksCommand.getUpdateBookId();
 		bookRepository.update(new Book(id, booksCommand.getUpdateBookTitle()));
 
+		booksCommand.setMessage("Object updated.");
+
 		redirectAttributes.addFlashAttribute(BOOKS_COMMAND, booksCommand);
 		return new RedirectView(URL_ACTION_LIST);
 	}

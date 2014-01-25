@@ -26,6 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
+import static pl.jojczykp.bookstore.testutils.matchers.HasBeanProperty.hasBeanProperty;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -52,21 +53,31 @@ public class BooksControllerAddTest {
 
 	@Test
 	public void shouldAddBook() throws Exception {
-		final String title = "aTitle";
-		final BooksCommand command = aCommandWith(title);
+		final String someTitle = "someTitle";
+		final BooksCommand command = aCommandWith(someTitle);
 
 		whenControllerAddPerformedWithCommand(command);
 
-		thenExpectCreatedBookWith(title);
+		thenExpectCreatedBookWith(someTitle);
 	}
 
 	@Test
 	public void shouldRedirectAfterAdding() throws Exception {
-		final BooksCommand command = aCommandWith("anyTitle");
+		final String anyTitle = "anyTitle";
+		final BooksCommand command = aCommandWith(anyTitle);
 
 		whenControllerAddPerformedWithCommand(command);
 
 		thenExpectHttpRedirect(command);
+	}
+
+	@Test
+	public void shouldDisplayMessageAfterAdding() throws Exception {
+		final BooksCommand command = aCommandWith("anyTitle");
+
+		whenControllerAddPerformedWithCommand(command);
+
+		thenExpectDisplayedMessage("Object added.");
 	}
 
 	private BooksCommand aCommandWith(String title) {
@@ -91,6 +102,12 @@ public class BooksControllerAddTest {
 				.andExpect(status().isFound())
 				.andExpect(redirectedUrl("/books/list"))
 				.andExpect(flash().attribute("booksCommand", sameInstance(command)));
+	}
+
+	private void thenExpectDisplayedMessage(String expectedMessage) throws Exception {
+		mvcMockPerformResult
+				.andExpect(flash().attribute("booksCommand",
+						hasBeanProperty("message", equalTo(expectedMessage))));
 	}
 
 }

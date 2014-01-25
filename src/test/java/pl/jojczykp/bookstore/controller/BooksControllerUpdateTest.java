@@ -26,6 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
+import static pl.jojczykp.bookstore.testutils.matchers.HasBeanProperty.hasBeanProperty;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -72,6 +73,17 @@ public class BooksControllerUpdateTest {
 		thenExpectHttpRedirect(command);
 	}
 
+	@Test
+	public void shouldDisplayMessageAfterUpdating() throws Exception {
+		final int anyId = 7656;
+		final String anyTitle = "anyTitle";
+		final BooksCommand command = aCommandWith(anyId, anyTitle);
+
+		whenControllerAddPerformedWithCommand(command);
+
+		thenExpectDisplayedMessage("Object updated.");
+	}
+
 	private BooksCommand aCommandWith(int id, String title) {
 		BooksCommand command = new BooksCommand();
 		command.setUpdateBookId(id);
@@ -96,6 +108,12 @@ public class BooksControllerUpdateTest {
 				.andExpect(status().isFound())
 				.andExpect(redirectedUrl("/books/list"))
 				.andExpect(flash().attribute("booksCommand", sameInstance(command)));
+	}
+
+	private void thenExpectDisplayedMessage(String expectedMessage) throws Exception {
+		mvcMockPerformResult
+				.andExpect(flash().attribute("booksCommand",
+						hasBeanProperty("message", equalTo(expectedMessage))));
 	}
 
 }

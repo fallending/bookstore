@@ -28,6 +28,8 @@ public class BooksControllerAdd {
 	{
 		bookRepository.create(bookAssembler.toDomain(booksCommand.getNewBook()));
 
+		booksCommand.setMessage("Object added.");
+
 		redirectAttributes.addFlashAttribute(BOOKS_COMMAND, booksCommand);
 		return new RedirectView(URL_ACTION_LIST);
 	}
