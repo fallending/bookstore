@@ -12,22 +12,24 @@
 		<title>Bookstore</title>
 		<script type="text/javascript">
 
-			function sendUpdate(id) {
-				var title = document.getElementById('books' + id + '.title').value;
+			function sendUpdate(bookId) {
+				var version = document.getElementById('books' + bookId + '.version').value;
+				var title = document.getElementById('books' + bookId + '.title').value;
 				sendPost('update', {
-					'updateBookId' : id,
+					'updateBookId' : bookId,
+					'updateBookVersion' : version,
 					'updateBookTitle' : title
 				})
 			}
 
-			function sendPost(action, params) {
+			function sendPost(action, paramsMap) {
 				var form = createFormFor(action)
 
 				addDefaultParamsTo(form);
 
-				for(var key in params) {
-					if(params.hasOwnProperty(key)) {
-						form.appendChild(createHiddenInput(key, params[key]));
+				for(var key in paramsMap) {
+					if(paramsMap.hasOwnProperty(key)) {
+						form.appendChild(createHiddenInput(key, paramsMap[key]));
 					}
 				}
 
@@ -160,6 +162,7 @@
 							<td>#${book.id}</td>
 							<td>
 							<#if isEdit>
+								<@spring.formHiddenInput "booksCommand.books[" + book_index + "].version"/>
 								<@spring.formInput "booksCommand.books[" + book_index + "].title"/>
 								<input type="button" value="update" onClick="sendUpdate(${booksCommand.books[book_index].id})"/>
 							<#else>

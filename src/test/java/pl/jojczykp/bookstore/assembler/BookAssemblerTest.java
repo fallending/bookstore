@@ -14,9 +14,11 @@ import static org.junit.Assert.assertThat;
 public class BookAssemblerTest {
 
 	private static final int ID1 = 34;
+	private static final int VERSION1 = 45;
 	private static final String TITLE1 = "A Title 001";
 
 	private static final int ID2 = 54;
+	private static final int VERSION2 = 89;
 	private static final String TITLE2 = "A Title 002";
 
 	private BookAssembler testee;
@@ -40,8 +42,8 @@ public class BookAssemblerTest {
 
 	private List<Book> aDomainObjectsList() {
 		return asList(
-				new Book(ID1, TITLE1),
-				new Book(ID2, TITLE2));
+				new Book(ID1, VERSION1, TITLE1),
+				new Book(ID2, VERSION2, TITLE2));
 	}
 
 	@Test
@@ -56,6 +58,7 @@ public class BookAssemblerTest {
 	private BookCommand aCommandObject() {
 		BookCommand command = new BookCommand();
 		command.setId(ID1);
+		command.setVersion(VERSION1);
 		command.setTitle(TITLE1);
 
 		return command;
@@ -63,6 +66,7 @@ public class BookAssemblerTest {
 
 	private void assertThatHaveEqualData(Book domain, BookCommand command) {
 		assertThat(domain.getId(), equalTo(command.getId()));
+		assertThat(domain.getVersion(), equalTo(command.getVersion()));
 		assertThat(domain.getTitle(), equalTo(command.getTitle()));
 	}
 

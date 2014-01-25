@@ -35,6 +35,15 @@ public class BookCommandTest {
 	}
 
 	@Test
+	public void shouldSetVersion() {
+		final int version = 54;
+
+		testee.setVersion(version);
+
+		assertThat(testee.getVersion(), equalTo(version));
+	}
+
+	@Test
 	public void shouldSetTitle() {
 		final String title = "some title";
 

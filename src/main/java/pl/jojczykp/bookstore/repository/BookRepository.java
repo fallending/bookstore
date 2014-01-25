@@ -53,7 +53,8 @@ public class BookRepository {
 		return (List<T>) list;
 	}
 
-	public void update(Book book) {
+	public void update(Book template) {
+		Book book = (Book) getCurrentSession().merge(template);
 		getCurrentSession().update(book);
 	}
 

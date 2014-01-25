@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 @Entity
 @Table(name = "BOOK")
@@ -15,23 +16,28 @@ public class Book {
 	@Column(name = "ID")
 	private int id;
 
+	@Version
+	@Column(name = "VERSION")
+	private int version;
+
 	@Column(name = "TITLE", nullable = false)
 	private String title;
 
 	public Book() {
-		this(0, "");
+		this(0, 0, "");
 	}
 
 	public Book(String title) {
-		this(0, title);
+		this(0, 0, title);
 	}
 
 	public Book(int id) {
-		this(id, "");
+		this(id, 0, "");
 	}
 
-	public Book(int id, String title) {
+	public Book(int id, int version, String title) {
 		this.id = id;
+		this.version = version;
 		this.title = title;
 	}
 
@@ -41,6 +47,14 @@ public class Book {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public int getVersion() {
+		return version;
+	}
+
+	public void setVersion(int version) {
+		this.version = version;
 	}
 
 	public String getTitle() {
@@ -68,6 +82,6 @@ public class Book {
 
 	@Override
 	public String toString() {
-		return "Book{id=" + id + ", title='" + title + "'}";
+		return "Book{id=" + id + ", version=" + version + ", title='" + title + "'}";
 	}
 }

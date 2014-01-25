@@ -8,6 +8,7 @@ public class BooksCommand {
 	private ScrollCommand scroll;
 	private BookCommand newBook;
 	private int updateBookId;
+	private int updateBookVersion;
 	private String updateBookTitle;
 	private List<BookCommand> books;
 	private String message;
@@ -16,6 +17,7 @@ public class BooksCommand {
 		scroll = new ScrollCommand();
 		newBook = new BookCommand();
 		updateBookId = 0;
+		updateBookVersion = 0;
 		updateBookTitle = "";
 		books = new ArrayList<>();
 	}
@@ -42,6 +44,14 @@ public class BooksCommand {
 
 	public void setUpdateBookId(int updateBookId) {
 		this.updateBookId = updateBookId;
+	}
+
+	public int getUpdateBookVersion() {
+		return updateBookVersion;
+	}
+
+	public void setUpdateBookVersion(int updateBookVersion) {
+		this.updateBookVersion = updateBookVersion;
 	}
 
 	public String getUpdateBookTitle() {

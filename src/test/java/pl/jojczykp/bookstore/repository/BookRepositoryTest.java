@@ -1,6 +1,7 @@
 package pl.jojczykp.bookstore.repository;
 
 import org.hibernate.ObjectNotFoundException;
+import org.hibernate.StaleObjectStateException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import static org.hamcrest.Matchers.is;
 public class BookRepositoryTest {
 
 	public static final int TOTAL_TEST_BOOKS_COUNT = 15;
+	public static final int CURRENT_TEST_BOOK_VERSION = 4;
 
 	@Autowired private BookRepository repository;
 
@@ -120,9 +122,18 @@ public class BookRepositoryTest {
 		final int id = 4;
 		final String newTitle = "New Title";
 
-		repository.update(new Book(id, newTitle));
+		repository.update(new Book(id, CURRENT_TEST_BOOK_VERSION, newTitle));
 
 		assertThat(repository.get(id).getTitle(), is(newTitle));
+	}
+
+	@Test(expected = StaleObjectStateException.class)
+	@Rollback(true)
+	public void shouldFailUpdatingBookWhenModifiedByOtherSession() {
+		final int id = 7;
+		final String newTitle = "New Title";
+
+		repository.update(new Book(id, CURRENT_TEST_BOOK_VERSION - 1, newTitle));
 	}
 
 	@Test(expected = ObjectNotFoundException.class)

@@ -10,6 +10,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class BookTest {
 
 	private static final int ID = 8;
+	private static final int VERSION = 76;
 	private static final String TITLE = "some title";
 
 	@Test
@@ -17,6 +18,7 @@ public class BookTest {
 		Book book = new Book();
 
 		assertThat(book.getId(), is(0));
+		assertThat(book.getVersion(), is(0));
 		assertThat(book.getTitle(), is(""));
 	}
 
@@ -37,10 +39,11 @@ public class BookTest {
 	}
 
 	@Test
-	public void shouldCreateBookWithTitlePassedToConstructor() {
-		Book book = new Book(ID, TITLE);
+	public void shouldCreateBookWithParamsPassedToConstructor() {
+		Book book = new Book(ID, VERSION, TITLE);
 
 		assertThat(book.getId(), is(ID));
+		assertThat(book.getVersion(), is(VERSION));
 		assertThat(book.getTitle(), is(TITLE));
 	}
 
@@ -51,6 +54,15 @@ public class BookTest {
 		book.setId(ID);
 
 		assertThat(book.getId(), is(ID));
+	}
+
+	@Test
+	public void shouldSetVersion() {
+		Book book = new Book();
+
+		book.setVersion(VERSION);
+
+		assertThat(book.getVersion(), is(VERSION));
 	}
 
 	@Test
@@ -71,11 +83,12 @@ public class BookTest {
 
 	@Test
 	public void shouldHaveToStringWithDetailsForDiagnostic() {
-		Book testee = new Book(ID, TITLE);
+		Book testee = new Book(ID, VERSION, TITLE);
 
 		String toStringResult = testee.toString();
 
 		assertThat(toStringResult, containsString("id=" + ID));
+		assertThat(toStringResult, containsString("version=" + VERSION));
 		assertThat(toStringResult, containsString("title='" + TITLE + "'"));
 	}
 

@@ -4,6 +4,7 @@ public class BookCommand {
 
 	private boolean checked;
 	private int id;
+	private int version;
 	private String title;
 
 	public boolean isChecked() {
@@ -22,6 +23,13 @@ public class BookCommand {
 		this.id = id;
 	}
 
+	public int getVersion() {
+		return version;
+	}
+	public void setVersion(int version) {
+		this.version = version;
+	}
+
 	public String getTitle() {
 		return title;
 	}
@@ -29,4 +37,5 @@ public class BookCommand {
 	public void setTitle(String title) {
 		this.title = title;
 	}
+
 }

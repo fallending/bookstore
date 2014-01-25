@@ -23,6 +23,7 @@ public class BookAssembler {
 		BookCommand command = new BookCommand();
 		command.setChecked(false);
 		command.setId(domain.getId());
+		command.setVersion(domain.getVersion());
 		command.setTitle(domain.getTitle());
 
 		return command;
@@ -31,6 +32,7 @@ public class BookAssembler {
 	public Book toDomain(BookCommand command) {
 		Book domain = new Book();
 		domain.setId(command.getId());
+		domain.setVersion(command.getVersion());
 		domain.setTitle(command.getTitle());
 
 		return domain;
