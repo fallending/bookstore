@@ -12,9 +12,16 @@
 		<title>Bookstore</title>
 		<script type="text/javascript">
 
-			function sendUpdate(bookId) {
-				var version = document.getElementById('books' + bookId + '.version').value;
-				var title = document.getElementById('books' + bookId + '.title').value;
+			function sendAdd() {
+				var title = document.getElementById('newBook.title').value;
+				sendPost('add', {
+					'newBook.title' : title
+				})
+			}
+
+			function sendUpdate(bookId, bookIndex) {
+				var version = document.getElementById('books' + bookIndex + '.version').value;
+				var title = document.getElementById('books' + bookIndex + '.title').value;
 				sendPost('update', {
 					'updateBookId' : bookId,
 					'updateBookVersion' : version,
@@ -164,7 +171,7 @@
 							<#if isEdit>
 								<@spring.formHiddenInput "booksCommand.books[" + book_index + "].version"/>
 								<@spring.formInput "booksCommand.books[" + book_index + "].title"/>
-								<input type="button" value="update" onClick="sendUpdate(${booksCommand.books[book_index].id})"/>
+								<input type="button" value="update" onClick="sendUpdate(${booksCommand.books[book_index].id}, ${book_index})"/>
 							<#else>
 								${book.title}
 							</#if>
@@ -179,11 +186,7 @@
 </#macro>
 
 <#macro sectionAdd>
-	<form action="add" method="POST">
-		<h2>Add new book:</h2>
-		Title: <@spring.formInput "booksCommand.newBook.title"/>
-		<@spring.formHiddenInput "booksCommand.scroll.current.offset"/>
-		<@spring.formHiddenInput "booksCommand.scroll.current.size"/>
-		<input type="submit" value="add"/>
-	</form>
+	<h2>Add new book:</h2>
+	Title: <@spring.formInput "booksCommand.newBook.title"/>
+	<input type="button" value="add" onClick="sendAdd()"/>
 </#macro>
