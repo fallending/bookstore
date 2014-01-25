@@ -4,10 +4,60 @@
 <#assign size = booksCommand.scroll.limited.size>
 <#assign totalCount = booksCommand.scroll.totalCount>
 <#assign limit = offset + size>
+<#assign isEdit = true>
 
+<!DOCTYPE html>
 <html>
 	<head>
 		<title>Bookstore</title>
+		<script type="text/javascript">
+
+			function sendUpdate(id) {
+				var title = document.getElementById('books' + id + '.title').value;
+				sendPost('update', {
+					'updateBookId' : id,
+					'updateBookTitle' : title
+				})
+			}
+
+			function sendPost(action, params) {
+				var form = createFormFor(action)
+
+				addDefaultParamsTo(form);
+
+				for(var key in params) {
+					if(params.hasOwnProperty(key)) {
+						form.appendChild(createHiddenInput(key, params[key]));
+					}
+				}
+
+				document.body.appendChild(form);
+				form.submit();
+			}
+
+			function createFormFor(action) {
+				var form = document.createElement("form");
+				form.setAttribute("method", "post");
+				form.setAttribute("action", action);
+
+				return form;
+			}
+
+			function addDefaultParamsTo(form) {
+				form.appendChild(createHiddenInput('scroll.current.offset', ${booksCommand.scroll.current.offset}));
+				form.appendChild(createHiddenInput('scroll.current.size', ${booksCommand.scroll.current.size}));
+			}
+
+			function createHiddenInput(key, value) {
+				var hiddenField = document.createElement("input");
+				hiddenField.setAttribute("type", "hidden");
+				hiddenField.setAttribute("name", key);
+				hiddenField.setAttribute("value", value);
+
+				return hiddenField;
+			}
+
+		</script>
 	</head>
 	<body>
 		<@sectionTitle/>
@@ -81,26 +131,47 @@
 </#macro>
 
 <#macro sectionDataTable>
-	<#if (size > 0) >
-	<form action="del" method="POST">
-		<table>
-			<th></th><th>Id</th><th>Title</th>
-			<#list booksCommand.books as book>
-				<tr>
-					<td>
-						<@spring.formHiddenInput path="booksCommand.books[" + book_index + "].id"/>
-						<@spring.formCheckbox path="booksCommand.books[" + book_index + "].checked"/>
-					</td>
-					<td>#${book.id}</td>
-					<td>${book.title}</td>
-				</tr>
-			</#list>
-		</table>
-		<br/>
-		<input type="submit" value="delete selected"/>
-		<@spring.formHiddenInput "booksCommand.scroll.current.offset"/>
-		<@spring.formHiddenInput "booksCommand.scroll.current.size"/>
-	</form>
+	<#if (size <= 0) >
+		<#return>
+	<#else>
+		<table><tr>
+			<td>
+				<form action="del" method="POST" id="formDel">
+					<table>
+						<th>&nbsp;</th>
+						<#list booksCommand.books as book>
+							<tr>
+								<td>
+									<@spring.formHiddenInput path="booksCommand.books[" + book_index + "].id"/>
+									<@spring.formCheckbox path="booksCommand.books[" + book_index + "].checked"/>
+								</td>
+							</tr>
+						</#list>
+					</table>
+					<@spring.formHiddenInput "booksCommand.scroll.current.offset"/>
+					<@spring.formHiddenInput "booksCommand.scroll.current.size"/>
+				</form>
+			</td>
+			<td>
+				<table>
+					<th>Id</th><th>Title</th>
+					<#list booksCommand.books as book>
+						<tr>
+							<td>#${book.id}</td>
+							<td>
+							<#if isEdit>
+								<@spring.formInput "booksCommand.books[" + book_index + "].title"/>
+								<input type="button" value="update" onClick="sendUpdate(${booksCommand.books[book_index].id})"/>
+							<#else>
+								${book.title}
+							</#if>
+							</td>
+						</tr>
+					</#list>
+				</table>
+			</td>
+		</tr></table>
+		<input type="button" value="delete selected" onClick="document.getElementById('formDel').submit()"/>
 	</#if>
 </#macro>
 

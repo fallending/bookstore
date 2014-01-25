@@ -10,6 +10,7 @@ public abstract class BooksConsts {
 
 	static final String URL_ACTION_ADD = "/books/add";
 	static final String URL_ACTION_DEL = "/books/del";
+	static final String URL_ACTION_UPDATE = "/books/update";
 
 	static final String EXCEPTION_VIEW = "exception";
 

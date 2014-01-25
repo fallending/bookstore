@@ -7,12 +7,16 @@ public class BooksCommand {
 
 	private ScrollCommand scroll;
 	private BookCommand newBook;
+	private int updateBookId;
+	private String updateBookTitle;
 	private List<BookCommand> books;
 	private String message;
 
 	public BooksCommand() {
 		scroll = new ScrollCommand();
 		newBook = new BookCommand();
+		updateBookId = 0;
+		updateBookTitle = "";
 		books = new ArrayList<>();
 	}
 
@@ -30,6 +34,22 @@ public class BooksCommand {
 
 	public void setNewBook(BookCommand newBook) {
 		this.newBook = newBook;
+	}
+
+	public int getUpdateBookId() {
+		return updateBookId;
+	}
+
+	public void setUpdateBookId(int updateBookId) {
+		this.updateBookId = updateBookId;
+	}
+
+	public String getUpdateBookTitle() {
+		return updateBookTitle;
+	}
+
+	public void setUpdateBookTitle(String updateBookTitle) {
+		this.updateBookTitle = updateBookTitle;
 	}
 
 	public List<BookCommand> getBooks() {
