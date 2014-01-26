@@ -4,12 +4,15 @@
 <#assign size = booksCommand.scroll.limited.size>
 <#assign totalCount = booksCommand.scroll.totalCount>
 <#assign limit = offset + size>
-<#assign isEdit = true>
 
 <!DOCTYPE html>
 <html>
 	<head>
+		<meta http-equiv="content-type" content="application/xhtml+xml; charset=utf-8" />
 		<title>Bookstore</title>
+		<style type="text/css">
+			input.delCheckbox { }
+		</style>
 		<script type="text/javascript">
 
 			function sendAdd() {
@@ -27,6 +30,18 @@
 					'updateBookVersion' : version,
 					'updateBookTitle' : title
 				})
+			}
+
+			function sendDel() {
+				var params = {};
+				var checkboxes = document.getElementsByClassName('delCheckbox');
+				for (var bookIndex = 0; bookIndex < checkboxes.length; bookIndex++) {
+					if (checkboxes[bookIndex].checked) {
+						params[('books[' + bookIndex + '].id')] = checkboxes[bookIndex].getAttribute('bookId')
+						params[('books[' + bookIndex + '].checked')] = 'on';
+					}
+				}
+				sendPost('del', params)
 			}
 
 			function sendPost(action, paramsMap) {
@@ -145,43 +160,25 @@
 	<#else>
 		<table><tr>
 			<td>
-				<form action="del" method="POST" id="formDel">
-					<table>
-						<th>&nbsp;</th>
-						<#list booksCommand.books as book>
-							<tr>
-								<td>
-									<@spring.formHiddenInput path="booksCommand.books[" + book_index + "].id"/>
-									<@spring.formCheckbox path="booksCommand.books[" + book_index + "].checked"/>
-								</td>
-							</tr>
-						</#list>
-					</table>
-					<@spring.formHiddenInput "booksCommand.scroll.current.offset"/>
-					<@spring.formHiddenInput "booksCommand.scroll.current.size"/>
-				</form>
-			</td>
-			<td>
 				<table>
-					<th>Id</th><th>Title</th>
+					<th></th><th>Id</th><th>Title</th>
 					<#list booksCommand.books as book>
 						<tr>
+							<td>
+								<@spring.formCheckbox path="booksCommand.books[" + book_index + "].checked" attributes="class='delCheckbox' bookId='${booksCommand.books[book_index].id}'"/>
+							</td>
 							<td>#${book.id}</td>
 							<td>
-							<#if isEdit>
 								<@spring.formHiddenInput "booksCommand.books[" + book_index + "].version"/>
 								<@spring.formInput "booksCommand.books[" + book_index + "].title"/>
 								<input type="button" value="update" onClick="sendUpdate(${booksCommand.books[book_index].id}, ${book_index})"/>
-							<#else>
-								${book.title}
-							</#if>
 							</td>
 						</tr>
 					</#list>
 				</table>
 			</td>
 		</tr></table>
-		<input type="button" value="delete selected" onClick="document.getElementById('formDel').submit()"/>
+		<input type="button" value="delete selected" onClick="sendDel()"/>
 	</#if>
 </#macro>
 
