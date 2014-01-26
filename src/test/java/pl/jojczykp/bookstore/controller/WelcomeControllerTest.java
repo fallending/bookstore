@@ -36,6 +36,6 @@ public class WelcomeControllerTest {
 	public void shouldRedirectToWelcomeViewWithDefaultAttributesSet() throws Exception {
 		mockMvc.perform(get("/"))
 				.andExpect(status().isFound())
-				.andExpect(redirectedUrl("/books/list"));
+				.andExpect(redirectedUrl("/books/read"));
 	}
 }

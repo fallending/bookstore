@@ -10,9 +10,9 @@ import pl.jojczykp.bookstore.utils.ScrollParams;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static pl.jojczykp.bookstore.controller.BooksConsts.BOOKS_COMMAND;
-import static pl.jojczykp.bookstore.controller.BooksConsts.URL_ACTION_LIST;
 import static pl.jojczykp.bookstore.controller.BooksConsts.URL_ACTION_NEXT;
 import static pl.jojczykp.bookstore.controller.BooksConsts.URL_ACTION_PREV;
+import static pl.jojczykp.bookstore.controller.BooksConsts.URL_ACTION_READ;
 import static pl.jojczykp.bookstore.controller.BooksConsts.URL_ACTION_SET_PAGE_SIZE;
 
 @Controller
@@ -26,7 +26,7 @@ public class BooksControllerScroll {
 		ScrollParams currentScrollParams = booksCommand.getScroll().getCurrent();
 		currentScrollParams.setOffset(currentScrollParams.getOffset() - currentScrollParams.getSize());
 
-		return redirectToList(booksCommand, redirectAttributes);
+		return redirectToRead(booksCommand, redirectAttributes);
 	}
 
 	@RequestMapping(value = URL_ACTION_NEXT, method = POST)
@@ -37,7 +37,7 @@ public class BooksControllerScroll {
 		ScrollParams currentScrollParams = booksCommand.getScroll().getCurrent();
 		currentScrollParams.setOffset(currentScrollParams.getOffset() + currentScrollParams.getSize());
 
-		return redirectToList(booksCommand, redirectAttributes);
+		return redirectToRead(booksCommand, redirectAttributes);
 	}
 
 	@RequestMapping(value = URL_ACTION_SET_PAGE_SIZE, method = POST)
@@ -45,12 +45,12 @@ public class BooksControllerScroll {
 			@ModelAttribute(BOOKS_COMMAND) BooksCommand booksCommand,
 			RedirectAttributes redirectAttributes)
 	{
-		return redirectToList(booksCommand, redirectAttributes);
+		return redirectToRead(booksCommand, redirectAttributes);
 	}
 
-	private RedirectView redirectToList(BooksCommand booksCommand, RedirectAttributes redirectAttributes) {
+	private RedirectView redirectToRead(BooksCommand booksCommand, RedirectAttributes redirectAttributes) {
 		redirectAttributes.addFlashAttribute(BOOKS_COMMAND, booksCommand);
-		return new RedirectView(URL_ACTION_LIST);
+		return new RedirectView(URL_ACTION_READ);
 	}
 
 }

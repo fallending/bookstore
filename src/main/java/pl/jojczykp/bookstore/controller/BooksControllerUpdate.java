@@ -16,7 +16,7 @@ import java.util.Map;
 import static com.google.inject.internal.ImmutableMap.of;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static pl.jojczykp.bookstore.controller.BooksConsts.BOOKS_COMMAND;
-import static pl.jojczykp.bookstore.controller.BooksConsts.URL_ACTION_LIST;
+import static pl.jojczykp.bookstore.controller.BooksConsts.URL_ACTION_READ;
 import static pl.jojczykp.bookstore.controller.BooksConsts.URL_ACTION_UPDATE;
 
 @Controller
@@ -44,7 +44,7 @@ public class BooksControllerUpdate {
 		booksCommand.setMessage(messageFor(updateSuccessStatus));
 
 		redirectAttributes.addFlashAttribute(BOOKS_COMMAND, booksCommand);
-		return new RedirectView(URL_ACTION_LIST);
+		return new RedirectView(URL_ACTION_READ);
 	}
 
 	private boolean tryUpdate(String title, int id, int version) {

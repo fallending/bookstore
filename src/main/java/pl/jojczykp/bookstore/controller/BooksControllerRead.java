@@ -19,10 +19,10 @@ import java.util.List;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static pl.jojczykp.bookstore.controller.BooksConsts.BOOKS_COMMAND;
 import static pl.jojczykp.bookstore.controller.BooksConsts.BOOKS_VIEW;
-import static pl.jojczykp.bookstore.controller.BooksConsts.URL_ACTION_LIST;
+import static pl.jojczykp.bookstore.controller.BooksConsts.URL_ACTION_READ;
 
 @Controller
-public class BooksControllerList {
+public class BooksControllerRead {
 
 	@Autowired private BookRepository bookRepository;
 	@Autowired private ScrollParamsLimiter scrollParamsLimiter;
@@ -39,7 +39,7 @@ public class BooksControllerList {
 		return booksCommand;
 	}
 
-	@RequestMapping(value = URL_ACTION_LIST, method = GET)
+	@RequestMapping(value = URL_ACTION_READ, method = GET)
 	public ModelAndView list(
 			@ModelAttribute(BOOKS_COMMAND) BooksCommand booksCommand)
 	{

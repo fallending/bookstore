@@ -52,10 +52,10 @@ import static pl.jojczykp.bookstore.testutils.matchers.HasBeanProperty.hasBeanPr
 		"classpath:spring/scroll-params-limiter-mock-context.xml",
 		"classpath:spring/config-test-context.xml"
 })
-public class BooksControllerListTest {
+public class BooksControllerReadTest {
 
 	private static final String BOOKS_COMMAND = "booksCommand";
-	private static final String URL_ACTION_LIST = "/books/list";
+	private static final String URL_ACTION_READ = "/books/read";
 
 	private static final int REPO_TOTAL_COUNT = 23;
 	private static final int REPO_FIRST_RETURNED_RECORD_OFFSET = 14;
@@ -120,7 +120,7 @@ public class BooksControllerListTest {
 
 	@Test
 	public void shouldUseDefaultValueFromConfigWhenNoOffsetParameterGiven() throws Exception {
-		mvcMock.perform(get(URL_ACTION_LIST))
+		mvcMock.perform(get(URL_ACTION_READ))
 				.andExpect(status().isOk())
 				.andExpect(model().attribute(BOOKS_COMMAND,
 						hasBeanProperty("scroll.current.offset", equalTo(defaultOffset))));
@@ -128,7 +128,7 @@ public class BooksControllerListTest {
 
 	@Test
 	public void shouldUseDefaultValueFromConfigWhenNoSizeParameterGiven() throws Exception {
-		mvcMock.perform(get(URL_ACTION_LIST))
+		mvcMock.perform(get(URL_ACTION_READ))
 				.andExpect(status().isOk())
 				.andExpect(model().attribute(BOOKS_COMMAND,
 						hasBeanProperty("scroll.current.size", equalTo(defaultSize))));
@@ -136,25 +136,25 @@ public class BooksControllerListTest {
 
 	@Test
 	public void shouldUseLimitationOfOffsetAndSizeParameters() throws Exception {
-		whenControllerListPerformedWithCommand();
+		whenControllerReadPerformedWithCommand();
 		thenExpectParametersLimitationUsage();
 	}
 
 	@Test
 	public void shouldDirectToProperViewWithModelCreatedForRepositoryData() throws Exception {
-		whenControllerListPerformedWithCommand();
+		whenControllerReadPerformedWithCommand();
 
 		thenExpectBookRepositoryRead();
 		thenExpectBookAssemblerInvoked();
 		thenExpectCorrectViewSelectedAndModelSet();
 	}
 
-	private void whenControllerListPerformedWithCommand() throws Exception {
+	private void whenControllerReadPerformedWithCommand() throws Exception {
 		BooksCommand command = new BooksCommand();
 		command.getScroll().getCurrent().setOffset(REPO_FIRST_RETURNED_RECORD_OFFSET);
 		command.getScroll().getCurrent().setSize(REPO_RESULT_SIZE);
 
-		mvcMockPerformResult = mvcMock.perform(get(URL_ACTION_LIST)
+		mvcMockPerformResult = mvcMock.perform(get(URL_ACTION_READ)
 				.flashAttr(BOOKS_COMMAND, command));
 	}
 

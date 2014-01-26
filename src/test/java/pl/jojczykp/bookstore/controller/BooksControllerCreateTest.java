@@ -102,7 +102,7 @@ public class BooksControllerCreateTest {
 	private void thenExpectHttpRedirect(BooksCommand command) throws Exception {
 		mvcMockPerformResult
 				.andExpect(status().isFound())
-				.andExpect(redirectedUrl("/books/list"))
+				.andExpect(redirectedUrl("/books/read"))
 				.andExpect(flash().attribute("booksCommand", sameInstance(command)));
 	}
 

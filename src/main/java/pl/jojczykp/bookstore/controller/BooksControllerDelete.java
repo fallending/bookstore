@@ -14,7 +14,7 @@ import pl.jojczykp.bookstore.repository.BookRepository;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static pl.jojczykp.bookstore.controller.BooksConsts.BOOKS_COMMAND;
 import static pl.jojczykp.bookstore.controller.BooksConsts.URL_ACTION_DELETE;
-import static pl.jojczykp.bookstore.controller.BooksConsts.URL_ACTION_LIST;
+import static pl.jojczykp.bookstore.controller.BooksConsts.URL_ACTION_READ;
 
 @Controller
 public class BooksControllerDelete {
@@ -33,7 +33,7 @@ public class BooksControllerDelete {
 		}
 
 		redirectAttributes.addFlashAttribute(BOOKS_COMMAND, booksCommand);
-		return new RedirectView(URL_ACTION_LIST);
+		return new RedirectView(URL_ACTION_READ);
 	}
 
 	private void deleteBookFromRepository(int bookId, BooksCommand messagesContainer) {
