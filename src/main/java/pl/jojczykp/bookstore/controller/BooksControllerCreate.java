@@ -22,7 +22,7 @@ public class BooksControllerCreate {
 	@Autowired private BookAssembler bookAssembler;
 
 	@RequestMapping(value = URL_ACTION_CREATE, method = POST)
-	public RedirectView add(
+	public RedirectView create(
 			@ModelAttribute(BOOKS_COMMAND) BooksCommand booksCommand,
 			RedirectAttributes redirectAttributes)
 	{

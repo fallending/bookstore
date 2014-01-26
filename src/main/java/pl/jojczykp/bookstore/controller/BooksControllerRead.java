@@ -40,7 +40,7 @@ public class BooksControllerRead {
 	}
 
 	@RequestMapping(value = URL_ACTION_READ, method = GET)
-	public ModelAndView list(
+	public ModelAndView read(
 			@ModelAttribute(BOOKS_COMMAND) BooksCommand booksCommand)
 	{
 		int totalCount = bookRepository.totalCount();
