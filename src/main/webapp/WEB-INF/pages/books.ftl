@@ -23,23 +23,23 @@
 				})
 			}
 
-			function sendUpdate(bookId, bookIndex) {
-				var version = document.getElementById('books' + bookIndex + '.version').value;
-				var title = document.getElementById('books' + bookIndex + '.title').value;
+			function sendUpdate(id, index) {
+				var version = document.getElementById('books' + index + '.version').value;
+				var title = document.getElementById('books' + index + '.title').value;
 				sendPostWithDefaults('update', {
-					'updateBookId' : bookId,
-					'updateBookVersion' : version,
-					'updateBookTitle' : title
+					'updatedBook.id' : id,
+					'updatedBook.version' : version,
+					'updatedBook.title' : title
 				})
 			}
 
 			function sendDelete() {
 				var params = {};
 				var checkboxes = document.getElementsByClassName('deleteCheckbox');
-				for (var bookIndex = 0; bookIndex < checkboxes.length; bookIndex++) {
-					if (checkboxes[bookIndex].checked) {
-						params[('books[' + bookIndex + '].id')] = checkboxes[bookIndex].getAttribute('bookId')
-						params[('books[' + bookIndex + '].checked')] = 'on';
+				for (var index = 0; index < checkboxes.length; index++) {
+					if (checkboxes[index].checked) {
+						params[('books[' + index + '].id')] = checkboxes[index].getAttribute('bookId')
+						params[('books[' + index + '].checked')] = 'on';
 					}
 				}
 				sendPostWithDefaults('delete', params)

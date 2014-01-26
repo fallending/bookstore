@@ -37,9 +37,10 @@ public class BooksControllerUpdate {
 			RedirectAttributes redirectAttributes)
 	{
 		boolean updateSuccessStatus = tryUpdate(
-				booksCommand.getUpdateBookTitle(),
-				booksCommand.getUpdateBookId(),
-				booksCommand.getUpdateBookVersion());
+				booksCommand.getUpdatedBook().getId(),
+				booksCommand.getUpdatedBook().getVersion(),
+				booksCommand.getUpdatedBook().getTitle()
+		);
 
 		booksCommand.setMessage(messageFor(updateSuccessStatus));
 
@@ -47,7 +48,7 @@ public class BooksControllerUpdate {
 		return new RedirectView(URL_ACTION_READ);
 	}
 
-	private boolean tryUpdate(String title, int id, int version) {
+	private boolean tryUpdate(int id, int version, String title) {
 		try {
 			bookRepository.update(new Book(id, version, title));
 			return UPDATE_SUCCESS;

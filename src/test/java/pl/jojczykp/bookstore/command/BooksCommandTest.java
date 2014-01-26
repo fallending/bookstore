@@ -24,8 +24,7 @@ public class BooksCommandTest {
 	public void shouldBeSetUpByDefaultConstructor() {
 		assertThat(testee.getScroll(), notNullValue());
 		assertThat(testee.getNewBook(), notNullValue());
-		assertThat(testee.getUpdateBookId(), notNullValue());
-		assertThat(testee.getUpdateBookTitle(), notNullValue());
+		assertThat(testee.getUpdatedBook(), notNullValue());
 		assertThat(testee.getBooks(), empty());
 	}
 
@@ -48,21 +47,12 @@ public class BooksCommandTest {
 	}
 
 	@Test
-	public void shouldSetUpdateBookId() {
-		final int updateBookId = 9;
+	public void shouldSetUpdatedBook() {
+		final BookCommand book = new BookCommand();
 
-		testee.setUpdateBookId(updateBookId);
+		testee.setUpdatedBook(book);
 
-		assertThat(testee.getUpdateBookId(), sameInstance(updateBookId));
-	}
-
-	@Test
-	public void shouldSetUpdateBookTitle() {
-		final String updateBookTitle = "someTitle";
-
-		testee.setUpdateBookTitle(updateBookTitle);
-
-		assertThat(testee.getUpdateBookTitle(), sameInstance(updateBookTitle));
+		assertThat(testee.getUpdatedBook(), sameInstance(book));
 	}
 
 	@Test

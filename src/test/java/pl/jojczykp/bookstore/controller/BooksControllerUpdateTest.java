@@ -13,6 +13,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.context.WebApplicationContext;
+import pl.jojczykp.bookstore.command.BookCommand;
 import pl.jojczykp.bookstore.command.BooksCommand;
 import pl.jojczykp.bookstore.domain.Book;
 import pl.jojczykp.bookstore.repository.BookRepository;
@@ -87,9 +88,11 @@ public class BooksControllerUpdateTest {
 	}
 
 	private BooksCommand aCommandWith(int id, String title) {
+		BookCommand book = new BookCommand();
+		book.setId(id);
+		book.setTitle(title);
 		BooksCommand command = new BooksCommand();
-		command.setUpdateBookId(id);
-		command.setUpdateBookTitle(title);
+		command.setUpdatedBook(book);
 
 		return command;
 	}
