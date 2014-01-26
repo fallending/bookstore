@@ -9,7 +9,7 @@ public abstract class BooksConsts {
 	static final String URL_ACTION_SET_PAGE_SIZE = "/books/setPageSize";
 
 	static final String URL_ACTION_CREATE = "/books/create";
-	static final String URL_ACTION_DEL = "/books/del";
+	static final String URL_ACTION_DELETE = "/books/delete";
 	static final String URL_ACTION_UPDATE = "/books/update";
 
 	static final String EXCEPTION_VIEW = "exception";

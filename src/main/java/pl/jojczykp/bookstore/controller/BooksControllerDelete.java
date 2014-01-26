@@ -13,16 +13,16 @@ import pl.jojczykp.bookstore.repository.BookRepository;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static pl.jojczykp.bookstore.controller.BooksConsts.BOOKS_COMMAND;
-import static pl.jojczykp.bookstore.controller.BooksConsts.URL_ACTION_DEL;
+import static pl.jojczykp.bookstore.controller.BooksConsts.URL_ACTION_DELETE;
 import static pl.jojczykp.bookstore.controller.BooksConsts.URL_ACTION_LIST;
 
 @Controller
-public class BooksControllerDel {
+public class BooksControllerDelete {
 
 	@Autowired private BookRepository bookRepository;
 
-	@RequestMapping(value = URL_ACTION_DEL, method = POST)
-	public RedirectView del(
+	@RequestMapping(value = URL_ACTION_DELETE, method = POST)
+	public RedirectView delete(
 			@ModelAttribute(BOOKS_COMMAND) BooksCommand booksCommand,
 			RedirectAttributes redirectAttributes)
 	{

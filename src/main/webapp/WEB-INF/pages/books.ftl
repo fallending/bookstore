@@ -12,7 +12,7 @@
 		<title>Bookstore</title>
 		<style type="text/css">
 			input.setPageSizeInput { }
-			input.delCheckbox { }
+			input.deleteCheckbox { }
 		</style>
 		<script type="text/javascript">
 
@@ -33,16 +33,16 @@
 				})
 			}
 
-			function sendDel() {
+			function sendDelete() {
 				var params = {};
-				var checkboxes = document.getElementsByClassName('delCheckbox');
+				var checkboxes = document.getElementsByClassName('deleteCheckbox');
 				for (var bookIndex = 0; bookIndex < checkboxes.length; bookIndex++) {
 					if (checkboxes[bookIndex].checked) {
 						params[('books[' + bookIndex + '].id')] = checkboxes[bookIndex].getAttribute('bookId')
 						params[('books[' + bookIndex + '].checked')] = 'on';
 					}
 				}
-				sendPostWithDefaults('del', params)
+				sendPostWithDefaults('delete', params)
 			}
 
 			function sendPrev() {
@@ -174,7 +174,7 @@
 					<#list booksCommand.books as book>
 						<tr>
 							<td>
-								<@spring.formCheckbox path="booksCommand.books[" + book_index + "].checked" attributes="class='delCheckbox' bookId='${booksCommand.books[book_index].id}'"/>
+								<@spring.formCheckbox path="booksCommand.books[" + book_index + "].checked" attributes="class='deleteCheckbox' bookId='${booksCommand.books[book_index].id}'"/>
 							</td>
 							<td>#${book.id}</td>
 							<td>
@@ -187,7 +187,7 @@
 				</table>
 			</td>
 		</tr></table>
-		<input type="button" value="delete selected" onClick="sendDel()"/>
+		<input type="button" value="delete selected" onClick="sendDelete()"/>
 	</#if>
 </#macro>
 

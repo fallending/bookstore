@@ -41,7 +41,7 @@ import static pl.jojczykp.bookstore.testutils.matchers.HasBeanProperty.hasBeanPr
 		"classpath:spring/scroll-params-limiter-mock-context.xml",
 		"classpath:spring/config-test-context.xml"
 })
-public class BooksControllerDelTest {
+public class BooksControllerDeleteTest {
 
 	private static final int NOT_EXISTING_ID = 98;
 	private static final int EXISTING_ID = 7;
@@ -71,7 +71,7 @@ public class BooksControllerDelTest {
 		final int id2 = 11;
 		final BooksCommand command = aCommandToRemoveByIds(id1, id2);
 
-		whenControllerDelPerformedWithCommand(command);
+		whenControllerDeletePerformedWithCommand(command);
 
 		thenExpectDeletedBooksWithIds(id1, id2);
 	}
@@ -80,7 +80,7 @@ public class BooksControllerDelTest {
 	public void shouldRedirectAfterDeletingExisting() throws Exception {
 		final BooksCommand command = aCommandToRemoveByIds(EXISTING_ID);
 
-		whenControllerDelPerformedWithCommand(command);
+		whenControllerDeletePerformedWithCommand(command);
 
 		thenExpectHttpRedirect(command);
 	}
@@ -89,7 +89,7 @@ public class BooksControllerDelTest {
 	public void shouldRedirectAfterDeletingNotExisting() throws Exception {
 		final BooksCommand command = aCommandToRemoveByIds(NOT_EXISTING_ID);
 
-		whenControllerDelPerformedWithCommand(command);
+		whenControllerDeletePerformedWithCommand(command);
 
 		thenExpectHttpRedirect(command);
 	}
@@ -98,7 +98,7 @@ public class BooksControllerDelTest {
 	public void shouldDisplayMessageAfterDeletingExisting() throws Exception {
 		final BooksCommand command = aCommandToRemoveByIds(EXISTING_ID);
 
-		whenControllerDelPerformedWithCommand(command);
+		whenControllerDeletePerformedWithCommand(command);
 
 		thenExpectDisplayedMessage("Object deleted.");
 	}
@@ -107,7 +107,7 @@ public class BooksControllerDelTest {
 	public void shouldDisplayMessageAfterDeletingNotExisting() throws Exception {
 		final BooksCommand command = aCommandToRemoveByIds(NOT_EXISTING_ID);
 
-		whenControllerDelPerformedWithCommand(command);
+		whenControllerDeletePerformedWithCommand(command);
 
 		thenExpectDisplayedMessage("Object already deleted.");
 	}
@@ -129,8 +129,8 @@ public class BooksControllerDelTest {
 		return bookCommand;
 	}
 
-	private void whenControllerDelPerformedWithCommand(BooksCommand command) throws Exception {
-		mvcMockPerformResult = mvcMock.perform(post("/books/del")
+	private void whenControllerDeletePerformedWithCommand(BooksCommand command) throws Exception {
+		mvcMockPerformResult = mvcMock.perform(post("/books/delete")
 				.flashAttr("booksCommand", command));
 	}
 
