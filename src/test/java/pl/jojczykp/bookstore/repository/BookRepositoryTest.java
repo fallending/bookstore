@@ -106,7 +106,7 @@ public class BookRepositoryTest {
 	@Test
 	@Rollback(true)
 	public void shouldCreateBook() {
-		final String title = "Added book";
+		final String title = "Created book";
 		Book book = new Book(title);
 
 		int id = repository.create(book);

@@ -20,6 +20,7 @@ import pl.jojczykp.bookstore.repository.BookRepository;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
@@ -36,7 +37,7 @@ import static pl.jojczykp.bookstore.testutils.matchers.HasBeanProperty.hasBeanPr
 		"classpath:spring/scroll-params-limiter-mock-context.xml",
 		"classpath:spring/config-test-context.xml"
 })
-public class BooksControllerAddTest {
+public class BooksControllerCreateTest {
 
 	private MockMvc mvcMock;
 	private ResultActions mvcMockPerformResult;
@@ -49,35 +50,36 @@ public class BooksControllerAddTest {
 	public void setUp() {
 		mvcMock = webAppContextSetup(wac).build();
 		MockitoAnnotations.initMocks(this);
+		reset(bookRepositoryMock);
 	}
 
 	@Test
-	public void shouldAddBook() throws Exception {
+	public void shouldCreateBook() throws Exception {
 		final String someTitle = "someTitle";
 		final BooksCommand command = aCommandWith(someTitle);
 
-		whenControllerAddPerformedWithCommand(command);
+		whenControllerCreatePerformedWithCommand(command);
 
 		thenExpectCreatedBookWith(someTitle);
 	}
 
 	@Test
-	public void shouldRedirectAfterAdding() throws Exception {
+	public void shouldRedirectAfterCreation() throws Exception {
 		final String anyTitle = "anyTitle";
 		final BooksCommand command = aCommandWith(anyTitle);
 
-		whenControllerAddPerformedWithCommand(command);
+		whenControllerCreatePerformedWithCommand(command);
 
 		thenExpectHttpRedirect(command);
 	}
 
 	@Test
-	public void shouldDisplayMessageAfterAdding() throws Exception {
+	public void shouldDisplayMessageAfterCreation() throws Exception {
 		final BooksCommand command = aCommandWith("anyTitle");
 
-		whenControllerAddPerformedWithCommand(command);
+		whenControllerCreatePerformedWithCommand(command);
 
-		thenExpectDisplayedMessage("Object added.");
+		thenExpectDisplayedMessage("Object created.");
 	}
 
 	private BooksCommand aCommandWith(String title) {
@@ -87,8 +89,8 @@ public class BooksControllerAddTest {
 		return command;
 	}
 
-	private void whenControllerAddPerformedWithCommand(BooksCommand command) throws Exception {
-		mvcMockPerformResult = mvcMock.perform(post("/books/add")
+	private void whenControllerCreatePerformedWithCommand(BooksCommand command) throws Exception {
+		mvcMockPerformResult = mvcMock.perform(post("/books/create")
 				.flashAttr("booksCommand", command));
 	}
 

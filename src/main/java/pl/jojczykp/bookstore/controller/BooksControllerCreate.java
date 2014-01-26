@@ -12,23 +12,23 @@ import pl.jojczykp.bookstore.repository.BookRepository;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static pl.jojczykp.bookstore.controller.BooksConsts.BOOKS_COMMAND;
-import static pl.jojczykp.bookstore.controller.BooksConsts.URL_ACTION_ADD;
+import static pl.jojczykp.bookstore.controller.BooksConsts.URL_ACTION_CREATE;
 import static pl.jojczykp.bookstore.controller.BooksConsts.URL_ACTION_LIST;
 
 @Controller
-public class BooksControllerAdd {
+public class BooksControllerCreate {
 
 	@Autowired private BookRepository bookRepository;
 	@Autowired private BookAssembler bookAssembler;
 
-	@RequestMapping(value = URL_ACTION_ADD, method = POST)
+	@RequestMapping(value = URL_ACTION_CREATE, method = POST)
 	public RedirectView add(
 			@ModelAttribute(BOOKS_COMMAND) BooksCommand booksCommand,
 			RedirectAttributes redirectAttributes)
 	{
 		bookRepository.create(bookAssembler.toDomain(booksCommand.getNewBook()));
 
-		booksCommand.setMessage("Object added.");
+		booksCommand.setMessage("Object created.");
 
 		redirectAttributes.addFlashAttribute(BOOKS_COMMAND, booksCommand);
 		return new RedirectView(URL_ACTION_LIST);

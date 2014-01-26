@@ -16,9 +16,9 @@
 		</style>
 		<script type="text/javascript">
 
-			function sendAdd() {
+			function sendCreate() {
 				var title = document.getElementById('newBook.title').value;
-				sendPostWithDefaults('add', {
+				sendPostWithDefaults('create', {
 					'newBook.title' : title
 				})
 			}
@@ -108,7 +108,7 @@
 		<@sectionMessages/>
 		<@sectionScroll/>
 		<@sectionDataTable/>
-		<@sectionAdd/>
+		<@sectionCreate/>
 	</body>
 </html>
 
@@ -191,8 +191,8 @@
 	</#if>
 </#macro>
 
-<#macro sectionAdd>
-	<h2>Add new book:</h2>
+<#macro sectionCreate>
+	<h2>Create new book:</h2>
 	Title: <@spring.formInput "booksCommand.newBook.title"/>
-	<input type="button" value="add" onClick="sendAdd()"/>
+	<input type="button" value="create" onClick="sendCreate()"/>
 </#macro>

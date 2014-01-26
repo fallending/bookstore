@@ -20,6 +20,7 @@ import pl.jojczykp.bookstore.repository.BookRepository;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
@@ -49,6 +50,7 @@ public class BooksControllerUpdateTest {
 	public void setUp() {
 		mvcMock = webAppContextSetup(wac).build();
 		MockitoAnnotations.initMocks(this);
+		reset(bookRepositoryMock);
 	}
 
 	@Test
@@ -57,7 +59,7 @@ public class BooksControllerUpdateTest {
 		final String sampleTitle = "sampleTitle";
 		final BooksCommand command = aCommandWith(sampleId, sampleTitle);
 
-		whenControllerAddPerformedWithCommand(command);
+		whenControllerUpdatePerformedWithCommand(command);
 
 		thenExpectUpdatedBookWith(sampleId, sampleTitle);
 	}
@@ -68,7 +70,7 @@ public class BooksControllerUpdateTest {
 		final String anyTitle = "anyTitle";
 		final BooksCommand command = aCommandWith(anyId, anyTitle);
 
-		whenControllerAddPerformedWithCommand(command);
+		whenControllerUpdatePerformedWithCommand(command);
 
 		thenExpectHttpRedirect(command);
 	}
@@ -79,7 +81,7 @@ public class BooksControllerUpdateTest {
 		final String anyTitle = "anyTitle";
 		final BooksCommand command = aCommandWith(anyId, anyTitle);
 
-		whenControllerAddPerformedWithCommand(command);
+		whenControllerUpdatePerformedWithCommand(command);
 
 		thenExpectDisplayedMessage("Object updated.");
 	}
@@ -92,7 +94,7 @@ public class BooksControllerUpdateTest {
 		return command;
 	}
 
-	private void whenControllerAddPerformedWithCommand(BooksCommand command) throws Exception {
+	private void whenControllerUpdatePerformedWithCommand(BooksCommand command) throws Exception {
 		mvcMockPerformResult = mvcMock.perform(post("/books/update")
 				.flashAttr("booksCommand", command));
 	}
