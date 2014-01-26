@@ -11,13 +11,14 @@
 		<meta http-equiv="content-type" content="application/xhtml+xml; charset=utf-8" />
 		<title>Bookstore</title>
 		<style type="text/css">
+			input.setPageSizeInput { }
 			input.delCheckbox { }
 		</style>
 		<script type="text/javascript">
 
 			function sendAdd() {
 				var title = document.getElementById('newBook.title').value;
-				sendPost('add', {
+				sendPostWithDefaults('add', {
 					'newBook.title' : title
 				})
 			}
@@ -25,7 +26,7 @@
 			function sendUpdate(bookId, bookIndex) {
 				var version = document.getElementById('books' + bookIndex + '.version').value;
 				var title = document.getElementById('books' + bookIndex + '.title').value;
-				sendPost('update', {
+				sendPostWithDefaults('update', {
 					'updateBookId' : bookId,
 					'updateBookVersion' : version,
 					'updateBookTitle' : title
@@ -41,17 +42,41 @@
 						params[('books[' + bookIndex + '].checked')] = 'on';
 					}
 				}
-				sendPost('del', params)
+				sendPostWithDefaults('del', params)
 			}
 
-			function sendPost(action, paramsMap) {
+			function sendPrev() {
+				sendPostWithDefaults('prev', {})
+			}
+
+			function sendNext() {
+				sendPostWithDefaults('next', {})
+			}
+
+			function sendSetPageSize() {
+				var params = {};
+				var newSize = document.getElementsByClassName('setPageSizeInput')[0].value;
+				params['scroll.current.offset'] = ${booksCommand.scroll.current.offset};
+				params['scroll.current.size'] = newSize;
+				sendPost('setPageSize', params)
+			}
+
+			function sendPostWithDefaults(action, params) {
+				sendPost(action, decorateWithDefaults(params));
+			}
+
+			function decorateWithDefaults(params) {
+				params['scroll.current.offset'] = ${booksCommand.scroll.current.offset};
+				params['scroll.current.size'] = ${booksCommand.scroll.current.size};
+				return params;
+			}
+
+			function sendPost(action, params) {
 				var form = createFormFor(action)
 
-				addDefaultParamsTo(form);
-
-				for(var key in paramsMap) {
-					if(paramsMap.hasOwnProperty(key)) {
-						form.appendChild(createHiddenInput(key, paramsMap[key]));
+				for(var key in params) {
+					if(params.hasOwnProperty(key)) {
+						form.appendChild(createHiddenInput(key, params[key]));
 					}
 				}
 
@@ -65,11 +90,6 @@
 				form.setAttribute("action", action);
 
 				return form;
-			}
-
-			function addDefaultParamsTo(form) {
-				form.appendChild(createHiddenInput('scroll.current.offset', ${booksCommand.scroll.current.offset}));
-				form.appendChild(createHiddenInput('scroll.current.size', ${booksCommand.scroll.current.size}));
 			}
 
 			function createHiddenInput(key, value) {
@@ -123,35 +143,24 @@
 </#macro>
 
 <#macro formScrollPrev>
-	<form action="prev" method="POST">
-		<@spring.formHiddenInput "booksCommand.scroll.current.offset"/>
-		<@spring.formHiddenInput "booksCommand.scroll.current.size"/>
-		<#if (booksCommand.scroll.current.offset <= 0) >
-			<input type="submit" value="&lt;" disabled="true" />
-		<#else>
-			<input type="submit" value="&lt;" />
-		</#if>
-	</form>
+	<#if (booksCommand.scroll.current.offset <= 0) >
+		<input type="button" value="&lt;" onClick="sendPrev()" disabled="true" />
+	<#else>
+		<input type="button" value="&lt;" onClick="sendPrev()" />
+	</#if>
 </#macro>
 
 <#macro formScrollSetPageSize>
-	<form action="setPageSize" method="POST">
-		<@spring.formHiddenInput "booksCommand.scroll.current.offset"/>
-		<@spring.formInput "booksCommand.scroll.current.size"/>
-		<input type="submit" value="set page size" />
-	</form>
+	<@spring.formInput "booksCommand.scroll.current.size" "class='setPageSizeInput'" />
+	<input type="button" value="set page size" onClick="sendSetPageSize()" />
 </#macro>
 
 <#macro formScrollNext>
-	<form action="next" method="POST">
-		<@spring.formHiddenInput "booksCommand.scroll.current.offset"/>
-		<@spring.formHiddenInput "booksCommand.scroll.current.size"/>
-		<#if (limit >= totalCount) >
-			<input type="submit" value="&gt;" disabled="true" />
-		<#else>
-			<input type="submit" value="&gt;" />
-		</#if>
-	</form>
+	<#if (limit >= totalCount) >
+		<input type="button" value="&gt;" onClick="sendNext()" disabled="true" />
+	<#else>
+		<input type="button" value="&gt;" onClick="sendNext()" />
+	</#if>
 </#macro>
 
 <#macro sectionDataTable>
