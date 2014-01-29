@@ -9,22 +9,33 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ReflectionUtils;
 import pl.jojczykp.bookstore.domain.Book;
+import pl.jojczykp.bookstore.utils.ScrollSorterColumn;
+import pl.jojczykp.bookstore.utils.ScrollSorterDirection;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 import static java.lang.Integer.MAX_VALUE;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyCollectionOf;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static pl.jojczykp.bookstore.utils.ScrollSorterColumn.BOOK_TITLE;
+import static pl.jojczykp.bookstore.utils.ScrollSorterDirection.ASC;
+import static pl.jojczykp.bookstore.utils.ScrollSorterDirection.DESC;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:spring/repository-test-context.xml")
 @Transactional
 public class BookRepositoryTest {
 
-	public static final int TOTAL_TEST_BOOKS_COUNT = 15;
-	public static final int CURRENT_TEST_BOOK_VERSION = 4;
+	private static final int TOTAL_TEST_BOOKS_COUNT = 15;
+	private static final int CURRENT_TEST_BOOK_VERSION = 4;
+	private static final ScrollSorterColumn SAMPLE_SORT_COLUMN = BOOK_TITLE;
+	private static final ScrollSorterDirection SAMPLE_DIRECTION = ASC;
 
 	@Autowired private BookRepository repository;
 
@@ -47,23 +58,23 @@ public class BookRepositoryTest {
 		final int offset = 2;
 		final int size = 3;
 
-		List<Book> books = repository.read(offset, size);
+		List<Book> books = repository.read(offset, size, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
 
 		assertThat(books.size(), is(size));
-		assertThat(books.get(0).getId(), is(offset));
-		assertThat(books.get(1).getId(), is(offset + 1));
-		assertThat(books.get(2).getId(), is(offset + 2));
+		assertThat(books.get(0), is(notNullValue()));
+		assertThat(books.get(1), is(notNullValue()));
+		assertThat(books.get(2), is(notNullValue()));
 	}
 	@Test
 	public void shouldListBooksWhenOffsetInRangeAndSizeOverRange() {
 		final int offset = 2;
 		final int expectedSize = TOTAL_TEST_BOOKS_COUNT - offset;
 
-		List<Book> books = repository.read(offset, MAX_VALUE);
+		List<Book> books = repository.read(offset, MAX_VALUE, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
 
 		assertThat(books.size(), is(expectedSize));
 		for (int i = 0; i < expectedSize; i++) {
-			assertThat(books.get(i).getId(), is(i + offset));
+			assertThat(books.get(i), is(notNullValue()));
 		}
 	}
 
@@ -71,7 +82,7 @@ public class BookRepositoryTest {
 	public void shouldListNoBooksWhenOffsetOverRange() {
 		final int anySize = 8;
 
-		List<Book> books = repository.read(TOTAL_TEST_BOOKS_COUNT, anySize);
+		List<Book> books = repository.read(TOTAL_TEST_BOOKS_COUNT, anySize, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
 
 		assertThat(books.size(), is(0));
 	}
@@ -80,7 +91,7 @@ public class BookRepositoryTest {
 	public void shouldTreatNegativeOffsetAsZero() {
 		final int offset = -2;
 
-		List<Book> books = repository.read(offset, TOTAL_TEST_BOOKS_COUNT);
+		List<Book> books = repository.read(offset, TOTAL_TEST_BOOKS_COUNT, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
 
 		assertThat(books.size(), is(TOTAL_TEST_BOOKS_COUNT));
 	}
@@ -89,7 +100,7 @@ public class BookRepositoryTest {
 	public void shouldListEmptyForNegativeSize() {
 		final int size = -1;
 
-		List<Book> books = repository.read(2, size);
+		List<Book> books = repository.read(2, size, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
 
 		assertThat(books, emptyCollectionOf(Book.class));
 	}
@@ -98,11 +109,46 @@ public class BookRepositoryTest {
 	public void shouldListEmptyForZeroSize() {
 		final int offset = 7;
 
-		List<Book> books = repository.read(offset, 0);
+		List<Book> books = repository.read(offset, 0, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
 
 		assertThat(books, emptyCollectionOf(Book.class));
 	}
 
+	@Test
+	public void shouldOrderAsc() throws NoSuchFieldException {
+		setSortColumnWithIgnoreCase(BOOK_TITLE, true);
+
+		List<Book> books = repository.read(0, 2, SAMPLE_SORT_COLUMN, ASC);
+
+		assertThat(books.get(0).getTitle(), is(equalTo("Test Book 00 AAA")));
+		assertThat(books.get(1).getTitle(), is(equalTo("Test Book 00 bbb")));
+	}
+
+	@Test
+	public void shouldOrderDesc() throws NoSuchFieldException {
+		setSortColumnWithIgnoreCase(BOOK_TITLE, true);
+
+		List<Book> books = repository.read(1, 2, SAMPLE_SORT_COLUMN, DESC);
+
+		assertThat(books.get(0).getTitle(), is(equalTo("Test Book 14")));
+		assertThat(books.get(1).getTitle(), is(equalTo("Test Book 13")));
+	}
+
+	@Test
+	public void shouldOrderCaseInsensitive() throws NoSuchFieldException {
+		setSortColumnWithIgnoreCase(BOOK_TITLE, false);
+
+		List<Book> books = repository.read(0, 2, SAMPLE_SORT_COLUMN, ASC);
+
+		assertThat(books.get(0).getTitle(), is(equalTo("Test Book 00 AAA")));
+		assertThat(books.get(1).getTitle(), is(equalTo("Test Book 00 bbb")));
+	}
+
+	private void setSortColumnWithIgnoreCase(ScrollSorterColumn column, boolean value) throws NoSuchFieldException {
+		Field ignoreCaseField = column.getClass().getDeclaredField("ignoreCase");
+		ReflectionUtils.makeAccessible(ignoreCaseField);
+		ReflectionUtils.setField(ignoreCaseField, column, value);
+	}
 	@Test
 	@Rollback(true)
 	public void shouldCreateBook() {

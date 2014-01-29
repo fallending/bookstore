@@ -16,9 +16,16 @@
 		</style>
 		<script type="text/javascript">
 
+			DEFAULT_PARAMS = {
+				'scroll.current.offset' : ${booksCommand.scroll.current.offset},
+				'scroll.current.size' : ${booksCommand.scroll.current.size},
+				'scroll.sorter.column' : '${booksCommand.scroll.sorter.column}',
+				'scroll.sorter.direction' : '${booksCommand.scroll.sorter.direction}'
+			}
+
 			function sendCreate() {
 				var title = document.getElementById('newBook.title').value;
-				sendPostWithDefaults('create', {
+				sendPost('create', {
 					'newBook.title' : title
 				})
 			}
@@ -26,7 +33,7 @@
 			function sendUpdate(id, index) {
 				var version = document.getElementById('books' + index + '.version').value;
 				var title = document.getElementById('books' + index + '.title').value;
-				sendPostWithDefaults('update', {
+				sendPost('update', {
 					'updatedBook.id' : id,
 					'updatedBook.version' : version,
 					'updatedBook.title' : title
@@ -42,43 +49,38 @@
 						params[('books[' + index + '].checked')] = 'on';
 					}
 				}
-				sendPostWithDefaults('delete', params)
+				sendPost('delete', params)
 			}
 
 			function sendPrev() {
-				sendPostWithDefaults('prev', {})
+				sendPost('prev', {})
 			}
 
 			function sendNext() {
-				sendPostWithDefaults('next', {})
+				sendPost('next', {})
 			}
 
 			function sendSetPageSize() {
-				var params = {};
 				var newSize = document.getElementsByClassName('setPageSizeInput')[0].value;
-				params['scroll.current.offset'] = ${booksCommand.scroll.current.offset};
-				params['scroll.current.size'] = newSize;
-				sendPost('setPageSize', params)
+				sendPost('setPageSize', {
+					'scroll.current.size' : newSize
+				})
 			}
 
-			function sendPostWithDefaults(action, params) {
-				sendPost(action, decorateWithDefaults(params));
+			function sendSort(column, direction) {
+				sendPost('sort', {
+					'scroll.sorter.column' : column,
+					'scroll.sorter.direction' : direction
+				})
 			}
 
-			function decorateWithDefaults(params) {
-				params['scroll.current.offset'] = ${booksCommand.scroll.current.offset};
-				params['scroll.current.size'] = ${booksCommand.scroll.current.size};
-				return params;
-			}
+			function sendPost(action, actualParams) {
+				var params = {};
+				updateParams(params, DEFAULT_PARAMS);
+				updateParams(params, actualParams);
 
-			function sendPost(action, params) {
 				var form = createFormFor(action)
-
-				for(var key in params) {
-					if(params.hasOwnProperty(key)) {
-						form.appendChild(createHiddenInput(key, params[key]));
-					}
-				}
+				updateFormWithParams(form, params);
 
 				document.body.appendChild(form);
 				form.submit();
@@ -90,6 +92,22 @@
 				form.setAttribute("action", action);
 
 				return form;
+			}
+
+			function updateParams(finalParams, partialParams) {
+				for(var key in partialParams) {
+					if(partialParams.hasOwnProperty(key)) {
+						finalParams[key] = partialParams[key];
+					}
+				}
+			}
+
+			function updateFormWithParams(form, params) {
+				for(var key in params) {
+					if(params.hasOwnProperty(key)) {
+						form.appendChild(createHiddenInput(key, params[key]));
+					}
+				}
 			}
 
 			function createHiddenInput(key, value) {
@@ -170,7 +188,15 @@
 		<table><tr>
 			<td>
 				<table>
-					<th></th><th>Id</th><th>Title</th>
+					<tr>
+						<th></th>
+						<th>Id</th>
+						<th>
+							Title
+							<input type="button" value="^" onClick="sendSort('BOOK_TITLE', 'ASC')"/>
+							<input type="button" value="v" onClick="sendSort('BOOK_TITLE', 'DESC')"/>
+						</th>
+					</tr>
 					<#list booksCommand.books as book>
 						<tr>
 							<td>

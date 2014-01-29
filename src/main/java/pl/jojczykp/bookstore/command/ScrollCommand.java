@@ -1,16 +1,19 @@
 package pl.jojczykp.bookstore.command;
 
 import pl.jojczykp.bookstore.utils.ScrollParams;
+import pl.jojczykp.bookstore.utils.ScrollSorter;
 
 public class ScrollCommand {
 
 	private ScrollParams current;
 	private ScrollParams limited;
+	private ScrollSorter sorter;
 	private int totalCount;
 
 	public ScrollCommand() {
 		current = new ScrollParams();
 		limited = new ScrollParams();
+		sorter = new ScrollSorter();
 		totalCount = 0;
 	}
 
@@ -28,6 +31,14 @@ public class ScrollCommand {
 
 	public void setLimited(ScrollParams limited) {
 		this.limited = limited;
+	}
+
+	public ScrollSorter getSorter() {
+		return sorter;
+	}
+
+	public void setSorter(ScrollSorter sorter) {
+		this.sorter = sorter;
 	}
 
 	public int getTotalCount() {

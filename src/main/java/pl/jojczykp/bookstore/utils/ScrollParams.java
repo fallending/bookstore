@@ -31,6 +31,6 @@ public class ScrollParams {
 
 	@Override
 	public String toString() {
-		return "ScrollParams{offset=" + offset + ", size=" + size + "}";
+		return getClass().getSimpleName() + "{offset=" + offset + ", size=" + size + "}";
 	}
 }

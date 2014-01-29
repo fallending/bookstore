@@ -88,10 +88,10 @@ public class BooksControllerUpdateTest {
 	}
 
 	private BooksCommand aCommandWith(int id, String title) {
+		BooksCommand command = new BooksCommand();
 		BookCommand book = new BookCommand();
 		book.setId(id);
 		book.setTitle(title);
-		BooksCommand command = new BooksCommand();
 		command.setUpdatedBook(book);
 
 		return command;

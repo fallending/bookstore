@@ -9,6 +9,7 @@ public abstract class BooksConsts {
 
 	static final String URL_ACTION_PREV = "/books/prev";
 	static final String URL_ACTION_NEXT = "/books/next";
+	static final String URL_ACTION_SORT = "/books/sort";
 	static final String URL_ACTION_SET_PAGE_SIZE = "/books/setPageSize";
 
 	static final String BOOKS_COMMAND = "booksCommand";

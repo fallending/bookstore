@@ -14,6 +14,7 @@ import static pl.jojczykp.bookstore.controller.BooksConsts.URL_ACTION_NEXT;
 import static pl.jojczykp.bookstore.controller.BooksConsts.URL_ACTION_PREV;
 import static pl.jojczykp.bookstore.controller.BooksConsts.URL_ACTION_READ;
 import static pl.jojczykp.bookstore.controller.BooksConsts.URL_ACTION_SET_PAGE_SIZE;
+import static pl.jojczykp.bookstore.controller.BooksConsts.URL_ACTION_SORT;
 
 @Controller
 public class BooksControllerScroll {
@@ -37,6 +38,14 @@ public class BooksControllerScroll {
 		ScrollParams currentScrollParams = booksCommand.getScroll().getCurrent();
 		currentScrollParams.setOffset(currentScrollParams.getOffset() + currentScrollParams.getSize());
 
+		return redirectToRead(booksCommand, redirectAttributes);
+	}
+
+	@RequestMapping(value = URL_ACTION_SORT, method = POST)
+	public RedirectView sort(
+			@ModelAttribute(BOOKS_COMMAND) BooksCommand booksCommand,
+			RedirectAttributes redirectAttributes)
+	{
 		return redirectToRead(booksCommand, redirectAttributes);
 	}
 

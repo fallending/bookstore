@@ -3,6 +3,7 @@ package pl.jojczykp.bookstore.command;
 import org.junit.Before;
 import org.junit.Test;
 import pl.jojczykp.bookstore.utils.ScrollParams;
+import pl.jojczykp.bookstore.utils.ScrollSorter;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -22,6 +23,7 @@ public class ScrollCommandTest {
 	public void shouldBeSetUpByDefaultConstructor() {
 		assertThat(testee.getCurrent(), notNullValue());
 		assertThat(testee.getLimited(), notNullValue());
+		assertThat(testee.getSorter(), notNullValue());
 		assertThat(testee.getTotalCount(), equalTo(0));
 	}
 
@@ -41,6 +43,15 @@ public class ScrollCommandTest {
 		testee.setLimited(scrollParams);
 
 		assertThat(testee.getLimited(), sameInstance(scrollParams));
+	}
+
+	@Test
+	public void shouldSetSorter() {
+		final ScrollSorter scrollSorter = new ScrollSorter();
+
+		testee.setSorter(scrollSorter);
+
+		assertThat(testee.getSorter(), sameInstance(scrollSorter));
 	}
 
 	@Test

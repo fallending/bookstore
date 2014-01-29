@@ -7,12 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import pl.jojczykp.bookstore.domain.Book;
+import pl.jojczykp.bookstore.utils.ScrollSorterColumn;
+import pl.jojczykp.bookstore.utils.ScrollSorterDirection;
 
 import java.util.List;
 
 import static com.google.common.primitives.Ints.checkedCast;
 import static java.util.Collections.emptyList;
 import static org.hibernate.criterion.Projections.rowCount;
+import static pl.jojczykp.bookstore.utils.ScrollSorter.orderBy;
 
 @Repository
 @Transactional
@@ -32,18 +35,20 @@ public class BookRepository {
 		return (Book) getCurrentSession().get(Book.class, id);
 	}
 
-	public List<Book> read(int offset, int size) {
+	public List<Book> read(int offset, int size, ScrollSorterColumn sortColumn, ScrollSorterDirection sortDirection) {
 		if (size <= 0) {
 			return emptyList();
 		} else {
-			return readWithPositiveSize(offset, size);
+			return readWithPositiveSize(offset, size, sortColumn, sortDirection);
 		}
 	}
 
-	private List<Book> readWithPositiveSize(int offset, int size) {
+	private List<Book> readWithPositiveSize(int offset, int size,
+											ScrollSorterColumn sortColumn, ScrollSorterDirection sortDirection) {
 		Criteria criteria = getCurrentSession().createCriteria(Book.class);
 		criteria.setFirstResult(offset);
 		criteria.setMaxResults(size);
+		criteria.addOrder(orderBy(sortColumn, sortDirection));
 
 		return suppressUnchecked(criteria.list());
 	}

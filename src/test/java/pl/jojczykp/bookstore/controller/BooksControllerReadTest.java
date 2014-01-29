@@ -21,6 +21,8 @@ import pl.jojczykp.bookstore.domain.Book;
 import pl.jojczykp.bookstore.repository.BookRepository;
 import pl.jojczykp.bookstore.utils.ScrollParams;
 import pl.jojczykp.bookstore.utils.ScrollParamsLimiter;
+import pl.jojczykp.bookstore.utils.ScrollSorterColumn;
+import pl.jojczykp.bookstore.utils.ScrollSorterDirection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +44,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 import static pl.jojczykp.bookstore.testutils.matchers.HasBeanProperty.hasBeanProperty;
+import static pl.jojczykp.bookstore.utils.ScrollSorterColumn.BOOK_TITLE;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -66,6 +69,8 @@ public class BooksControllerReadTest {
 
 	private static final int LIMITED_FIRST_RETURNED_RECORD_OFFSET = 16;
 	private static final int LIMITED_RESULT_SIZE = 6;
+	private static final ScrollSorterColumn SORT_COLUMN = BOOK_TITLE;
+	private static final ScrollSorterDirection SORT_DIRECTION = ScrollSorterDirection.DESC;
 	private static final ScrollParams LIMITED_SCROLL_PARAMS = limitedScrollParams();
 
 	private static ScrollParams limitedScrollParams() {
@@ -85,12 +90,16 @@ public class BooksControllerReadTest {
 
 	@Value("${view.books.defaultOffset}") private int defaultOffset;
 	@Value("${view.books.defaultSize}") private int defaultSize;
+	@Value("${view.books.defaultSortColumn}") private ScrollSorterColumn defaultSortColumn;
+	@Value("${view.books.defaultSortDirection}") private ScrollSorterDirection defaultSortDirection;
 
 	@Captor private ArgumentCaptor<List<Book>> assembledListCaptor;
 	@Captor private ArgumentCaptor<ScrollParams> scrollParamsCaptor;
 	@Captor private ArgumentCaptor<Integer> totalCountCaptor;
 	@Captor private ArgumentCaptor<Integer> offsetCaptor;
 	@Captor private ArgumentCaptor<Integer> sizeCaptor;
+	@Captor private ArgumentCaptor<ScrollSorterColumn> scrollSorterColumnCaptor;
+	@Captor private ArgumentCaptor<ScrollSorterDirection> scrollSorterDirectionCaptor;
 
 	@Before
 	public void setUp() {
@@ -105,7 +114,9 @@ public class BooksControllerReadTest {
 	private void givenRepositoryMockConfigured() {
 		reset(bookRepositoryMock);
 		given(bookRepositoryMock.totalCount()).willReturn(REPO_TOTAL_COUNT);
-		given(bookRepositoryMock.read(anyInt(), anyInt())).willReturn(REPO_RESULT_DATA);
+		given(bookRepositoryMock
+				.read(anyInt(), anyInt(), any(ScrollSorterColumn.class), any(ScrollSorterDirection.class)))
+				.willReturn(REPO_RESULT_DATA);
 	}
 
 	private void givenBookAssemblerMockConfigured() {
@@ -135,6 +146,22 @@ public class BooksControllerReadTest {
 	}
 
 	@Test
+	public void shouldUseDefaultValueFromConfigWhenNoSortColumnParameterGiven() throws Exception {
+		mvcMock.perform(get(URL_ACTION_READ))
+				.andExpect(status().isOk())
+				.andExpect(model().attribute(BOOKS_COMMAND,
+						hasBeanProperty("scroll.sorter.column", equalTo(defaultSortColumn))));
+	}
+
+	@Test
+	public void shouldUseDefaultValueFromConfigWhenNoSortDirectionParameterGiven() throws Exception {
+		mvcMock.perform(get(URL_ACTION_READ))
+				.andExpect(status().isOk())
+				.andExpect(model().attribute(BOOKS_COMMAND,
+						hasBeanProperty("scroll.sorter.direction", equalTo(defaultSortDirection))));
+	}
+
+	@Test
 	public void shouldUseLimitationOfOffsetAndSizeParameters() throws Exception {
 		whenControllerReadPerformedWithCommand();
 		thenExpectParametersLimitationUsage();
@@ -153,6 +180,8 @@ public class BooksControllerReadTest {
 		BooksCommand command = new BooksCommand();
 		command.getScroll().getCurrent().setOffset(REPO_FIRST_RETURNED_RECORD_OFFSET);
 		command.getScroll().getCurrent().setSize(REPO_RESULT_SIZE);
+		command.getScroll().getSorter().setColumn(SORT_COLUMN);
+		command.getScroll().getSorter().setDirection(SORT_DIRECTION);
 
 		mvcMockPerformResult = mvcMock.perform(get(URL_ACTION_READ)
 				.flashAttr(BOOKS_COMMAND, command));
@@ -167,9 +196,12 @@ public class BooksControllerReadTest {
 
 	private void thenExpectBookRepositoryRead() {
 		verify(bookRepositoryMock).totalCount();
-		verify(bookRepositoryMock).read(offsetCaptor.capture(), sizeCaptor.capture());
+		verify(bookRepositoryMock).read(offsetCaptor.capture(), sizeCaptor.capture(),
+				scrollSorterColumnCaptor.capture(), scrollSorterDirectionCaptor.capture());
 		assertThat(offsetCaptor.getValue(), equalTo(LIMITED_FIRST_RETURNED_RECORD_OFFSET));
 		assertThat(sizeCaptor.getValue(), equalTo(LIMITED_RESULT_SIZE));
+		assertThat(scrollSorterColumnCaptor.getValue(), equalTo(SORT_COLUMN));
+		assertThat(scrollSorterDirectionCaptor.getValue(), equalTo(SORT_DIRECTION));
 	}
 
 	private void thenExpectBookAssemblerInvoked() {

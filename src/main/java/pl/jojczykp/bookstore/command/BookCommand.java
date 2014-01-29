@@ -2,18 +2,10 @@ package pl.jojczykp.bookstore.command;
 
 public class BookCommand {
 
-	private boolean checked;
 	private int id;
 	private int version;
+	private boolean checked;
 	private String title;
-
-	public boolean isChecked() {
-		return checked;
-	}
-
-	public void setChecked(boolean checked) {
-		this.checked = checked;
-	}
 
 	public int getId() {
 		return id;
@@ -26,8 +18,17 @@ public class BookCommand {
 	public int getVersion() {
 		return version;
 	}
+
 	public void setVersion(int version) {
 		this.version = version;
+	}
+
+	public boolean isChecked() {
+		return checked;
+	}
+
+	public void setChecked(boolean checked) {
+		this.checked = checked;
 	}
 
 	public String getTitle() {
