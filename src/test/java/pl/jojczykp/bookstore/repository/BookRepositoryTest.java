@@ -227,7 +227,7 @@ public class BookRepositoryTest {
 
 	private void givenRepositoryWith(Book... books) {
 		for(Book book: books) {
-			repository.getCurrentSession().save(book);
+			repository.create(book);
 		}
 	}
 

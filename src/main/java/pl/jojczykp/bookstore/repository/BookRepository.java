@@ -23,10 +23,6 @@ public class BookRepository {
 
 	@Autowired private SessionFactory sessionFactory;
 
-	public Session getCurrentSession() {
-		return sessionFactory.getCurrentSession();
-	}
-
 	public int create(Book book) {
 		return (int) getCurrentSession().save(book);
 	}
@@ -72,4 +68,9 @@ public class BookRepository {
 		Long result = (Long) getCurrentSession().createCriteria(Book.class).setProjection(rowCount()).uniqueResult();
 		return checkedCast(result);
 	}
+
+	private Session getCurrentSession() {
+		return sessionFactory.getCurrentSession();
+	}
+
 }
