@@ -17,12 +17,9 @@ import pl.jojczykp.bookstore.utils.ScrollSorterDirection;
 import java.lang.reflect.Field;
 import java.util.List;
 
-import static java.lang.Integer.MAX_VALUE;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.emptyCollectionOf;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
 import static pl.jojczykp.bookstore.utils.ScrollSorterColumn.BOOK_TITLE;
 import static pl.jojczykp.bookstore.utils.ScrollSorterDirection.ASC;
 import static pl.jojczykp.bookstore.utils.ScrollSorterDirection.DESC;
@@ -32,172 +29,227 @@ import static pl.jojczykp.bookstore.utils.ScrollSorterDirection.DESC;
 @Transactional
 public class BookRepositoryTest {
 
-	private static final int TOTAL_TEST_BOOKS_COUNT = 15;
-	private static final int CURRENT_TEST_BOOK_VERSION = 4;
 	private static final ScrollSorterColumn SAMPLE_SORT_COLUMN = BOOK_TITLE;
 	private static final ScrollSorterDirection SAMPLE_DIRECTION = ASC;
+
+	private static final Book BOOK_A = new Book(0, 1, "Book Title A");
+	private static final Book BOOK_B = new Book(0, 7, "Book Title B");
+	private static final Book BOOK_C = new Book(0, 3, "Book Title C");
+	private static final Book BOOK_D = new Book(0, 4, "Book Title D");
+	private static final Book BOOK_E = new Book(0, 5, "Book Title E");
+	private static final Book BOOK_C_LOW_CASE = new Book(0, 2, "Book Title c");
 
 	@Autowired private BookRepository repository;
 
 	@Test
 	public void shouldComputeTotalCountOfBooks() {
-		assertThat(repository.totalCount(), is(TOTAL_TEST_BOOKS_COUNT));
+		final Book[] givenBooks = {BOOK_A, BOOK_B, BOOK_C, BOOK_D, BOOK_E};
+		givenRepositoryWith(givenBooks);
+
+		assertThat(repository.totalCount(), is(givenBooks.length));
 	}
 
 	@Test
 	public void shouldGetBook() {
-		final int id = 4;
+		givenRepositoryWith(BOOK_A, BOOK_B, BOOK_C, BOOK_D, BOOK_E);
 
-		Book book = repository.get(id);
+		Book readBook = repository.get(BOOK_D.getId());
 
-		assertThat(book.getId(), is(id));
+		assertEqualFields(readBook, BOOK_D);
 	}
 
 	@Test
-	public void shouldListBooksByOffsetAndSize() {
-		final int offset = 2;
+	public void shouldReadBooksByOffsetAndSize() {
+		final int offset = 1;
 		final int size = 3;
+		givenRepositoryWith(BOOK_A, BOOK_B, BOOK_C, BOOK_D, BOOK_E);
 
-		List<Book> books = repository.read(offset, size, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
+		List<Book> readBooks = repository.read(offset, size, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
 
-		assertThat(books.size(), is(size));
-		assertThat(books.get(0), is(notNullValue()));
-		assertThat(books.get(1), is(notNullValue()));
-		assertThat(books.get(2), is(notNullValue()));
-	}
-	@Test
-	public void shouldListBooksWhenOffsetInRangeAndSizeOverRange() {
-		final int offset = 2;
-		final int expectedSize = TOTAL_TEST_BOOKS_COUNT - offset;
-
-		List<Book> books = repository.read(offset, MAX_VALUE, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
-
-		assertThat(books.size(), is(expectedSize));
-		for (int i = 0; i < expectedSize; i++) {
-			assertThat(books.get(i), is(notNullValue()));
-		}
+		assertThatHasOnly(readBooks, BOOK_B, BOOK_C, BOOK_D);
 	}
 
 	@Test
-	public void shouldListNoBooksWhenOffsetOverRange() {
+	public void shouldReadBooksWhenOffsetInRangeAndSizeOutOfRange() {
+		final Book[] givenBooks = {BOOK_A, BOOK_B, BOOK_C, BOOK_D, BOOK_E};
+		givenRepositoryWith(givenBooks);
+
+		List<Book> readBooks = repository.read(2, givenBooks.length + 1, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
+
+		assertThatHasOnly(readBooks, BOOK_C, BOOK_D, BOOK_E);
+	}
+
+	@Test
+	public void shouldReadBooksFromOffsetZeroWhenGivenNegativeOffset() {
+		final int negativeOffset = -2;
+		final Book[] givenBooks = {BOOK_A, BOOK_B, BOOK_C};
+		givenRepositoryWith(givenBooks);
+
+		List<Book> readBooks = repository.read(negativeOffset, 2, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
+
+		assertThatHasOnly(readBooks, BOOK_A, BOOK_B);
+	}
+
+	@Test
+	public void shouldReadEmptyBooksListWhenGivenOutOfRangeOffset() {
+		final Book[] givenBooks = {BOOK_A, BOOK_B, BOOK_C, BOOK_D, BOOK_E};
+		final int outOfRangeOffset = givenBooks.length + 2;
 		final int anySize = 8;
+		givenRepositoryWith(givenBooks);
 
-		List<Book> books = repository.read(TOTAL_TEST_BOOKS_COUNT, anySize, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
+		List<Book> readBooks = repository.read(outOfRangeOffset, anySize, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
 
-		assertThat(books.size(), is(0));
+		assertThat(readBooks.size(), is(0));
 	}
 
 	@Test
-	public void shouldTreatNegativeOffsetAsZero() {
-		final int offset = -2;
+	public void shouldReadEmptyBooksListWhenGivenNegativeSize() {
+		final int anyOffset = 2;
+		final int negativeSize = -1;
+		givenRepositoryWith(BOOK_A, BOOK_B);
 
-		List<Book> books = repository.read(offset, TOTAL_TEST_BOOKS_COUNT, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
+		List<Book> readBooks = repository.read(anyOffset, negativeSize, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
 
-		assertThat(books.size(), is(TOTAL_TEST_BOOKS_COUNT));
+		assertThat(readBooks.size(), is(0));
 	}
 
 	@Test
-	public void shouldListEmptyForNegativeSize() {
-		final int size = -1;
+	public void shouldReadEmptyBooksListWhenGivenZeroSize() {
+		final int anyOffset = 7;
+		givenRepositoryWith(BOOK_A, BOOK_B);
 
-		List<Book> books = repository.read(2, size, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
+		List<Book> readBooks = repository.read(anyOffset, 0, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
 
-		assertThat(books, emptyCollectionOf(Book.class));
+		assertThat(readBooks.size(), is(0));
 	}
 
 	@Test
-	public void shouldListEmptyForZeroSize() {
-		final int offset = 7;
+	public void shouldReadBooksOrderingAsc() throws NoSuchFieldException {
+		final Book[] givenBooks = {BOOK_B, BOOK_A, BOOK_C};
+		givenRepositoryWith(givenBooks);
+		givenIgnoreCaseWhileSort(BOOK_TITLE, true);
 
-		List<Book> books = repository.read(offset, 0, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
+		List<Book> readBooks = repository.read(0, givenBooks.length, SAMPLE_SORT_COLUMN, ASC);
 
-		assertThat(books, emptyCollectionOf(Book.class));
+		assertThatHasOnly(readBooks, BOOK_A, BOOK_B, BOOK_C);
 	}
 
 	@Test
-	public void shouldOrderAsc() throws NoSuchFieldException {
-		setSortColumnWithIgnoreCase(BOOK_TITLE, true);
+	public void shouldReadBooksOrderingDesc() throws NoSuchFieldException {
+		final Book[] givenBooks = {BOOK_B, BOOK_A, BOOK_C};
+		givenRepositoryWith(givenBooks);
+		givenIgnoreCaseWhileSort(BOOK_TITLE, true);
 
-		List<Book> books = repository.read(0, 2, SAMPLE_SORT_COLUMN, ASC);
+		List<Book> readBooks = repository.read(0, givenBooks.length, SAMPLE_SORT_COLUMN, DESC);
 
-		assertThat(books.get(0).getTitle(), is(equalTo("Test Book 00 AAA")));
-		assertThat(books.get(1).getTitle(), is(equalTo("Test Book 00 bbb")));
+		assertThatHasOnly(readBooks, BOOK_C, BOOK_B, BOOK_A);
 	}
 
 	@Test
-	public void shouldOrderDesc() throws NoSuchFieldException {
-		setSortColumnWithIgnoreCase(BOOK_TITLE, true);
+	public void shouldReadBooksOrderingCaseInsensitively() throws NoSuchFieldException {
+		givenIgnoreCaseWhileSort(BOOK_TITLE, true);
+		givenRepositoryWith(BOOK_C_LOW_CASE, BOOK_A);
 
-		List<Book> books = repository.read(1, 2, SAMPLE_SORT_COLUMN, DESC);
+		List<Book> readBooks = repository.read(0, 2, SAMPLE_SORT_COLUMN, ASC);
 
-		assertThat(books.get(0).getTitle(), is(equalTo("Test Book 14")));
-		assertThat(books.get(1).getTitle(), is(equalTo("Test Book 13")));
+		assertThatHasOnly(readBooks, BOOK_A, BOOK_C_LOW_CASE);
 	}
-
 	@Test
-	public void shouldOrderCaseInsensitive() throws NoSuchFieldException {
-		setSortColumnWithIgnoreCase(BOOK_TITLE, false);
+	public void shouldReadBooksOrderingCaseSensitively() throws NoSuchFieldException {
+		givenIgnoreCaseWhileSort(BOOK_TITLE, false);
+		givenRepositoryWith(BOOK_C_LOW_CASE, BOOK_D);
 
-		List<Book> books = repository.read(0, 2, SAMPLE_SORT_COLUMN, ASC);
+		List<Book> readBooks = repository.read(0, 2, SAMPLE_SORT_COLUMN, ASC);
 
-		assertThat(books.get(0).getTitle(), is(equalTo("Test Book 00 AAA")));
-		assertThat(books.get(1).getTitle(), is(equalTo("Test Book 00 bbb")));
+		assertThatHasOnly(readBooks, BOOK_D, BOOK_C_LOW_CASE);
 	}
 
-	private void setSortColumnWithIgnoreCase(ScrollSorterColumn column, boolean value) throws NoSuchFieldException {
-		Field ignoreCaseField = column.getClass().getDeclaredField("ignoreCase");
-		ReflectionUtils.makeAccessible(ignoreCaseField);
-		ReflectionUtils.setField(ignoreCaseField, column, value);
-	}
 	@Test
 	@Rollback(true)
 	public void shouldCreateBook() {
-		final String title = "Created book";
-		Book book = new Book(title);
+		int id = repository.create(BOOK_C);
 
-		int id = repository.create(book);
-
-		assertThat(repository.totalCount(), is(TOTAL_TEST_BOOKS_COUNT + 1));
-		assertThat(repository.get(TOTAL_TEST_BOOKS_COUNT).getId(), is(id));
-		assertThat(repository.get(TOTAL_TEST_BOOKS_COUNT).getTitle(), is(title));
+		assertThat(repository.totalCount(), is(1));
+		assertEqualFields(repository.get(id), BOOK_C);
 	}
 
 	@Test
 	@Rollback(true)
 	public void shouldUpdateBook() {
 		final int id = 4;
-		final String newTitle = "New Title";
+		Book bookOld = new Book(id, 2, "Old Title");
+		Book bookNew = new Book(id, 2, "New Title");
+		givenRepositoryWith(bookOld);
 
-		repository.update(new Book(id, CURRENT_TEST_BOOK_VERSION, newTitle));
+		repository.update(bookNew);
 
-		assertThat(repository.get(id).getTitle(), is(newTitle));
+		assertEqualFields(repository.get(id), bookNew);
 	}
 
 	@Test(expected = StaleObjectStateException.class)
 	@Rollback(true)
 	public void shouldFailUpdatingBookWhenModifiedByOtherSession() {
-		final int id = 7;
-		final String newTitle = "New Title";
+		final int anyId = 7;
+		final int currentVersion = 7;
+		Book bookOld = new Book(anyId, currentVersion, "Old Title");
+		givenRepositoryWith(bookOld);
+		Book bookNew = new Book(bookOld.getId(), currentVersion - 1, "New Title");
 
-		repository.update(new Book(id, CURRENT_TEST_BOOK_VERSION - 1, newTitle));
+		repository.update(bookNew);
 	}
 
-	@Test(expected = ObjectNotFoundException.class)
+	@Test
 	@Rollback(true)
 	public void shouldDeleteBook() {
-		final int id = 3;
+		givenRepositoryWith(BOOK_A, BOOK_B, BOOK_C);
 
-		repository.delete(id);
+		repository.delete(BOOK_B.getId());
 
-		repository.get(id);
+		assertThat(repository.totalCount(), is(2));
+		assertEqualFields(repository.get(BOOK_A.getId()), BOOK_A);
+		assertEqualFields(repository.get(BOOK_C.getId()), BOOK_C);
 	}
 
 	@Test(expected = ObjectNotFoundException.class)
 	@Rollback(true)
-	public void shouldFailWhenDeletingNotExistingRecord() {
-		final int idThatDoesNotExist = 1234;
+	public void shouldFailDeletingNotExistingBook() {
+		givenRepositoryWith(BOOK_A, BOOK_B);
+		int notExistingId = BOOK_A.getId() + BOOK_B.getId();
 
-		repository.delete(idThatDoesNotExist);
+		repository.delete(notExistingId);
+	}
+
+	private void givenIgnoreCaseWhileSort(ScrollSorterColumn column, boolean value) throws NoSuchFieldException {
+		Field ignoreCaseField = column.getClass().getDeclaredField("ignoreCase");
+		ReflectionUtils.makeAccessible(ignoreCaseField);
+		ReflectionUtils.setField(ignoreCaseField, column, value);
+	}
+
+	private void givenRepositoryWith(Book... books) {
+		for(Book book: books) {
+			repository.getCurrentSession().save(book);
+		}
+	}
+
+	private void assertThatHasOnly(List<Book> given, Book... expected) {
+		assertThat(expected.length, is(given.size()));
+		for (int i = 0; i < given.size(); i++) {
+			assertEqualFields(given.get(i), expected[i]);
+		}
+	}
+
+	private void assertFieldValuesAreEqual(Field field, Book readBook, Book givenBook) {
+		try {
+			assertThat(field.get(readBook), is(equalTo(field.get(givenBook))));
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private void assertEqualFields(Book readBook, Book givenBook) {
+		for (Field field: Book.class.getFields()) {
+			assertFieldValuesAreEqual(field, readBook, givenBook);
+		}
 	}
 
 }

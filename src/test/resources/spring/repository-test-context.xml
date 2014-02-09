@@ -35,7 +35,6 @@
 
 	<jdbc:embedded-database id="dataSource">
 		<jdbc:script location="classpath:spring/sql/schema.sql"/>
-		<jdbc:script location="classpath:spring/sql/test_data.sql"/>
 	</jdbc:embedded-database>
 
 </beans>
