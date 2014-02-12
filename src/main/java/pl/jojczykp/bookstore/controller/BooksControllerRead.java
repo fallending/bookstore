@@ -1,7 +1,6 @@
 package pl.jojczykp.bookstore.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -11,10 +10,9 @@ import pl.jojczykp.bookstore.assembler.BookAssembler;
 import pl.jojczykp.bookstore.command.BooksCommand;
 import pl.jojczykp.bookstore.domain.Book;
 import pl.jojczykp.bookstore.repository.BookRepository;
+import pl.jojczykp.bookstore.utils.BooksCommandFactory;
 import pl.jojczykp.bookstore.utils.ScrollParams;
 import pl.jojczykp.bookstore.utils.ScrollParamsLimiter;
-import pl.jojczykp.bookstore.utils.ScrollSorterColumn;
-import pl.jojczykp.bookstore.utils.ScrollSorterDirection;
 
 import java.util.List;
 
@@ -26,23 +24,14 @@ import static pl.jojczykp.bookstore.controller.BooksConsts.URL_ACTION_READ;
 @Controller
 public class BooksControllerRead {
 
+	@Autowired private BooksCommandFactory booksCommandFactory;
 	@Autowired private BookRepository bookRepository;
 	@Autowired private ScrollParamsLimiter scrollParamsLimiter;
 	@Autowired private BookAssembler bookAssembler;
 
-	@Value("${view.books.defaultOffset}") private int defaultOffset;
-	@Value("${view.books.defaultSize}") private int defaultSize;
-	@Value("${view.books.defaultSortColumn}") private ScrollSorterColumn defaultSortColumn;
-	@Value("${view.books.defaultSortDirection}") private ScrollSorterDirection defaultSortDirection;
-
 	@ModelAttribute(BOOKS_COMMAND)
 	public BooksCommand getDefaultBooksCommand() {
-		BooksCommand booksCommand = new BooksCommand();
-		booksCommand.getScroll().getCurrent().setOffset(defaultOffset);
-		booksCommand.getScroll().getCurrent().setSize(defaultSize);
-		booksCommand.getScroll().getSorter().setColumn(defaultSortColumn);
-		booksCommand.getScroll().getSorter().setDirection(defaultSortDirection);
-		return booksCommand;
+		return booksCommandFactory.create();
 	}
 
 	@RequestMapping(value = URL_ACTION_READ, method = GET)

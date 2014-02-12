@@ -35,7 +35,7 @@ import static pl.jojczykp.bookstore.testutils.matchers.HasBeanProperty.hasBeanPr
 		"file:src/main/webapp/WEB-INF/mvc-dispatcher-servlet.xml",
 		"classpath:spring/repository-mock-context.xml",
 		"classpath:spring/scroll-params-limiter-mock-context.xml",
-		"classpath:spring/config-test-context.xml"
+		"classpath:spring/beans-mock-context.xml"
 })
 public class BooksControllerCreateTest {
 

@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 @ContextConfiguration({
 		"file:src/main/webapp/WEB-INF/mvc-dispatcher-servlet.xml",
 		"classpath:spring/repository-mock-context.xml",
-		"classpath:spring/config-test-context.xml"
+		"classpath:spring/beans-mock-context.xml"
 })
 public class WelcomeControllerTest {
 

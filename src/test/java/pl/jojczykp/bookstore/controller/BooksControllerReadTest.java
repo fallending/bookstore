@@ -1,5 +1,6 @@
 package pl.jojczykp.bookstore.controller;
 
+import org.hamcrest.core.IsSame;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -7,7 +8,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -19,6 +19,7 @@ import pl.jojczykp.bookstore.command.BookCommand;
 import pl.jojczykp.bookstore.command.BooksCommand;
 import pl.jojczykp.bookstore.domain.Book;
 import pl.jojczykp.bookstore.repository.BookRepository;
+import pl.jojczykp.bookstore.utils.BooksCommandFactory;
 import pl.jojczykp.bookstore.utils.ScrollParams;
 import pl.jojczykp.bookstore.utils.ScrollParamsLimiter;
 import pl.jojczykp.bookstore.utils.ScrollSorterColumn;
@@ -30,7 +31,8 @@ import java.util.List;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.core.IsSame.sameInstance;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
@@ -53,7 +55,7 @@ import static pl.jojczykp.bookstore.utils.ScrollSorterColumn.BOOK_TITLE;
 		"classpath:spring/repository-mock-context.xml",
 		"classpath:spring/assembler-mock-context.xml",
 		"classpath:spring/scroll-params-limiter-mock-context.xml",
-		"classpath:spring/config-test-context.xml"
+		"classpath:spring/beans-mock-context.xml"
 })
 public class BooksControllerReadTest {
 
@@ -83,15 +85,11 @@ public class BooksControllerReadTest {
 
 	private MockMvc mvcMock;
 	private ResultActions mvcMockPerformResult;
+	@Autowired private BooksCommandFactory booksCommandFactory;
 	@Autowired private BookRepository bookRepositoryMock;
 	@Autowired private BookAssembler bookAssemblerMock;
 	@Autowired private ScrollParamsLimiter scrollParamsLimiterMock;
 	@Autowired private WebApplicationContext wac;
-
-	@Value("${view.books.defaultOffset}") private int defaultOffset;
-	@Value("${view.books.defaultSize}") private int defaultSize;
-	@Value("${view.books.defaultSortColumn}") private ScrollSorterColumn defaultSortColumn;
-	@Value("${view.books.defaultSortDirection}") private ScrollSorterDirection defaultSortDirection;
 
 	@Captor private ArgumentCaptor<List<Book>> assembledListCaptor;
 	@Captor private ArgumentCaptor<ScrollParams> scrollParamsCaptor;
@@ -130,35 +128,13 @@ public class BooksControllerReadTest {
 	}
 
 	@Test
-	public void shouldUseDefaultValueFromConfigWhenNoOffsetParameterGiven() throws Exception {
-		mvcMock.perform(get(URL_ACTION_READ))
-				.andExpect(status().isOk())
-				.andExpect(model().attribute(BOOKS_COMMAND,
-						hasBeanProperty("scroll.current.offset", equalTo(defaultOffset))));
-	}
+	public void shouldUseDefaultBooksCommandNoCommandPresent() throws Exception {
+		final BooksCommand defaultCommand = new BooksCommand();
+		given(booksCommandFactory.create()).willReturn(defaultCommand);
 
-	@Test
-	public void shouldUseDefaultValueFromConfigWhenNoSizeParameterGiven() throws Exception {
 		mvcMock.perform(get(URL_ACTION_READ))
 				.andExpect(status().isOk())
-				.andExpect(model().attribute(BOOKS_COMMAND,
-						hasBeanProperty("scroll.current.size", equalTo(defaultSize))));
-	}
-
-	@Test
-	public void shouldUseDefaultValueFromConfigWhenNoSortColumnParameterGiven() throws Exception {
-		mvcMock.perform(get(URL_ACTION_READ))
-				.andExpect(status().isOk())
-				.andExpect(model().attribute(BOOKS_COMMAND,
-						hasBeanProperty("scroll.sorter.column", equalTo(defaultSortColumn))));
-	}
-
-	@Test
-	public void shouldUseDefaultValueFromConfigWhenNoSortDirectionParameterGiven() throws Exception {
-		mvcMock.perform(get(URL_ACTION_READ))
-				.andExpect(status().isOk())
-				.andExpect(model().attribute(BOOKS_COMMAND,
-						hasBeanProperty("scroll.sorter.direction", equalTo(defaultSortDirection))));
+				.andExpect(model().attribute(BOOKS_COMMAND, is(sameInstance(defaultCommand))));
 	}
 
 	@Test
@@ -206,7 +182,7 @@ public class BooksControllerReadTest {
 
 	private void thenExpectBookAssemblerInvoked() {
 		verify(bookAssemblerMock).toCommands(assembledListCaptor.capture());
-		assertThat(assembledListCaptor.getValue(), sameInstance(REPO_RESULT_DATA));
+		assertThat(assembledListCaptor.getValue(), IsSame.sameInstance(REPO_RESULT_DATA));
 	}
 
 	private void thenExpectCorrectViewSelectedAndModelSet() throws Exception {
