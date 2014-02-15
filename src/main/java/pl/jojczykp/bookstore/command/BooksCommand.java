@@ -5,25 +5,25 @@ import java.util.List;
 
 public class BooksCommand {
 
-	private ScrollCommand scroll;
+	private PagerCommand pager;
 	private BookCommand newBook;
 	private BookCommand updatedBook;
 	private List<BookCommand> books;
 	private String message;
 
 	public BooksCommand() {
-		scroll = new ScrollCommand();
+		pager = new PagerCommand();
 		newBook = new BookCommand();
 		updatedBook = new BookCommand();
 		books = new ArrayList<>();
 	}
 
-	public ScrollCommand getScroll() {
-		return scroll;
+	public PagerCommand getPager() {
+		return pager;
 	}
 
-	public void setScroll(ScrollCommand scroll) {
-		this.scroll = scroll;
+	public void setPager(PagerCommand pager) {
+		this.pager = pager;
 	}
 
 	public BookCommand getNewBook() {

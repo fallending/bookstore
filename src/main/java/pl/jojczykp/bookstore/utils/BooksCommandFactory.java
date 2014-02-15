@@ -7,16 +7,16 @@ public class BooksCommandFactory {
 
 	@Value("${view.books.defaultOffset}") private int defaultOffset;
 	@Value("${view.books.defaultSize}") private int defaultSize;
-	@Value("${view.books.defaultSortColumn}") private ScrollSorterColumn defaultSortColumn;
-	@Value("${view.books.defaultSortDirection}") private ScrollSorterDirection defaultSortDirection;
+	@Value("${view.books.defaultSortColumn}") private PageSorterColumn defaultSortColumn;
+	@Value("${view.books.defaultSortDirection}") private PageSorterDirection defaultSortDirection;
 
 	public BooksCommand create() {
 		BooksCommand booksCommand = new BooksCommand();
 
-		booksCommand.getScroll().getCurrent().setOffset(defaultOffset);
-		booksCommand.getScroll().getCurrent().setSize(defaultSize);
-		booksCommand.getScroll().getSorter().setColumn(defaultSortColumn);
-		booksCommand.getScroll().getSorter().setDirection(defaultSortDirection);
+		booksCommand.getPager().getCurrent().setOffset(defaultOffset);
+		booksCommand.getPager().getCurrent().setSize(defaultSize);
+		booksCommand.getPager().getSorter().setColumn(defaultSortColumn);
+		booksCommand.getPager().getSorter().setDirection(defaultSortDirection);
 
 		return booksCommand;
 	}

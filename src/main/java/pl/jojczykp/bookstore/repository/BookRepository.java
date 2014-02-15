@@ -7,15 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import pl.jojczykp.bookstore.domain.Book;
-import pl.jojczykp.bookstore.utils.ScrollSorterColumn;
-import pl.jojczykp.bookstore.utils.ScrollSorterDirection;
+import pl.jojczykp.bookstore.utils.PageSorterColumn;
+import pl.jojczykp.bookstore.utils.PageSorterDirection;
 
 import java.util.List;
 
 import static com.google.common.primitives.Ints.checkedCast;
 import static java.util.Collections.emptyList;
 import static org.hibernate.criterion.Projections.rowCount;
-import static pl.jojczykp.bookstore.utils.ScrollSorter.orderBy;
+import static pl.jojczykp.bookstore.utils.PageSorter.orderBy;
 
 @Repository
 @Transactional
@@ -31,7 +31,7 @@ public class BookRepository {
 		return (Book) getCurrentSession().get(Book.class, id);
 	}
 
-	public List<Book> read(int offset, int size, ScrollSorterColumn sortColumn, ScrollSorterDirection sortDirection) {
+	public List<Book> read(int offset, int size, PageSorterColumn sortColumn, PageSorterDirection sortDirection) {
 		if (size <= 0) {
 			return emptyList();
 		} else {
@@ -40,7 +40,7 @@ public class BookRepository {
 	}
 
 	private List<Book> readWithPositiveSize(int offset, int size,
-											ScrollSorterColumn sortColumn, ScrollSorterDirection sortDirection) {
+											PageSorterColumn sortColumn, PageSorterDirection sortDirection) {
 		Criteria criteria = getCurrentSession().createCriteria(Book.class);
 		criteria.setFirstResult(offset);
 		criteria.setMaxResults(size);

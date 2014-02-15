@@ -4,35 +4,35 @@ import org.hibernate.criterion.Order;
 
 import static org.hibernate.criterion.Order.asc;
 import static org.hibernate.criterion.Order.desc;
-import static pl.jojczykp.bookstore.utils.ScrollSorterColumn.BOOK_TITLE;
-import static pl.jojczykp.bookstore.utils.ScrollSorterDirection.ASC;
+import static pl.jojczykp.bookstore.utils.PageSorterColumn.BOOK_TITLE;
+import static pl.jojczykp.bookstore.utils.PageSorterDirection.ASC;
 
-public class ScrollSorter {
+public class PageSorter {
 
-	private static final ScrollSorterColumn ANY_NOT_NULL_COLUMN = BOOK_TITLE;
-	private static final ScrollSorterDirection ANY_NOT_NULL_DIRECTION = ASC;
+	private static final PageSorterColumn ANY_NOT_NULL_COLUMN = BOOK_TITLE;
+	private static final PageSorterDirection ANY_NOT_NULL_DIRECTION = ASC;
 
-	private ScrollSorterColumn column;
-	private ScrollSorterDirection direction;
+	private PageSorterColumn column;
+	private PageSorterDirection direction;
 
-	public ScrollSorter() {
+	public PageSorter() {
 		this.column = ANY_NOT_NULL_COLUMN;
 		this.direction = ANY_NOT_NULL_DIRECTION;
 	}
 
-	public ScrollSorterColumn getColumn() {
+	public PageSorterColumn getColumn() {
 		return column;
 	}
 
-	public void setColumn(ScrollSorterColumn column) {
+	public void setColumn(PageSorterColumn column) {
 		this.column = column;
 	}
 
-	public ScrollSorterDirection getDirection() {
+	public PageSorterDirection getDirection() {
 		return direction;
 	}
 
-	public void setDirection(ScrollSorterDirection direction) {
+	public void setDirection(PageSorterDirection direction) {
 		this.direction = direction;
 	}
 
@@ -41,11 +41,11 @@ public class ScrollSorter {
 		return getClass().getSimpleName() + "{column=" + column.name() + ", direction=" + direction.name() + "}";
 	}
 
-	public static Order orderBy(ScrollSorterColumn column, ScrollSorterDirection direction) {
+	public static Order orderBy(PageSorterColumn column, PageSorterDirection direction) {
 		return caseAwareOrderFor(column.isIgnoreCase(), directionAwareOrderFor(column, direction));
 	}
 
-	private static Order directionAwareOrderFor(ScrollSorterColumn column, ScrollSorterDirection direction) {
+	private static Order directionAwareOrderFor(PageSorterColumn column, PageSorterDirection direction) {
 		if (direction == ASC) {
 			return asc(column.getNameForQuery());
 		} else {

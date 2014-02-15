@@ -22,8 +22,8 @@ public class BooksCommandFactoryTest {
 
 	@Value("${view.books.defaultOffset}") private int defaultOffset;
 	@Value("${view.books.defaultSize}") private int defaultSize;
-	@Value("${view.books.defaultSortColumn}") private ScrollSorterColumn defaultSortColumn;
-	@Value("${view.books.defaultSortDirection}") private ScrollSorterDirection defaultSortDirection;
+	@Value("${view.books.defaultSortColumn}") private PageSorterColumn defaultSortColumn;
+	@Value("${view.books.defaultSortDirection}") private PageSorterDirection defaultSortDirection;
 
 	@Autowired private BooksCommandFactory testee;
 
@@ -31,28 +31,28 @@ public class BooksCommandFactoryTest {
 	public void shouldCreateDefaultCommandWithDefaultOffset() {
 		BooksCommand command = testee.create();
 
-		assertThat(command.getScroll().getCurrent().getOffset(), is(defaultOffset));
+		assertThat(command.getPager().getCurrent().getOffset(), is(defaultOffset));
 	}
 
 	@Test
 	public void shouldCreateDefaultCommandWithDefaultSize() {
 		BooksCommand command = testee.create();
 
-		assertThat(command.getScroll().getCurrent().getSize(), is(defaultSize));
+		assertThat(command.getPager().getCurrent().getSize(), is(defaultSize));
 	}
 
 	@Test
 	public void shouldCreateDefaultCommandWithSefaultSortColumn() {
 		BooksCommand command = testee.create();
 
-		assertThat(command.getScroll().getSorter().getColumn(), is(defaultSortColumn));
+		assertThat(command.getPager().getSorter().getColumn(), is(defaultSortColumn));
 	}
 
 	@Test
 	public void shouldCreateDefaultCommandWithDefaultSortDirection() {
 		BooksCommand command = testee.create();
 
-		assertThat(command.getScroll().getSorter().getDirection(), is(defaultSortDirection));
+		assertThat(command.getPager().getSorter().getDirection(), is(defaultSortDirection));
 	}
 
 }

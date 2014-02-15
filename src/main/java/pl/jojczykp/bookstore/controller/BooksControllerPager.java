@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 import pl.jojczykp.bookstore.command.BooksCommand;
-import pl.jojczykp.bookstore.utils.ScrollParams;
+import pl.jojczykp.bookstore.utils.PageParams;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static pl.jojczykp.bookstore.controller.BooksConsts.BOOKS_COMMAND;
@@ -17,15 +17,15 @@ import static pl.jojczykp.bookstore.controller.BooksConsts.URL_ACTION_SET_PAGE_S
 import static pl.jojczykp.bookstore.controller.BooksConsts.URL_ACTION_SORT;
 
 @Controller
-public class BooksControllerScroll {
+public class BooksControllerPager {
 
 	@RequestMapping(value = URL_ACTION_PREV, method = POST)
 	public RedirectView prev(
 			@ModelAttribute(BOOKS_COMMAND) BooksCommand booksCommand,
 			RedirectAttributes redirectAttributes)
 	{
-		ScrollParams currentScrollParams = booksCommand.getScroll().getCurrent();
-		currentScrollParams.setOffset(currentScrollParams.getOffset() - currentScrollParams.getSize());
+		PageParams currentPageParams = booksCommand.getPager().getCurrent();
+		currentPageParams.setOffset(currentPageParams.getOffset() - currentPageParams.getSize());
 
 		return redirectToRead(booksCommand, redirectAttributes);
 	}
@@ -35,8 +35,8 @@ public class BooksControllerScroll {
 			@ModelAttribute(BOOKS_COMMAND) BooksCommand booksCommand,
 			RedirectAttributes redirectAttributes)
 	{
-		ScrollParams currentScrollParams = booksCommand.getScroll().getCurrent();
-		currentScrollParams.setOffset(currentScrollParams.getOffset() + currentScrollParams.getSize());
+		PageParams currentPageParams = booksCommand.getPager().getCurrent();
+		currentPageParams.setOffset(currentPageParams.getOffset() + currentPageParams.getSize());
 
 		return redirectToRead(booksCommand, redirectAttributes);
 	}

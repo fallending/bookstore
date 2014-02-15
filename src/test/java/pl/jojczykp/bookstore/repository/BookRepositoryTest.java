@@ -11,8 +11,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ReflectionUtils;
 import pl.jojczykp.bookstore.domain.Book;
-import pl.jojczykp.bookstore.utils.ScrollSorterColumn;
-import pl.jojczykp.bookstore.utils.ScrollSorterDirection;
+import pl.jojczykp.bookstore.utils.PageSorterColumn;
+import pl.jojczykp.bookstore.utils.PageSorterDirection;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -20,17 +20,17 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static pl.jojczykp.bookstore.utils.ScrollSorterColumn.BOOK_TITLE;
-import static pl.jojczykp.bookstore.utils.ScrollSorterDirection.ASC;
-import static pl.jojczykp.bookstore.utils.ScrollSorterDirection.DESC;
+import static pl.jojczykp.bookstore.utils.PageSorterColumn.BOOK_TITLE;
+import static pl.jojczykp.bookstore.utils.PageSorterDirection.ASC;
+import static pl.jojczykp.bookstore.utils.PageSorterDirection.DESC;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:spring/repository-test-context.xml")
 @Transactional
 public class BookRepositoryTest {
 
-	private static final ScrollSorterColumn SAMPLE_SORT_COLUMN = BOOK_TITLE;
-	private static final ScrollSorterDirection SAMPLE_DIRECTION = ASC;
+	private static final PageSorterColumn SAMPLE_SORT_COLUMN = BOOK_TITLE;
+	private static final PageSorterDirection SAMPLE_DIRECTION = ASC;
 
 	private static final Book BOOK_A = new Book(0, 1, "Book Title A");
 	private static final Book BOOK_B = new Book(0, 7, "Book Title B");
@@ -219,7 +219,7 @@ public class BookRepositoryTest {
 		repository.delete(notExistingId);
 	}
 
-	private void givenIgnoreCaseWhileSort(ScrollSorterColumn column, boolean value) throws NoSuchFieldException {
+	private void givenIgnoreCaseWhileSort(PageSorterColumn column, boolean value) throws NoSuchFieldException {
 		Field ignoreCaseField = column.getClass().getDeclaredField("ignoreCase");
 		ReflectionUtils.makeAccessible(ignoreCaseField);
 		ReflectionUtils.setField(ignoreCaseField, column, value);

@@ -1,8 +1,8 @@
 <#import "/spring.ftl" as spring>
 
-<#assign offset = booksCommand.scroll.limited.offset>
-<#assign size = booksCommand.scroll.limited.size>
-<#assign totalCount = booksCommand.scroll.totalCount>
+<#assign offset = booksCommand.pager.limited.offset>
+<#assign size = booksCommand.pager.limited.size>
+<#assign totalCount = booksCommand.pager.totalCount>
 <#assign limit = offset + size>
 
 <!DOCTYPE html>
@@ -17,10 +17,10 @@
 		<script type="text/javascript">
 
 			DEFAULT_PARAMS = {
-				'scroll.current.offset' : ${booksCommand.scroll.current.offset},
-				'scroll.current.size' : ${booksCommand.scroll.current.size},
-				'scroll.sorter.column' : '${booksCommand.scroll.sorter.column}',
-				'scroll.sorter.direction' : '${booksCommand.scroll.sorter.direction}'
+				'pager.current.offset' : ${booksCommand.pager.current.offset},
+				'pager.current.size' : ${booksCommand.pager.current.size},
+				'pager.sorter.column' : '${booksCommand.pager.sorter.column}',
+				'pager.sorter.direction' : '${booksCommand.pager.sorter.direction}'
 			}
 
 			function sendCreate() {
@@ -63,14 +63,14 @@
 			function sendSetPageSize() {
 				var newSize = document.getElementsByClassName('setPageSizeInput')[0].value;
 				sendPost('setPageSize', {
-					'scroll.current.size' : newSize
+					'pager.current.size' : newSize
 				})
 			}
 
 			function sendSort(column, direction) {
 				sendPost('sort', {
-					'scroll.sorter.column' : column,
-					'scroll.sorter.direction' : direction
+					'pager.sorter.column' : column,
+					'pager.sorter.direction' : direction
 				})
 			}
 
@@ -124,7 +124,7 @@
 	<body>
 		<@sectionTitle/>
 		<@sectionMessages/>
-		<@sectionScroll/>
+		<@sectionPager/>
 		<@sectionDataTable/>
 		<@sectionCreate/>
 	</body>
@@ -150,30 +150,30 @@
 	</#if>
 </#macro>
 
-<#macro sectionScroll>
+<#macro sectionPager>
 	<table>
 		<tr>
-			<td align="left"><@formScrollPrev/></td>
-			<td align="center"><@formScrollSetPageSize/></td>
-			<td aling="right"><@formScrollNext/></td>
+			<td align="left"><@formPagerPrev/></td>
+			<td align="center"><@formPagerSetPageSize/></td>
+			<td aling="right"><@formPagerNext/></td>
 		</tr>
 	</table>
 </#macro>
 
-<#macro formScrollPrev>
-	<#if (booksCommand.scroll.current.offset <= 0) >
+<#macro formPagerPrev>
+	<#if (booksCommand.pager.current.offset <= 0) >
 		<input type="button" value="&lt;" onClick="sendPrev()" disabled="true" />
 	<#else>
 		<input type="button" value="&lt;" onClick="sendPrev()" />
 	</#if>
 </#macro>
 
-<#macro formScrollSetPageSize>
-	<@spring.formInput "booksCommand.scroll.current.size" "class='setPageSizeInput'" />
+<#macro formPagerSetPageSize>
+	<@spring.formInput "booksCommand.pager.current.size" "class='setPageSizeInput'" />
 	<input type="button" value="set page size" onClick="sendSetPageSize()" />
 </#macro>
 
-<#macro formScrollNext>
+<#macro formPagerNext>
 	<#if (limit >= totalCount) >
 		<input type="button" value="&gt;" onClick="sendNext()" disabled="true" />
 	<#else>

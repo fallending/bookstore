@@ -11,8 +11,8 @@ import pl.jojczykp.bookstore.command.BooksCommand;
 import pl.jojczykp.bookstore.domain.Book;
 import pl.jojczykp.bookstore.repository.BookRepository;
 import pl.jojczykp.bookstore.utils.BooksCommandFactory;
-import pl.jojczykp.bookstore.utils.ScrollParams;
-import pl.jojczykp.bookstore.utils.ScrollParamsLimiter;
+import pl.jojczykp.bookstore.utils.PageParams;
+import pl.jojczykp.bookstore.utils.PageParamsLimiter;
 
 import java.util.List;
 
@@ -26,7 +26,7 @@ public class BooksControllerRead {
 
 	@Autowired private BooksCommandFactory booksCommandFactory;
 	@Autowired private BookRepository bookRepository;
-	@Autowired private ScrollParamsLimiter scrollParamsLimiter;
+	@Autowired private PageParamsLimiter pageParamsLimiter;
 	@Autowired private BookAssembler bookAssembler;
 
 	@ModelAttribute(BOOKS_COMMAND)
@@ -39,23 +39,23 @@ public class BooksControllerRead {
 			@ModelAttribute(BOOKS_COMMAND) BooksCommand booksCommand)
 	{
 		int totalCount = bookRepository.totalCount();
-		booksCommand.getScroll().setTotalCount(totalCount);
-		ScrollParams limitedScrollParams = scrollParamsLimiter.limit(booksCommand.getScroll().getCurrent(), totalCount);
-		booksCommand.getScroll().setLimited(limitedScrollParams);
+		booksCommand.getPager().setTotalCount(totalCount);
+		PageParams limitedPageParams = pageParamsLimiter.limit(booksCommand.getPager().getCurrent(), totalCount);
+		booksCommand.getPager().setLimited(limitedPageParams);
 
-		List<Book> books = read(booksCommand, limitedScrollParams);
+		List<Book> books = read(booksCommand, limitedPageParams);
 
 		booksCommand.setBooks(bookAssembler.toCommands(books));
 
 		return new ModelAndView(BOOKS_VIEW, aModelFor(booksCommand));
 	}
 
-	private List<Book> read(BooksCommand booksCommand, ScrollParams limitedScrollParams) {
+	private List<Book> read(BooksCommand booksCommand, PageParams limitedPageParams) {
 		return bookRepository.read(
-					limitedScrollParams.getOffset(),
-					limitedScrollParams.getSize(),
-					booksCommand.getScroll().getSorter().getColumn(),
-					booksCommand.getScroll().getSorter().getDirection());
+					limitedPageParams.getOffset(),
+					limitedPageParams.getSize(),
+					booksCommand.getPager().getSorter().getColumn(),
+					booksCommand.getPager().getSorter().getDirection());
 	}
 
 	private ModelMap aModelFor(BooksCommand booksCommand) {

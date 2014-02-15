@@ -22,19 +22,19 @@ public class BooksCommandTest {
 
 	@Test
 	public void shouldBeSetUpByDefaultConstructor() {
-		assertThat(testee.getScroll(), notNullValue());
+		assertThat(testee.getPager(), notNullValue());
 		assertThat(testee.getNewBook(), notNullValue());
 		assertThat(testee.getUpdatedBook(), notNullValue());
 		assertThat(testee.getBooks(), empty());
 	}
 
 	@Test
-	public void shouldSetScroll() {
-		final ScrollCommand scroll = new ScrollCommand();
+	public void shouldSetPager() {
+		final PagerCommand pager = new PagerCommand();
 
-		testee.setScroll(scroll);
+		testee.setPager(pager);
 
-		assertThat(testee.getScroll(), sameInstance(scroll));
+		assertThat(testee.getPager(), sameInstance(pager));
 	}
 
 	@Test

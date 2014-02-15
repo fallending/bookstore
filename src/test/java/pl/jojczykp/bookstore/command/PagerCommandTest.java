@@ -2,21 +2,21 @@ package pl.jojczykp.bookstore.command;
 
 import org.junit.Before;
 import org.junit.Test;
-import pl.jojczykp.bookstore.utils.ScrollParams;
-import pl.jojczykp.bookstore.utils.ScrollSorter;
+import pl.jojczykp.bookstore.utils.PageParams;
+import pl.jojczykp.bookstore.utils.PageSorter;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertThat;
 
-public class ScrollCommandTest {
+public class PagerCommandTest {
 
-	private ScrollCommand testee;
+	private PagerCommand testee;
 
 	@Before
 	public void setupInstance() {
-		testee = new ScrollCommand();
+		testee = new PagerCommand();
 	}
 
 	@Test
@@ -29,29 +29,29 @@ public class ScrollCommandTest {
 
 	@Test
 	public void shouldSetCurrent() {
-		final ScrollParams scrollParams = new ScrollParams();
+		final PageParams pageParams = new PageParams();
 
-		testee.setCurrent(scrollParams);
+		testee.setCurrent(pageParams);
 
-		assertThat(testee.getCurrent(), sameInstance(scrollParams));
+		assertThat(testee.getCurrent(), sameInstance(pageParams));
 	}
 
 	@Test
 	public void shouldSetLimited() {
-		final ScrollParams scrollParams = new ScrollParams();
+		final PageParams pageParams = new PageParams();
 
-		testee.setLimited(scrollParams);
+		testee.setLimited(pageParams);
 
-		assertThat(testee.getLimited(), sameInstance(scrollParams));
+		assertThat(testee.getLimited(), sameInstance(pageParams));
 	}
 
 	@Test
 	public void shouldSetSorter() {
-		final ScrollSorter scrollSorter = new ScrollSorter();
+		final PageSorter pageSorter = new PageSorter();
 
-		testee.setSorter(scrollSorter);
+		testee.setSorter(pageSorter);
 
-		assertThat(testee.getSorter(), sameInstance(scrollSorter));
+		assertThat(testee.getSorter(), sameInstance(pageSorter));
 	}
 
 	@Test

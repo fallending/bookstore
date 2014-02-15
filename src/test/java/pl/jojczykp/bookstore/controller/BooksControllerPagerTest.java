@@ -11,8 +11,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.context.WebApplicationContext;
 import pl.jojczykp.bookstore.command.BooksCommand;
-import pl.jojczykp.bookstore.utils.ScrollSorterColumn;
-import pl.jojczykp.bookstore.utils.ScrollSorterDirection;
+import pl.jojczykp.bookstore.utils.PageSorterColumn;
+import pl.jojczykp.bookstore.utils.PageSorterDirection;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -20,9 +20,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 import static pl.jojczykp.bookstore.testutils.matchers.HasBeanProperty.hasBeanProperty;
-import static pl.jojczykp.bookstore.utils.ScrollSorterColumn.BOOK_TITLE;
-import static pl.jojczykp.bookstore.utils.ScrollSorterDirection.ASC;
-import static pl.jojczykp.bookstore.utils.ScrollSorterDirection.DESC;
+import static pl.jojczykp.bookstore.utils.PageSorterColumn.BOOK_TITLE;
+import static pl.jojczykp.bookstore.utils.PageSorterDirection.ASC;
+import static pl.jojczykp.bookstore.utils.PageSorterDirection.DESC;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -31,7 +31,7 @@ import static pl.jojczykp.bookstore.utils.ScrollSorterDirection.DESC;
 		"classpath:spring/repository-mock-context.xml",
 		"classpath:spring/beans-mock-context.xml"
 })
-public class BooksControllerScrollTest {
+public class BooksControllerPagerTest {
 
 	private static final String BOOKS_COMMAND = "booksCommand";
 
@@ -42,8 +42,8 @@ public class BooksControllerScrollTest {
 
 	private static final int INITIAL_OFFSET = 25;
 	private static final int INITIAL_SIZE = 15;
-	private ScrollSorterColumn ANY_SORT_COLUMN = BOOK_TITLE;
-	private ScrollSorterDirection ANY_SORT_DIRECTION = ASC;
+	private PageSorterColumn ANY_SORT_COLUMN = BOOK_TITLE;
+	private PageSorterDirection ANY_SORT_DIRECTION = ASC;
 
 	private MockMvc mvcMock;
 	private ResultActions mvcMockPerformResult;
@@ -63,13 +63,13 @@ public class BooksControllerScrollTest {
 		mvcMockPerformResult
 				.andExpect(status().isFound())
 				.andExpect(flash().attribute(BOOKS_COMMAND,
-						hasBeanProperty("scroll.current.offset", equalTo(INITIAL_OFFSET - INITIAL_SIZE))))
+						hasBeanProperty("pager.current.offset", equalTo(INITIAL_OFFSET - INITIAL_SIZE))))
 				.andExpect(flash().attribute(BOOKS_COMMAND,
-						hasBeanProperty("scroll.current.size", equalTo(INITIAL_SIZE))));
+						hasBeanProperty("pager.current.size", equalTo(INITIAL_SIZE))));
 	}
 
 	@Test
-	public void shouldScrollNext() throws Exception {
+	public void shouldGoToNextPage() throws Exception {
 		mvcMockPerformResult = mvcMock.perform(post(URL_ACTION_NEXT)
 				.flashAttr(BOOKS_COMMAND,
 						aBooksCommand(INITIAL_OFFSET, INITIAL_SIZE, ANY_SORT_COLUMN, ANY_SORT_DIRECTION)));
@@ -77,17 +77,17 @@ public class BooksControllerScrollTest {
 		mvcMockPerformResult
 				.andExpect(status().isFound())
 				.andExpect(flash().attribute(BOOKS_COMMAND,
-						hasBeanProperty("scroll.current.offset", equalTo(INITIAL_OFFSET + INITIAL_SIZE))))
+						hasBeanProperty("pager.current.offset", equalTo(INITIAL_OFFSET + INITIAL_SIZE))))
 				.andExpect(flash().attribute(BOOKS_COMMAND,
-						hasBeanProperty("scroll.current.size", equalTo(INITIAL_SIZE))));
+						hasBeanProperty("pager.current.size", equalTo(INITIAL_SIZE))));
 	}
 
 	@Test
 	public void shouldSort() throws Exception {
 		final int anyOffset = 3;
 		final int anyPageSize = 5;
-		final ScrollSorterColumn sortColumn = BOOK_TITLE;
-		final ScrollSorterDirection sortDirection = ASC;
+		final PageSorterColumn sortColumn = BOOK_TITLE;
+		final PageSorterDirection sortDirection = ASC;
 
 		mvcMockPerformResult = mvcMock.perform(post(URL_ACTION_SORT)
 				.flashAttr(BOOKS_COMMAND, aBooksCommand(anyOffset, anyPageSize, sortColumn, sortDirection)));
@@ -95,33 +95,33 @@ public class BooksControllerScrollTest {
 		mvcMockPerformResult
 				.andExpect(status().isFound())
 				.andExpect(flash().attribute(BOOKS_COMMAND,
-						hasBeanProperty("scroll.sorter.column", equalTo(sortColumn))))
+						hasBeanProperty("pager.sorter.column", equalTo(sortColumn))))
 				.andExpect(flash().attribute(BOOKS_COMMAND,
-						hasBeanProperty("scroll.sorter.direction", equalTo(sortDirection))));
+						hasBeanProperty("pager.sorter.direction", equalTo(sortDirection))));
 	}
 
 	@Test
-	public void shouldSetPageSize() throws Exception {
+	public void shouldGoToPreviousPage() throws Exception {
 		final int anyOffset = 1;
 		final int pageSize = 4;
-		final ScrollSorterColumn anySortColumn = BOOK_TITLE;
-		final ScrollSorterDirection anySortDirection = DESC;
+		final PageSorterColumn anySortColumn = BOOK_TITLE;
+		final PageSorterDirection anySortDirection = DESC;
 
 		mvcMockPerformResult = mvcMock.perform(post(URL_ACTION_SET_PAGE_SIZE)
 				.flashAttr(BOOKS_COMMAND, aBooksCommand(anyOffset, pageSize, anySortColumn, anySortDirection)));
 
 		mvcMockPerformResult
 				.andExpect(status().isFound())
-				.andExpect(flash().attribute(BOOKS_COMMAND, hasBeanProperty("scroll.current.size", equalTo(pageSize))));
+				.andExpect(flash().attribute(BOOKS_COMMAND, hasBeanProperty("pager.current.size", equalTo(pageSize))));
 	}
 
 	private BooksCommand aBooksCommand(int offset, int size,
-										ScrollSorterColumn sortColumn, ScrollSorterDirection sortDirection) {
+										PageSorterColumn sortColumn, PageSorterDirection sortDirection) {
 		BooksCommand command = new BooksCommand();
-		command.getScroll().getCurrent().setOffset(offset);
-		command.getScroll().getCurrent().setSize(size);
-		command.getScroll().getSorter().setColumn(sortColumn);
-		command.getScroll().getSorter().setDirection(sortDirection);
+		command.getPager().getCurrent().setOffset(offset);
+		command.getPager().getCurrent().setSize(size);
+		command.getPager().getSorter().setColumn(sortColumn);
+		command.getPager().getSorter().setDirection(sortDirection);
 
 		return command;
 	}

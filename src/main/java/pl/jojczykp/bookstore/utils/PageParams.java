@@ -1,14 +1,14 @@
 package pl.jojczykp.bookstore.utils;
 
-public class ScrollParams {
+public class PageParams {
 
 	private int offset;
 	private int size;
 
-	public ScrollParams() {
+	public PageParams() {
 	}
 
-	public ScrollParams(int offset, int size) {
+	public PageParams(int offset, int size) {
 		this.offset = offset;
 		this.size = size;
 	}

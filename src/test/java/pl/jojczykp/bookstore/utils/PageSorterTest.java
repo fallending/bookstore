@@ -8,16 +8,16 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
-import static pl.jojczykp.bookstore.utils.ScrollSorterColumn.BOOK_TITLE;
-import static pl.jojczykp.bookstore.utils.ScrollSorterDirection.ASC;
+import static pl.jojczykp.bookstore.utils.PageSorterColumn.BOOK_TITLE;
+import static pl.jojczykp.bookstore.utils.PageSorterDirection.ASC;
 
-public class ScrollSorterTest {
+public class PageSorterTest {
 
-	private ScrollSorter testee;
+	private PageSorter testee;
 
 	@Before
 	public void setUpTestee() {
-		testee = new ScrollSorter();
+		testee = new PageSorter();
 	}
 
 	@Test
@@ -28,7 +28,7 @@ public class ScrollSorterTest {
 
 	@Test
 	public void shouldSetColumn() {
-		final ScrollSorterColumn givenColumn = BOOK_TITLE;
+		final PageSorterColumn givenColumn = BOOK_TITLE;
 
 		testee.setColumn(givenColumn);
 
@@ -37,7 +37,7 @@ public class ScrollSorterTest {
 
 	@Test
 	public void shouldSetDirection() {
-		final ScrollSorterDirection givenDirection = ASC;
+		final PageSorterDirection givenDirection = ASC;
 
 		testee.setDirection(givenDirection);
 
@@ -46,8 +46,8 @@ public class ScrollSorterTest {
 
 	@Test
 	public void shouldHaveToStringWithDetailsForDiagnostic() {
-		final ScrollSorterColumn givenColumn = BOOK_TITLE;
-		final ScrollSorterDirection givenDirection = ASC;
+		final PageSorterColumn givenColumn = BOOK_TITLE;
+		final PageSorterDirection givenDirection = ASC;
 		testee.setColumn(givenColumn);
 		testee.setDirection(givenDirection);
 
