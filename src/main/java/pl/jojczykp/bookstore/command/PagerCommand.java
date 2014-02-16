@@ -1,44 +1,41 @@
 package pl.jojczykp.bookstore.command;
 
-import pl.jojczykp.bookstore.utils.PageParams;
 import pl.jojczykp.bookstore.utils.PageSorter;
 
 public class PagerCommand {
 
-	private PageParams current;
-	private PageParams limited;
-	private PageSorter sorter;
+	private int pageNumber;
+	private int pageSize;
+	private int pagesCount;
 	private int totalCount;
+	private PageSorter sorter;
 
 	public PagerCommand() {
-		current = new PageParams();
-		limited = new PageParams();
 		sorter = new PageSorter();
-		totalCount = 0;
 	}
 
-	public PageParams getCurrent() {
-		return current;
+	public int getPageNumber() {
+		return pageNumber;
 	}
 
-	public void setCurrent(PageParams current) {
-		this.current = current;
+	public void setPageNumber(int pageNumber) {
+		this.pageNumber = pageNumber;
 	}
 
-	public PageParams getLimited() {
-		return limited;
+	public int getPageSize() {
+		return pageSize;
 	}
 
-	public void setLimited(PageParams limited) {
-		this.limited = limited;
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
 	}
 
-	public PageSorter getSorter() {
-		return sorter;
+	public int getPagesCount() {
+		return pagesCount;
 	}
 
-	public void setSorter(PageSorter sorter) {
-		this.sorter = sorter;
+	public void setPagesCount(int pagesCount) {
+		this.pagesCount = pagesCount;
 	}
 
 	public int getTotalCount() {
@@ -47,6 +44,14 @@ public class PagerCommand {
 
 	public void setTotalCount(int totalCount) {
 		this.totalCount = totalCount;
+	}
+
+	public PageSorter getSorter() {
+		return sorter;
+	}
+
+	public void setSorter(PageSorter sorter) {
+		this.sorter = sorter;
 	}
 
 }

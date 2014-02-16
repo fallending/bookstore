@@ -20,29 +20,29 @@ import static org.junit.Assert.assertThat;
 })
 public class BooksCommandFactoryTest {
 
-	@Value("${view.books.defaultOffset}") private int defaultOffset;
-	@Value("${view.books.defaultSize}") private int defaultSize;
+	@Value("${view.books.defaultPageNumber}") private int defaultPageNumber;
+	@Value("${view.books.defaultPageSize}") private int defaultPageSize;
 	@Value("${view.books.defaultSortColumn}") private PageSorterColumn defaultSortColumn;
 	@Value("${view.books.defaultSortDirection}") private PageSorterDirection defaultSortDirection;
 
 	@Autowired private BooksCommandFactory testee;
 
 	@Test
-	public void shouldCreateDefaultCommandWithDefaultOffset() {
+	public void shouldCreateDefaultCommandWithDefaultPageNumber() {
 		BooksCommand command = testee.create();
 
-		assertThat(command.getPager().getCurrent().getOffset(), is(defaultOffset));
+		assertThat(command.getPager().getPageNumber(), is(defaultPageNumber));
 	}
 
 	@Test
-	public void shouldCreateDefaultCommandWithDefaultSize() {
+	public void shouldCreateDefaultCommandWithDefaultPageSize() {
 		BooksCommand command = testee.create();
 
-		assertThat(command.getPager().getCurrent().getSize(), is(defaultSize));
+		assertThat(command.getPager().getPageSize(), is(defaultPageSize));
 	}
 
 	@Test
-	public void shouldCreateDefaultCommandWithSefaultSortColumn() {
+	public void shouldCreateDefaultCommandWithDefaultSortColumn() {
 		BooksCommand command = testee.create();
 
 		assertThat(command.getPager().getSorter().getColumn(), is(defaultSortColumn));

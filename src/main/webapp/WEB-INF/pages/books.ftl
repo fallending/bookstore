@@ -1,9 +1,9 @@
 <#import "/spring.ftl" as spring>
 
-<#assign offset = booksCommand.pager.limited.offset>
-<#assign size = booksCommand.pager.limited.size>
+<#assign pageNumber = booksCommand.pager.pageNumber>
+<#assign pageSize = booksCommand.pager.pageSize>
+<#assign pagesCount = booksCommand.pager.pagesCount>
 <#assign totalCount = booksCommand.pager.totalCount>
-<#assign limit = offset + size>
 
 <!DOCTYPE html>
 <html>
@@ -17,8 +17,8 @@
 		<script type="text/javascript">
 
 			DEFAULT_PARAMS = {
-				'pager.current.offset' : ${booksCommand.pager.current.offset},
-				'pager.current.size' : ${booksCommand.pager.current.size},
+				'pager.pageNumber' : ${booksCommand.pager.pageNumber},
+				'pager.pageSize' : ${booksCommand.pager.pageSize},
 				'pager.sorter.column' : '${booksCommand.pager.sorter.column}',
 				'pager.sorter.direction' : '${booksCommand.pager.sorter.direction}'
 			}
@@ -63,7 +63,7 @@
 			function sendSetPageSize() {
 				var newSize = document.getElementsByClassName('setPageSizeInput')[0].value;
 				sendPost('setPageSize', {
-					'pager.current.size' : newSize
+					'pager.pageSize' : newSize
 				})
 			}
 
@@ -132,14 +132,10 @@
 
 <#macro sectionTitle>
 <h1>
-	<#if size <= 0>
+	<#if totalCount <= 0>
 		No books for given range to display.
 	<#else>
-		<#if size == 1>
-			Book ${offset + 1} of ${totalCount}:
-		<#else>
-			Books ${offset + 1}-${limit} of ${totalCount}:
-		</#if>
+		Page ${pageNumber} of ${pagesCount}:
 	</#if>
 </h1>
 </#macro>
@@ -161,7 +157,7 @@
 </#macro>
 
 <#macro formPagerPrev>
-	<#if (booksCommand.pager.current.offset <= 0) >
+	<#if (booksCommand.pager.pageNumber <= 1) >
 		<input type="button" value="&lt;" onClick="sendPrev()" disabled="true" />
 	<#else>
 		<input type="button" value="&lt;" onClick="sendPrev()" />
@@ -169,12 +165,12 @@
 </#macro>
 
 <#macro formPagerSetPageSize>
-	<@spring.formInput "booksCommand.pager.current.size" "class='setPageSizeInput'" />
+	<@spring.formInput "booksCommand.pager.pageSize" "class='setPageSizeInput'" />
 	<input type="button" value="set page size" onClick="sendSetPageSize()" />
 </#macro>
 
 <#macro formPagerNext>
-	<#if (limit >= totalCount) >
+	<#if (pageNumber >= pagesCount) >
 		<input type="button" value="&gt;" onClick="sendNext()" disabled="true" />
 	<#else>
 		<input type="button" value="&gt;" onClick="sendNext()" />
@@ -182,7 +178,7 @@
 </#macro>
 
 <#macro sectionDataTable>
-	<#if (size <= 0) >
+	<#if (pagesCount <= 0) >
 		<#return>
 	<#else>
 		<table><tr>

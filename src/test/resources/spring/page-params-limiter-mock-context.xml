@@ -8,6 +8,6 @@
 			http://www.mockito.org/spring/mockito
 			http://www.mockito.org/spring/mockito.xsd">
 
-	<mockito:mock id="pageParamsLimiter" class="pl.jojczykp.bookstore.utils.PageParamsLimiter"/>
+	<mockito:mock id="pageParamsLimiter" class="pl.jojczykp.bookstore.utils.PagerLimiter"/>
 
 </beans>

@@ -2,7 +2,6 @@ package pl.jojczykp.bookstore.command;
 
 import org.junit.Before;
 import org.junit.Test;
-import pl.jojczykp.bookstore.utils.PageParams;
 import pl.jojczykp.bookstore.utils.PageSorter;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -21,28 +20,47 @@ public class PagerCommandTest {
 
 	@Test
 	public void shouldBeSetUpByDefaultConstructor() {
-		assertThat(testee.getCurrent(), notNullValue());
-		assertThat(testee.getLimited(), notNullValue());
-		assertThat(testee.getSorter(), notNullValue());
+		assertThat(testee.getPageNumber(), equalTo(0));
+		assertThat(testee.getPageSize(), equalTo(0));
+		assertThat(testee.getPagesCount(), equalTo(0));
 		assertThat(testee.getTotalCount(), equalTo(0));
+		assertThat(testee.getSorter(), notNullValue());
 	}
 
 	@Test
-	public void shouldSetCurrent() {
-		final PageParams pageParams = new PageParams();
+	public void shouldSetPageNumber() {
+		final int pageNumber = 3;
 
-		testee.setCurrent(pageParams);
+		testee.setPageNumber(pageNumber);
 
-		assertThat(testee.getCurrent(), sameInstance(pageParams));
+		assertThat(testee.getPageNumber(), equalTo(pageNumber));
 	}
 
 	@Test
-	public void shouldSetLimited() {
-		final PageParams pageParams = new PageParams();
+	public void shouldSetPageSize() {
+		final int pageSize = 4;
 
-		testee.setLimited(pageParams);
+		testee.setPageSize(pageSize);
 
-		assertThat(testee.getLimited(), sameInstance(pageParams));
+		assertThat(testee.getPageSize(), equalTo(pageSize));
+	}
+
+	@Test
+	public void shouldSetPagesCount() {
+		final int pagesCount = 5;
+
+		testee.setPagesCount(pagesCount);
+
+		assertThat(testee.getPagesCount(), equalTo(pagesCount));
+	}
+
+	@Test
+	public void shouldSetTotalCount() {
+		final int totalCount = 5;
+
+		testee.setTotalCount(totalCount);
+
+		assertThat(testee.getTotalCount(), equalTo(totalCount));
 	}
 
 	@Test
@@ -52,15 +70,6 @@ public class PagerCommandTest {
 		testee.setSorter(pageSorter);
 
 		assertThat(testee.getSorter(), sameInstance(pageSorter));
-	}
-
-	@Test
-	public void shouldSetTotalCount() {
-		final int totalCount = 3;
-
-		testee.setTotalCount(totalCount);
-
-		assertThat(testee.getTotalCount(), equalTo(totalCount));
 	}
 
 }

@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import pl.jojczykp.bookstore.assembler.BookAssembler;
 import pl.jojczykp.bookstore.command.BooksCommand;
+import pl.jojczykp.bookstore.command.PagerCommand;
 import pl.jojczykp.bookstore.domain.Book;
 import pl.jojczykp.bookstore.repository.BookRepository;
 import pl.jojczykp.bookstore.utils.BooksCommandFactory;
-import pl.jojczykp.bookstore.utils.PageParams;
-import pl.jojczykp.bookstore.utils.PageParamsLimiter;
+import pl.jojczykp.bookstore.utils.PagerLimiter;
 
 import java.util.List;
 
@@ -25,8 +25,8 @@ import static pl.jojczykp.bookstore.controller.BooksConsts.URL_ACTION_READ;
 public class BooksControllerRead {
 
 	@Autowired private BooksCommandFactory booksCommandFactory;
+	@Autowired private PagerLimiter pagerLimiter;
 	@Autowired private BookRepository bookRepository;
-	@Autowired private PageParamsLimiter pageParamsLimiter;
 	@Autowired private BookAssembler bookAssembler;
 
 	@ModelAttribute(BOOKS_COMMAND)
@@ -38,24 +38,25 @@ public class BooksControllerRead {
 	public ModelAndView read(
 			@ModelAttribute(BOOKS_COMMAND) BooksCommand booksCommand)
 	{
-		int totalCount = bookRepository.totalCount();
-		booksCommand.getPager().setTotalCount(totalCount);
-		PageParams limitedPageParams = pageParamsLimiter.limit(booksCommand.getPager().getCurrent(), totalCount);
-		booksCommand.getPager().setLimited(limitedPageParams);
+		PagerCommand limitedPager = pagerLimiter.createLimited(booksCommand.getPager(), bookRepository.totalCount());
+		booksCommand.setPager(limitedPager);
 
-		List<Book> books = read(booksCommand, limitedPageParams);
-
+		List<Book> books = read(booksCommand.getPager());
 		booksCommand.setBooks(bookAssembler.toCommands(books));
 
 		return new ModelAndView(BOOKS_VIEW, aModelFor(booksCommand));
 	}
 
-	private List<Book> read(BooksCommand booksCommand, PageParams limitedPageParams) {
+	private List<Book> read(PagerCommand pager) {
+		int pageSize = pager.getPageSize();
+		int pageNumber = pager.getPageNumber();
+		int offset = (pageNumber - 1) * pageSize;
+
 		return bookRepository.read(
-					limitedPageParams.getOffset(),
-					limitedPageParams.getSize(),
-					booksCommand.getPager().getSorter().getColumn(),
-					booksCommand.getPager().getSorter().getDirection());
+					offset,
+					pageSize,
+					pager.getSorter().getColumn(),
+					pager.getSorter().getDirection());
 	}
 
 	private ModelMap aModelFor(BooksCommand booksCommand) {
