@@ -11,7 +11,7 @@
 		<meta http-equiv="content-type" content="application/xhtml+xml; charset=utf-8" />
 		<title>Bookstore</title>
 		<style type="text/css">
-			input.setPageSizeInput { }
+			input.setPageSizeInput { width: 50px }
 			input.deleteCheckbox { }
 		</style>
 		<script type="text/javascript">
@@ -52,18 +52,16 @@
 				sendPost('delete', params)
 			}
 
-			function sendPrev() {
-				sendPost('prev', {})
-			}
-
-			function sendNext() {
-				sendPost('next', {})
+			function sendGoToPage(newPageNumber) {
+				sendPost('goToPage', {
+					'pager.pageNumber' : newPageNumber
+				})
 			}
 
 			function sendSetPageSize() {
-				var newSize = document.getElementsByClassName('setPageSizeInput')[0].value;
+				var newPageSize = document.getElementsByClassName('setPageSizeInput')[0].value;
 				sendPost('setPageSize', {
-					'pager.pageSize' : newSize
+					'pager.pageSize' : newPageSize
 				})
 			}
 
@@ -149,31 +147,47 @@
 <#macro sectionPager>
 	<table>
 		<tr>
+			<td align="left"><@formPagerSetPageSize/></td>
+			<td width="15px"></td>
 			<td align="left"><@formPagerPrev/></td>
-			<td align="center"><@formPagerSetPageSize/></td>
+			<td align="center"><@formPagerGoToPage/></td>
 			<td aling="right"><@formPagerNext/></td>
 		</tr>
 	</table>
 </#macro>
 
 <#macro formPagerPrev>
-	<#if (booksCommand.pager.pageNumber <= 1) >
-		<input type="button" value="&lt;" onClick="sendPrev()" disabled="true" />
+	<#if (pageNumber <= 1) >
+		<input type="button" value="&lt;" disabled="true" />
 	<#else>
-		<input type="button" value="&lt;" onClick="sendPrev()" />
+		<input type="button" value="&lt;" onClick="sendGoToPage(${pageNumber - 1})" />
 	</#if>
 </#macro>
 
 <#macro formPagerSetPageSize>
-	<@spring.formInput "booksCommand.pager.pageSize" "class='setPageSizeInput'" />
 	<input type="button" value="set page size" onClick="sendSetPageSize()" />
+	<@spring.formInput "booksCommand.pager.pageSize" "class='setPageSizeInput'" />
 </#macro>
 
 <#macro formPagerNext>
 	<#if (pageNumber >= pagesCount) >
-		<input type="button" value="&gt;" onClick="sendNext()" disabled="true" />
+		<input type="button" value="&gt;" disabled="true" />
 	<#else>
-		<input type="button" value="&gt;" onClick="sendNext()" />
+		<input type="button" value="&gt;" onClick="sendGoToPage(${pageNumber + 1})" />
+	</#if>
+</#macro>
+
+<#macro formPagerGoToPage>
+	<#if (pageNumber > 5)>
+		...
+	</#if>
+	<#list (pageNumber - 5)..(pageNumber + 5) as p>
+		<#if (1 <= p && p <= pagesCount)>
+			<input type="button" value="${p}" onClick="sendGoToPage(${p})" />
+		</#if>
+	</#list>
+	<#if (pageNumber < pagesCount - 5)>
+		...
 	</#if>
 </#macro>
 

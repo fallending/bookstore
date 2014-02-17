@@ -24,6 +24,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 import static pl.jojczykp.bookstore.testutils.matchers.HasBeanProperty.hasBeanProperty;
 import static pl.jojczykp.bookstore.utils.PageSorterColumn.BOOK_TITLE;
 import static pl.jojczykp.bookstore.utils.PageSorterDirection.ASC;
+import static pl.jojczykp.bookstore.utils.PageSorterDirection.DESC;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -36,9 +37,8 @@ public class BooksControllerPagerTest {
 
 	private static final String BOOKS_COMMAND = "booksCommand";
 
-	private static final String URL_ACTION_PREV = "/books/prev";
-	private static final String URL_ACTION_NEXT = "/books/next";
 	private static final String URL_ACTION_SORT = "/books/sort";
+	private static final String URL_ACTION_GO_TO_PAGE = "/books/goToPage";
 	private static final String URL_ACTION_SET_PAGE_SIZE = "/books/setPageSize";
 
 	private static final int PAGE_NUMBER = 2;
@@ -60,45 +60,31 @@ public class BooksControllerPagerTest {
 
 	@Test
 	public void shouldSort() throws Exception {
-		performUrlAction(URL_ACTION_SORT, aSortBooksCommand(SORT_COLUMN, SORT_DIRECTION));
+		final PageSorterColumn sortColumn = BOOK_TITLE;
+		final PageSorterDirection sortDirection = DESC;
 
-		assertThatSortedBy(SORT_COLUMN, SORT_DIRECTION);
+		performUrlAction(URL_ACTION_SORT, aSortBooksCommand(sortColumn, sortDirection));
+
+		assertThatSortedBy(sortColumn, sortDirection);
 	}
 
 	@Test
 	public void shouldSetPageSize() throws Exception {
-		performUrlAction(URL_ACTION_SET_PAGE_SIZE, aPageSizeBooksCommand(PAGE_SIZE));
+		final int pageSize = 9;
 
-		assertThatPageSizeSetTo(PAGE_SIZE);
+		performUrlAction(URL_ACTION_SET_PAGE_SIZE, aPageSizeBooksCommand(pageSize));
+
+		assertThatPageSizeSetTo(pageSize);
 	}
 
 	@Test
-	public void shouldGoToNextPage() throws Exception {
-		performUrlAction(URL_ACTION_NEXT, aPageNumberBooksCommand(PAGE_NUMBER));
+	public void shouldGoToPage() throws Exception {
+		final int pageNumber = 3;
 
-		assertThatScrolledToPage(PAGE_NUMBER + 1);
+		performUrlAction(URL_ACTION_GO_TO_PAGE, aPageNumberBooksCommand(pageNumber));
+
+		assertThatScrolledToPage(pageNumber);
 	}
-
-//	@Test
-//	public void shouldNoGoToAboveLastPage() throws Exception {
-//		performUrlAction(URL_ACTION_NEXT, aPageNumberBooksCommand(PAGES_COUNT));
-//
-//		assertThatScrolledToPage(PAGES_COUNT);
-//	}
-
-	@Test
-	public void shouldGoToPreviousPage() throws Exception {
-		performUrlAction(URL_ACTION_PREV, aPageNumberBooksCommand(PAGE_NUMBER));
-
-		assertThatScrolledToPage(PAGE_NUMBER - 1);
-	}
-
-//	@Test
-//	public void shouldNotGoToBelowFirstPage() throws Exception {
-//		performUrlAction(URL_ACTION_PREV, aPageNumberBooksCommand(1));
-//
-//		assertThatScrolledToPage(1);
-//	}
 
 	private void performUrlAction(String action, BooksCommand bookCommand) throws Exception {
 		mvcMockPerformResult = mvcMock.perform(post(action)

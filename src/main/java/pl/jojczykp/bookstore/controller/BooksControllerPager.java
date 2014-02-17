@@ -6,12 +6,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 import pl.jojczykp.bookstore.command.BooksCommand;
-import pl.jojczykp.bookstore.command.PagerCommand;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static pl.jojczykp.bookstore.controller.BooksConsts.BOOKS_COMMAND;
-import static pl.jojczykp.bookstore.controller.BooksConsts.URL_ACTION_NEXT;
-import static pl.jojczykp.bookstore.controller.BooksConsts.URL_ACTION_PREV;
+import static pl.jojczykp.bookstore.controller.BooksConsts.URL_ACTION_GO_TO_PAGE;
 import static pl.jojczykp.bookstore.controller.BooksConsts.URL_ACTION_READ;
 import static pl.jojczykp.bookstore.controller.BooksConsts.URL_ACTION_SET_PAGE_SIZE;
 import static pl.jojczykp.bookstore.controller.BooksConsts.URL_ACTION_SORT;
@@ -35,27 +33,12 @@ public class BooksControllerPager {
 		return redirectToRead(booksCommand, redirectAttributes);
 	}
 
-	@RequestMapping(value = URL_ACTION_NEXT, method = POST)
-	public RedirectView next(
+	@RequestMapping(value = URL_ACTION_GO_TO_PAGE, method = POST)
+	public RedirectView goToPage(
 			@ModelAttribute(BOOKS_COMMAND) BooksCommand booksCommand,
 			RedirectAttributes redirectAttributes)
 	{
-		scrollPagesOf(booksCommand.getPager(), +1);
 		return redirectToRead(booksCommand, redirectAttributes);
-	}
-
-	@RequestMapping(value = URL_ACTION_PREV, method = POST)
-	public RedirectView prev(
-			@ModelAttribute(BOOKS_COMMAND) BooksCommand booksCommand,
-			RedirectAttributes redirectAttributes)
-	{
-		scrollPagesOf(booksCommand.getPager(), -1);
-		return redirectToRead(booksCommand, redirectAttributes);
-	}
-
-	private void scrollPagesOf(PagerCommand pager, int delta) {
-		int newPageNumber = pager.getPageNumber() + delta;
-		pager.setPageNumber(newPageNumber);
 	}
 
 	private RedirectView redirectToRead(BooksCommand booksCommand, RedirectAttributes redirectAttributes) {
