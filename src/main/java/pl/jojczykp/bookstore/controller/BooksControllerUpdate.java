@@ -42,7 +42,7 @@ public class BooksControllerUpdate {
 				booksCommand.getUpdatedBook().getTitle()
 		);
 
-		booksCommand.setMessage(messageFor(updateSuccessStatus));
+		booksCommand.getMessages().addInfo(messageFor(updateSuccessStatus));
 
 		redirectAttributes.addFlashAttribute(BOOKS_COMMAND, booksCommand);
 		return new RedirectView(URL_ACTION_READ);

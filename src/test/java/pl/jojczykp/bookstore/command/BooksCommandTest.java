@@ -22,10 +22,20 @@ public class BooksCommandTest {
 
 	@Test
 	public void shouldBeSetUpByDefaultConstructor() {
+		assertThat(testee.getMessages(), notNullValue());
 		assertThat(testee.getPager(), notNullValue());
 		assertThat(testee.getNewBook(), notNullValue());
 		assertThat(testee.getUpdatedBook(), notNullValue());
 		assertThat(testee.getBooks(), empty());
+	}
+
+	@Test
+	public void shouldSetMessages() {
+		final MessagesCommand messages = new MessagesCommand();
+
+		testee.setMessages(messages);
+
+		assertThat(testee.getMessages(), sameInstance(messages));
 	}
 
 	@Test
@@ -64,12 +74,4 @@ public class BooksCommandTest {
 		assertThat(testee.getBooks(), sameInstance(books));
 	}
 
-	@Test
-	public void shouldSetMessage() {
-		final String message = "some message";
-
-		testee.setMessage(message);
-
-		assertThat(testee.getMessage(), sameInstance(message));
-	}
 }

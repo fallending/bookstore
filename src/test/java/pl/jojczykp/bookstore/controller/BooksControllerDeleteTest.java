@@ -18,7 +18,6 @@ import pl.jojczykp.bookstore.command.BookCommand;
 import pl.jojczykp.bookstore.command.BooksCommand;
 import pl.jojczykp.bookstore.repository.BookRepository;
 
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
@@ -31,7 +30,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
-import static pl.jojczykp.bookstore.testutils.matchers.HasBeanProperty.hasBeanProperty;
+import static pl.jojczykp.bookstore.testutils.matchers.MessagesControllerTestUtils.thenExpectInfoOnlyMessage;
+import static pl.jojczykp.bookstore.testutils.matchers.MessagesControllerTestUtils.thenExpectWarnOnlyMessage;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -99,7 +99,7 @@ public class BooksControllerDeleteTest {
 
 		whenControllerDeletePerformedWithCommand(command);
 
-		thenExpectDisplayedMessage("Object deleted.");
+		thenExpectInfoOnlyMessage(mvcMockPerformResult, "Object deleted.");
 	}
 
 	@Test
@@ -108,7 +108,7 @@ public class BooksControllerDeleteTest {
 
 		whenControllerDeletePerformedWithCommand(command);
 
-		thenExpectDisplayedMessage("Object already deleted.");
+		thenExpectWarnOnlyMessage(mvcMockPerformResult, "Object already deleted.");
 	}
 
 	private BooksCommand aCommandToRemoveByIds(int... ids) {
@@ -143,12 +143,6 @@ public class BooksControllerDeleteTest {
 				.andExpect(status().isFound())
 				.andExpect(redirectedUrl("/books/read"))
 				.andExpect(flash().attribute("booksCommand", sameInstance(command)));
-	}
-
-	private void thenExpectDisplayedMessage(String expectedMessage) throws Exception {
-		mvcMockPerformResult
-				.andExpect(flash().attribute("booksCommand",
-						hasBeanProperty("message", equalTo(expectedMessage))));
 	}
 
 }

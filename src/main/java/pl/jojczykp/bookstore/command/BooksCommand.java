@@ -5,17 +5,26 @@ import java.util.List;
 
 public class BooksCommand {
 
+	private MessagesCommand messages;
 	private PagerCommand pager;
 	private BookCommand newBook;
 	private BookCommand updatedBook;
 	private List<BookCommand> books;
-	private String message;
 
 	public BooksCommand() {
+		messages = new MessagesCommand();
 		pager = new PagerCommand();
 		newBook = new BookCommand();
 		updatedBook = new BookCommand();
 		books = new ArrayList<>();
+	}
+
+	public MessagesCommand getMessages() {
+		return messages;
+	}
+
+	public void setMessages(MessagesCommand messages) {
+		this.messages = messages;
 	}
 
 	public PagerCommand getPager() {
@@ -48,14 +57,6 @@ public class BooksCommand {
 
 	public void setBooks(List<BookCommand> books) {
 		this.books = books;
-	}
-
-	public String getMessage() {
-		return message;
-	}
-
-	public void setMessage(String message) {
-		this.message = message;
 	}
 
 }

@@ -139,9 +139,16 @@
 </#macro>
 
 <#macro sectionMessages>
-	<#if (booksCommand.message)??>
-		${booksCommand.message}<br/><br/>
-	</#if>
+	<#list booksCommand.messages.infos as message>
+		INFO: ${message}<br>
+	</#list>
+	<#list booksCommand.messages.warns as message>
+		WARN: ${message}<br>
+	</#list>
+	<#list booksCommand.messages.errors as message>
+		ERROR: ${message}<br>
+	</#list>
+	<br/>
 </#macro>
 
 <#macro sectionPager>

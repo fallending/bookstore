@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
-import static pl.jojczykp.bookstore.testutils.matchers.HasBeanProperty.hasBeanProperty;
+import static pl.jojczykp.bookstore.testutils.matchers.MessagesControllerTestUtils.thenExpectInfoOnlyMessage;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -78,7 +78,7 @@ public class BooksControllerCreateTest {
 
 		whenControllerCreatePerformedWithCommand(command);
 
-		thenExpectDisplayedMessage("Object created.");
+		thenExpectInfoOnlyMessage(mvcMockPerformResult, "Object created.");
 	}
 
 	private BooksCommand aCommandWith(String title) {
@@ -103,12 +103,6 @@ public class BooksControllerCreateTest {
 				.andExpect(status().isFound())
 				.andExpect(redirectedUrl("/books/read"))
 				.andExpect(flash().attribute("booksCommand", sameInstance(command)));
-	}
-
-	private void thenExpectDisplayedMessage(String expectedMessage) throws Exception {
-		mvcMockPerformResult
-				.andExpect(flash().attribute("booksCommand",
-						hasBeanProperty("message", equalTo(expectedMessage))));
 	}
 
 }

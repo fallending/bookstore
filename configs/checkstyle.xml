@@ -16,9 +16,6 @@
 		<module name="InterfaceIsType">
 			<property name="severity" value="warning"/>
 		</module>
-		<module name="IllegalCatch">
-			<property name="severity" value="warning"/>
-		</module>
 		<module name="HiddenField">
 			<property name="severity" value="warning"/>
 			<property name="tokens" value="VARIABLE_DEF"/>

@@ -28,7 +28,7 @@ public class BooksControllerCreate {
 	{
 		bookRepository.create(bookAssembler.toDomain(booksCommand.getNewBook()));
 
-		booksCommand.setMessage("Object created.");
+		booksCommand.getMessages().addInfo("Object created.");
 
 		redirectAttributes.addFlashAttribute(BOOKS_COMMAND, booksCommand);
 		return new RedirectView(URL_ACTION_READ);
