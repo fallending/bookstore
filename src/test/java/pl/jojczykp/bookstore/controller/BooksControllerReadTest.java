@@ -58,7 +58,8 @@ import static pl.jojczykp.bookstore.utils.PageSorterDirection.DESC;
 		"classpath:spring/repository-mock-context.xml",
 		"classpath:spring/assembler-mock-context.xml",
 		"classpath:spring/page-params-limiter-mock-context.xml",
-		"classpath:spring/beans-mock-context.xml"
+		"classpath:spring/book-command-validator-mock-context.xml",
+		"classpath:spring/books-command-factory-mock-context.xml"
 })
 public class BooksControllerReadTest {
 

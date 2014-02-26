@@ -16,7 +16,7 @@ import static org.junit.Assert.assertThat;
 @WebAppConfiguration
 @ContextConfiguration({
 		"classpath:spring/config-test-context.xml",
-		"classpath:spring/beans-context.xml"
+		"classpath:spring/books-command-factory-context.xml"
 })
 public class BooksCommandFactoryTest {
 

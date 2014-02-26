@@ -31,7 +31,8 @@ import static pl.jojczykp.bookstore.utils.PageSorterDirection.DESC;
 @ContextConfiguration({
 		"file:src/main/webapp/WEB-INF/mvc-dispatcher-servlet.xml",
 		"classpath:spring/repository-mock-context.xml",
-		"classpath:spring/beans-mock-context.xml"
+		"classpath:spring/book-command-validator-mock-context.xml",
+		"classpath:spring/books-command-factory-mock-context.xml"
 })
 public class BooksControllerPagerTest {
 

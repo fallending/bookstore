@@ -223,6 +223,7 @@
 							<td>
 								<@spring.formHiddenInput "booksCommand.books[" + book_index + "].version"/>
 								<@spring.formInput "booksCommand.books[" + book_index + "].title"/>
+								<@spring.showErrors "<br>" />
 								<input type="button" value="update" onClick="sendUpdate(${booksCommand.books[book_index].id}, ${book_index})"/>
 							</td>
 						</tr>
