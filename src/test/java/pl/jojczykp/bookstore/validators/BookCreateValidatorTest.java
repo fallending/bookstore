@@ -12,13 +12,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
-public class UpdateValidatorTest {
+public class BookCreateValidatorTest {
 
-	private UpdateValidator testee;
+	private BookCreateValidator testee;
 
 	@Before
 	public void setUpTestee() {
-		testee = new UpdateValidator();
+		testee = new BookCreateValidator();
 	}
 
 	@Test
@@ -42,7 +42,7 @@ public class UpdateValidatorTest {
 	@Test
 	public void shouldPassWhenValidData() {
 		final String notEmptyTitle = "not empty new title";
-		final BooksCommand command = anUpdateBooksCommandWith(notEmptyTitle);
+		final BooksCommand command = aCreateBooksCommandWith(notEmptyTitle);
 		final Errors errors = new BeanPropertyBindingResult(command, "someObjectName");
 
 		testee.validate(command, errors);
@@ -53,15 +53,15 @@ public class UpdateValidatorTest {
 	@Test
 	public void shouldFindErrorsWhenInvalidData() {
 		final String emptyTitle = "";
-		final BooksCommand command = anUpdateBooksCommandWith(emptyTitle);
+		final BooksCommand command = aCreateBooksCommandWith(emptyTitle);
 		final Errors errors = new BeanPropertyBindingResult(command, "someObjectName");
 
 		testee.validate(command, errors);
 
 		assertThat(errors.hasErrors(), is(true));
 		assertThat(errors.getErrorCount(), is(equalTo(1)));
-		assertThatFieldErrorHas(errors.getFieldError("updatedBook.title"),
-				"updatedBook.title.empty", "Updating with empty title is not allowed.");
+		assertThatFieldErrorHas(errors.getFieldError("newBook.title"),
+				"newBook.title.empty", "Creating with empty title is not allowed.");
 	}
 
 	private void assertThatFieldErrorHas(FieldError fieldError, String fieldCode, String defaultMessage) {
@@ -69,11 +69,11 @@ public class UpdateValidatorTest {
 		assertThat(fieldError.getDefaultMessage(), is(equalTo(defaultMessage)));
 	}
 
-	private BooksCommand anUpdateBooksCommandWith(String title) {
+	private BooksCommand aCreateBooksCommandWith(String title) {
 		BooksCommand booksCommand = new BooksCommand();
-		BookCommand updatedBook = new BookCommand();
-		booksCommand.setUpdatedBook(updatedBook);
-		updatedBook.setTitle(title);
+		BookCommand newBook = new BookCommand();
+		booksCommand.setNewBook(newBook);
+		newBook.setTitle(title);
 
 		return booksCommand;
 	}

@@ -11,7 +11,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import pl.jojczykp.bookstore.assembler.BookAssembler;
 import pl.jojczykp.bookstore.command.BooksCommand;
 import pl.jojczykp.bookstore.repository.BookRepository;
-import pl.jojczykp.bookstore.validators.CreateValidator;
+import pl.jojczykp.bookstore.validators.BookCreateValidator;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static pl.jojczykp.bookstore.controller.BooksConsts.BOOKS_COMMAND;
@@ -21,7 +21,7 @@ import static pl.jojczykp.bookstore.controller.BooksConsts.URL_ACTION_READ;
 @Controller
 public class BooksControllerCreate {
 
-	@Autowired private CreateValidator createValidator;
+	@Autowired private BookCreateValidator bookCreateValidator;
 	@Autowired private BookRepository bookRepository;
 	@Autowired private BookAssembler bookAssembler;
 
@@ -31,7 +31,7 @@ public class BooksControllerCreate {
 			RedirectAttributes redirectAttributes,
 			BindingResult bindingResult)
 	{
-		createValidator.validate(booksCommand, bindingResult);
+		bookCreateValidator.validate(booksCommand, bindingResult);
 		if (bindingResult.hasErrors()) {
 			processWhenCommandInvalid(booksCommand, bindingResult);
 		} else {

@@ -6,7 +6,7 @@ import pl.jojczykp.bookstore.command.BooksCommand;
 
 import static org.springframework.validation.ValidationUtils.rejectIfEmptyOrWhitespace;
 
-public class CreateValidator implements Validator {
+public class BookCreateValidator implements Validator {
 
 	@Override
 	public boolean supports(Class<?> clazz) {

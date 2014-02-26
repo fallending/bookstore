@@ -19,7 +19,7 @@ import org.springframework.web.context.WebApplicationContext;
 import pl.jojczykp.bookstore.command.BooksCommand;
 import pl.jojczykp.bookstore.domain.Book;
 import pl.jojczykp.bookstore.repository.BookRepository;
-import pl.jojczykp.bookstore.validators.CreateValidator;
+import pl.jojczykp.bookstore.validators.BookCreateValidator;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.sameInstance;
@@ -54,7 +54,7 @@ public class BooksControllerCreateTest {
 	private MockMvc mvcMock;
 	private ResultActions mvcMockPerformResult;
 	@Autowired private BookRepository bookRepositoryMock;
-	@Autowired private CreateValidator createValidatorMock;
+	@Autowired private BookCreateValidator bookCreateValidatorMock;
 	@Autowired private WebApplicationContext wac;
 
 	@Captor private ArgumentCaptor<Book> newBookCaptor;
@@ -64,7 +64,7 @@ public class BooksControllerCreateTest {
 		mvcMock = webAppContextSetup(wac).build();
 		MockitoAnnotations.initMocks(this);
 		reset(bookRepositoryMock);
-		reset(createValidatorMock);
+		reset(bookCreateValidatorMock);
 	}
 
 	@Test
@@ -102,7 +102,7 @@ public class BooksControllerCreateTest {
 
 	private void givenNegativeValidation() {
 		doAnswer(validationError())
-				.when(createValidatorMock).validate(anyObject(), any(Errors.class));
+				.when(bookCreateValidatorMock).validate(anyObject(), any(Errors.class));
 	}
 
 	private Answer<Void> validationError() {
@@ -122,7 +122,7 @@ public class BooksControllerCreateTest {
 	}
 
 	private void thenExpectValidationInvoked() throws Exception {
-		verify(createValidatorMock).validate(anyObject(), any(Errors.class));
+		verify(bookCreateValidatorMock).validate(anyObject(), any(Errors.class));
 	}
 
 	private void thenExpectCreateInvokedOnRepository(String title) {
