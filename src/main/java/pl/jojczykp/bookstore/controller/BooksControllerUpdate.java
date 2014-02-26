@@ -28,8 +28,8 @@ public class BooksControllerUpdate {
 
 	@RequestMapping(value = URL_ACTION_UPDATE, method = POST)
 	public RedirectView update(
-			RedirectAttributes redirectAttributes,
 			@ModelAttribute(BOOKS_COMMAND) BooksCommand booksCommand,
+			RedirectAttributes redirectAttributes,
 			BindingResult bindingResult)
 	{
 		updateValidator.validate(booksCommand, bindingResult);

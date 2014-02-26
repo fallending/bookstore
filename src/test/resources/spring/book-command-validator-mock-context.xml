@@ -8,6 +8,8 @@
 			http://www.mockito.org/spring/mockito
 			http://www.mockito.org/spring/mockito.xsd">
 
+	<mockito:mock id="createValidator" class="pl.jojczykp.bookstore.validators.CreateValidator" />
+
 	<mockito:mock id="updateValidator" class="pl.jojczykp.bookstore.validators.UpdateValidator" />
 
 </beans>

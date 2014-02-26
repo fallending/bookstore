@@ -66,8 +66,6 @@ public class BooksControllerUpdateTest {
 	@Autowired private WebApplicationContext wac;
 
 	@Captor private ArgumentCaptor<Book> updatedBookCaptor;
-	@Captor private ArgumentCaptor<Object> validatedObjectCaptor;
-	@Captor private ArgumentCaptor<Errors> validatedErrorsCaptor;
 
 	@Before
 	public void setUp() {
@@ -90,7 +88,7 @@ public class BooksControllerUpdateTest {
 	}
 
 	@Test
-	public void shouldFailUpdatingAlreadyUpdatedBook() throws Exception {
+	public void shouldFailConcurrentlyUpdatingUpdatedBook() throws Exception {
 		final BooksCommand command = aCommandWith(SAMPLE_ID, SAMPLE_TITLE);
 		givenObjectConcurrentlyUpdated();
 
@@ -152,7 +150,7 @@ public class BooksControllerUpdateTest {
 	}
 
 	private void thenExpectValidationInvoked() throws Exception {
-		verify(updateValidatorMock).validate(validatedObjectCaptor.capture(), validatedErrorsCaptor.capture());
+		verify(updateValidatorMock).validate(anyObject(), any(Errors.class));
 	}
 
 	private void thenExpectUpdateInvokedOnRepository(int id, String title) {
