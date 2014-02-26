@@ -38,8 +38,7 @@ public class BooksControllerCreate {
 			processWhenCommandValid(booksCommand);
 		}
 
-		redirectAttributes.addFlashAttribute(BOOKS_COMMAND, bindingResult.getTarget());
-		return new RedirectView(URL_ACTION_READ);
+		return redirectToRead(booksCommand, redirectAttributes);
 	}
 
 	private void processWhenCommandInvalid(BooksCommand booksCommand, BindingResult bindingResult) {
@@ -52,4 +51,10 @@ public class BooksControllerCreate {
 		bookRepository.create(bookAssembler.toDomain(booksCommand.getNewBook()));
 		booksCommand.getMessages().addInfo("Object created.");
 	}
+
+	private RedirectView redirectToRead(BooksCommand booksCommand, RedirectAttributes redirectAttributes) {
+		redirectAttributes.addFlashAttribute(BOOKS_COMMAND, booksCommand);
+		return new RedirectView(URL_ACTION_READ);
+	}
+
 }

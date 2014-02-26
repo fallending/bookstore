@@ -55,6 +55,7 @@ import static pl.jojczykp.bookstore.utils.PageSorterDirection.DESC;
 @WebAppConfiguration
 @ContextConfiguration({
 		"file:src/main/webapp/WEB-INF/mvc-dispatcher-servlet.xml",
+		"classpath:spring/config-test-context.xml",
 		"classpath:spring/repository-mock-context.xml",
 		"classpath:spring/assembler-mock-context.xml",
 		"classpath:spring/page-params-limiter-mock-context.xml",

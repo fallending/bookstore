@@ -39,8 +39,8 @@ public class BooksControllerUpdate {
 			processWhenCommandValid(booksCommand);
 		}
 
-		redirectAttributes.addFlashAttribute(BOOKS_COMMAND, bindingResult.getTarget());
-		return new RedirectView(URL_ACTION_READ);
+		return redirectToRead(booksCommand, redirectAttributes);
+
 	}
 
 	private void processWhenCommandInvalid(BooksCommand booksCommand, BindingResult bindingResult) {
@@ -57,6 +57,11 @@ public class BooksControllerUpdate {
 			booksCommand.getMessages().addWarn(
 					"Object updated or deleted by another user. Please try again with actual data.");
 		}
+	}
+
+	private RedirectView redirectToRead(BooksCommand booksCommand, RedirectAttributes redirectAttributes) {
+		redirectAttributes.addFlashAttribute(BOOKS_COMMAND, booksCommand);
+		return new RedirectView(URL_ACTION_READ);
 	}
 
 }

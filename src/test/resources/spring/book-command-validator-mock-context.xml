@@ -12,4 +12,6 @@
 
 	<mockito:mock id="bookUpdateValidator" class="pl.jojczykp.bookstore.validators.BookUpdateValidator" />
 
+	<mockito:mock id="booksSetPageSizeValidator" class="pl.jojczykp.bookstore.validators.BooksSetPageSizeValidator" />
+
 </beans>

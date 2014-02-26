@@ -32,8 +32,7 @@ public class BooksControllerDelete {
 			}
 		}
 
-		redirectAttributes.addFlashAttribute(BOOKS_COMMAND, booksCommand);
-		return new RedirectView(URL_ACTION_READ);
+		return redirectToRead(booksCommand, redirectAttributes);
 	}
 
 	private void deleteBookFromRepository(int bookId, BooksCommand messagesContainer) {
@@ -43,6 +42,11 @@ public class BooksControllerDelete {
 		} catch (ObjectNotFoundException ex) {
 			messagesContainer.getMessages().addWarn("Object already deleted.");
 		}
+	}
+
+	private RedirectView redirectToRead(BooksCommand booksCommand, RedirectAttributes redirectAttributes) {
+		redirectAttributes.addFlashAttribute(BOOKS_COMMAND, booksCommand);
+		return new RedirectView(URL_ACTION_READ);
 	}
 
 }

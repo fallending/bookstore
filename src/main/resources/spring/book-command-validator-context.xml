@@ -9,4 +9,6 @@
 
 	<bean id="bookUpdateValidator" class="pl.jojczykp.bookstore.validators.BookUpdateValidator" />
 
+	<bean id="booksSetPageSizeValidator" class="pl.jojczykp.bookstore.validators.BooksSetPageSizeValidator" />
+
 </beans>
