@@ -154,8 +154,8 @@
 <#macro sectionPager>
 	<table>
 		<tr>
-			<td align="left"><@formPagerSetPageSize/></td>
-			<td width="15px"></td>
+			<td align="left">Page size: <@formPagerSetPageSize/></td>
+			<td align="center">Go to page:</td>
 			<td align="left"><@formPagerPrev/></td>
 			<td align="center"><@formPagerGoToPage/></td>
 			<td aling="right"><@formPagerNext/></td>
@@ -172,8 +172,8 @@
 </#macro>
 
 <#macro formPagerSetPageSize>
-	<input type="button" value="set page size" onClick="sendSetPageSize()" />
-	<@spring.formInput "booksCommand.pager.pageSize" "class='setPageSizeInput'" />
+	<#assign possibleSizes = {"1":1, "5":5, "10":10, "15":15, "25":25, "50":50, "100":100}>
+	<@spring.formSingleSelect "booksCommand.pager.pageSize" possibleSizes "class='setPageSizeInput' onChange='sendSetPageSize()''" />
 </#macro>
 
 <#macro formPagerNext>
