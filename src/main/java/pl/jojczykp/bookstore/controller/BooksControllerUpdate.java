@@ -45,16 +45,16 @@ public class BooksControllerUpdate {
 
 	private void processWhenCommandInvalid(BooksCommand booksCommand, BindingResult bindingResult) {
 		for(ObjectError error: bindingResult.getAllErrors()) {
-			booksCommand.getMessages().addError(error.getDefaultMessage());
+			booksCommand.getMessages().addErrors(error.getDefaultMessage());
 		}
 	}
 
 	private void processWhenCommandValid(BooksCommand booksCommand) {
 		try {
 			bookRepository.update(bookAssembler.toDomain(booksCommand.getUpdatedBook()));
-			booksCommand.getMessages().addInfo("Object updated.");
+			booksCommand.getMessages().addInfos("Object updated.");
 		} catch (StaleObjectStateException e) {
-			booksCommand.getMessages().addWarn(
+			booksCommand.getMessages().addWarns(
 					"Object updated or deleted by another user. Please try again with actual data.");
 		}
 	}

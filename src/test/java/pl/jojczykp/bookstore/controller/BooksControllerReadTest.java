@@ -16,6 +16,7 @@ import org.springframework.web.context.WebApplicationContext;
 import pl.jojczykp.bookstore.assembler.BookAssembler;
 import pl.jojczykp.bookstore.command.BookCommand;
 import pl.jojczykp.bookstore.command.BooksCommand;
+import pl.jojczykp.bookstore.command.MessagesCommand;
 import pl.jojczykp.bookstore.command.PagerCommand;
 import pl.jojczykp.bookstore.domain.Book;
 import pl.jojczykp.bookstore.repository.BookRepository;
@@ -28,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.cedarsoftware.util.DeepEquals.deepEquals;
+import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.instanceOf;
@@ -47,6 +49,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
+import static pl.jojczykp.bookstore.testutils.controller.MessagesControllerTestUtils.thenExpectModelMessages;
 import static pl.jojczykp.bookstore.testutils.matchers.HasBeanProperty.hasBeanProperty;
 import static pl.jojczykp.bookstore.utils.PageSorterColumn.BOOK_TITLE;
 import static pl.jojczykp.bookstore.utils.PageSorterDirection.ASC;
@@ -142,13 +145,9 @@ public class BooksControllerReadTest {
 		thenExpectProcessedCommandInstance(defaultCommand);
 	}
 
-	private ResultActions thenExpectProcessedCommandInstance(BooksCommand command) throws Exception {
-		return mvcMockPerformResult.andExpect(model().attribute(BOOKS_COMMAND, is(sameInstance(command))));
-	}
-
 	@Test
 	public void shouldWalkThroughComponentsAndReturnData() throws Exception {
-		BooksCommand command = aRequestedBooksCommand();
+		BooksCommand command = aBooksCommandWithPager();
 
 		whenControllerReadPerformedWith(command);
 
@@ -161,6 +160,18 @@ public class BooksControllerReadTest {
 		thenExpectCorrectViewSelectedAndModelSet();
 	}
 
+	@Test
+	public void shouldPropagateMessages() throws Exception {
+		final List<String> infos = asList("info1", "info2", "info3");
+		final List<String> warns = asList("warn1", "warn2", "warn3");
+		final List<String> errors = asList("error1", "error2", "error3");
+		BooksCommand command = aBooksCommandWithMessages(infos, warns, errors);
+
+		whenControllerReadPerformedWith(command);
+
+		thenExpectModelMessages(mvcMockPerformResult, infos, warns, errors);
+	}
+
 	private void whenControllerReadPerformedWithNoCommand() throws Exception {
 		mvcMockPerformResult = mvcMock.perform(get(URL_ACTION_READ));
 	}
@@ -168,6 +179,12 @@ public class BooksControllerReadTest {
 	private void whenControllerReadPerformedWith(BooksCommand booksCommand) throws Exception {
 		mvcMockPerformResult = mvcMock.perform(get(URL_ACTION_READ)
 				.flashAttr(BOOKS_COMMAND, booksCommand));
+	}
+
+	private ResultActions thenExpectProcessedCommandInstance(BooksCommand command) throws Exception {
+		return mvcMockPerformResult
+				.andExpect(model().attribute(BOOKS_COMMAND,
+						is(sameInstance(command))));
 	}
 
 	private void thenExpectBooksCommandFactoryInvoked() {
@@ -185,7 +202,7 @@ public class BooksControllerReadTest {
 
 	private void thenExpectParametersLimitationUsage() {
 		verify(pagerLimiter).createLimited(pagerCommandCaptor.capture(), totalCountCaptor.capture());
-		assertPagersEqual(pagerCommandCaptor.getValue(), aRequestedPager());
+		assertPagersEqual(pagerCommandCaptor.getValue(), aPagerCommand());
 		assertThat(totalCountCaptor.getValue(), equalTo(REPO_TOTAL_COUNT));
 		verifyNoMoreInteractions(pagerLimiter);
 	}
@@ -227,14 +244,30 @@ public class BooksControllerReadTest {
 					LIMITED_TOTAL_COUNT))));
 	}
 
-	private static BooksCommand aRequestedBooksCommand() {
+	private static BooksCommand aBooksCommandWithMessages(List<String> infos, List<String> warns, List<String> errors) {
 		BooksCommand result = new BooksCommand();
-		result.setPager(aRequestedPager());
+		result.setMessages(aMessagesCommand(infos, warns, errors));
 
 		return result;
 	}
 
-	private static PagerCommand aRequestedPager() {
+	private static MessagesCommand aMessagesCommand(List<String> infos, List<String> warns, List<String> errors) {
+		MessagesCommand result = new MessagesCommand();
+		result.addInfos(infos.toArray(new String[infos.size()]));
+		result.addWarns(warns.toArray(new String[warns.size()]));
+		result.addErrors(errors.toArray(new String[errors.size()]));
+
+		return result;
+	}
+
+	private static BooksCommand aBooksCommandWithPager() {
+		BooksCommand result = new BooksCommand();
+		result.setPager(aPagerCommand());
+
+		return result;
+	}
+
+	private static PagerCommand aPagerCommand() {
 		PagerCommand result = new PagerCommand();
 		result.setPageNumber(REQUESTED_PAGE_NUMBER);
 		result.setPageSize(REQUESTED_PAGE_SIZE);

@@ -38,9 +38,9 @@ public class BooksControllerDelete {
 	private void deleteBookFromRepository(int bookId, BooksCommand messagesContainer) {
 		try {
 			bookRepository.delete(bookId);
-			messagesContainer.getMessages().addInfo("Object deleted.");
+			messagesContainer.getMessages().addInfos("Object deleted.");
 		} catch (ObjectNotFoundException ex) {
-			messagesContainer.getMessages().addWarn("Object already deleted.");
+			messagesContainer.getMessages().addWarns("Object already deleted.");
 		}
 	}
 

@@ -3,6 +3,8 @@ package pl.jojczykp.bookstore.command;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Arrays.asList;
+
 public class MessagesCommand {
 
 	private List<String> infos;
@@ -15,24 +17,24 @@ public class MessagesCommand {
 		errors = new ArrayList<>();
 	}
 
-	public void addInfo(String message) {
-		infos.add(message);
+	public void addInfos(String... messages) {
+		infos.addAll(asList(messages));
 	}
 
 	public List<String> getInfos() {
 		return infos;
 	}
 
-	public void addWarn(String message) {
-		warns.add(message);
+	public void addWarns(String... messages) {
+		warns.addAll(asList(messages));
 	}
 
 	public List<String> getWarns() {
 		return warns;
 	}
 
-	public void addError(String message) {
-		errors.add(message);
+	public void addErrors(String... messages) {
+		errors.addAll(asList(messages));
 	}
 
 	public List<String> getErrors() {

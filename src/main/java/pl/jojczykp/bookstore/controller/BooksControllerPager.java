@@ -53,12 +53,12 @@ public class BooksControllerPager {
 	private void processWhenCommandInvalid(BooksCommand booksCommand, BindingResult bindingResult) {
 		booksCommand.getPager().setPageSize(defaultPageSize);
 		for(ObjectError error: bindingResult.getAllErrors()) {
-			booksCommand.getMessages().addError(error.getDefaultMessage());
+			booksCommand.getMessages().addErrors(error.getDefaultMessage());
 		}
 	}
 
 	private void processWhenCommandValid(BooksCommand booksCommand) {
-		booksCommand.getMessages().addInfo("Page size changed.");
+		booksCommand.getMessages().addInfos("Page size changed.");
 	}
 
 	@RequestMapping(value = URL_ACTION_GO_TO_PAGE, method = POST)

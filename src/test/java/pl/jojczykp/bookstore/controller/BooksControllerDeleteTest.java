@@ -31,8 +31,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
-import static pl.jojczykp.bookstore.testutils.matchers.MessagesControllerTestUtils.thenExpectInfoOnlyMessages;
-import static pl.jojczykp.bookstore.testutils.matchers.MessagesControllerTestUtils.thenExpectWarnOnlyMessages;
+import static pl.jojczykp.bookstore.testutils.controller.MessagesControllerTestUtils.thenExpectInfoOnlyFlashMessages;
+import static pl.jojczykp.bookstore.testutils.controller.MessagesControllerTestUtils.thenExpectWarnOnlyFlashMessages;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -64,7 +64,7 @@ public class BooksControllerDeleteTest {
 		whenControllerDeletePerformedWithCommand(command);
 
 		thenExpectDeleteInvokedOnRepository(EXISTING_ID_1, EXISTING_ID_2);
-		thenExpectInfoOnlyMessages(mvcMockPerformResult, "Object deleted.", "Object deleted.");
+		thenExpectInfoOnlyFlashMessages(mvcMockPerformResult, "Object deleted.", "Object deleted.");
 		thenExpectHttpRedirectWith(command);
 	}
 
@@ -75,7 +75,7 @@ public class BooksControllerDeleteTest {
 		whenControllerDeletePerformedWithCommand(command);
 
 		thenExpectDeleteInvokedOnRepository(NOT_EXISTING_ID);
-		thenExpectWarnOnlyMessages(mvcMockPerformResult, "Object already deleted.");
+		thenExpectWarnOnlyFlashMessages(mvcMockPerformResult, "Object already deleted.");
 		thenExpectHttpRedirectWith(command);
 	}
 

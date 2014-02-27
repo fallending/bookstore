@@ -43,13 +43,13 @@ public class BooksControllerCreate {
 
 	private void processWhenCommandInvalid(BooksCommand booksCommand, BindingResult bindingResult) {
 		for(ObjectError error: bindingResult.getAllErrors()) {
-			booksCommand.getMessages().addError(error.getDefaultMessage());
+			booksCommand.getMessages().addErrors(error.getDefaultMessage());
 		}
 	}
 
 	private void processWhenCommandValid(BooksCommand booksCommand) {
 		bookRepository.create(bookAssembler.toDomain(booksCommand.getNewBook()));
-		booksCommand.getMessages().addInfo("Object created.");
+		booksCommand.getMessages().addInfos("Object created.");
 	}
 
 	private RedirectView redirectToRead(BooksCommand booksCommand, RedirectAttributes redirectAttributes) {

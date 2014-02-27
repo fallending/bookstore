@@ -35,10 +35,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
+import static pl.jojczykp.bookstore.testutils.controller.MessagesControllerTestUtils.thenExpectErrorOnlyFlashMessages;
+import static pl.jojczykp.bookstore.testutils.controller.MessagesControllerTestUtils.thenExpectInfoOnlyFlashMessages;
+import static pl.jojczykp.bookstore.testutils.controller.MessagesControllerTestUtils.thenExpectNoFlashMessages;
 import static pl.jojczykp.bookstore.testutils.matchers.HasBeanProperty.hasBeanProperty;
-import static pl.jojczykp.bookstore.testutils.matchers.MessagesControllerTestUtils.thenExpectErrorOnlyMessages;
-import static pl.jojczykp.bookstore.testutils.matchers.MessagesControllerTestUtils.thenExpectInfoOnlyMessages;
-import static pl.jojczykp.bookstore.testutils.matchers.MessagesControllerTestUtils.thenExpectNoMessages;
 import static pl.jojczykp.bookstore.utils.PageSorterColumn.BOOK_TITLE;
 import static pl.jojczykp.bookstore.utils.PageSorterDirection.ASC;
 import static pl.jojczykp.bookstore.utils.PageSorterDirection.DESC;
@@ -85,8 +85,8 @@ public class BooksControllerPagerTest {
 		whenUrlActionPerformedWithCommand(URL_ACTION_SORT, command);
 
 		thenExpectValidationNotInvoked();
-		assertThatSortedBy(sortColumn, sortDirection);
-		thenExpectNoMessages(mvcMockPerformResult);
+		thenExpectSortedBy(sortColumn, sortDirection);
+		thenExpectNoFlashMessages(mvcMockPerformResult);
 		thenExpectHttpRedirectWith(command);
 	}
 
@@ -99,7 +99,7 @@ public class BooksControllerPagerTest {
 
 		thenExpectValidationInvoked();
 		thenExpectPageSizeSetTo(pageSize);
-		thenExpectInfoOnlyMessages(mvcMockPerformResult, "Page size changed.");
+		thenExpectInfoOnlyFlashMessages(mvcMockPerformResult, "Page size changed.");
 		thenExpectHttpRedirectWith(command);
 	}
 
@@ -113,7 +113,7 @@ public class BooksControllerPagerTest {
 
 		thenExpectValidationInvoked();
 		thenExpectPageSizeSetTo(defaultPageSize);
-		thenExpectErrorOnlyMessages(mvcMockPerformResult, VALIDATOR_ERROR_MESSAGE);
+		thenExpectErrorOnlyFlashMessages(mvcMockPerformResult, VALIDATOR_ERROR_MESSAGE);
 		thenExpectHttpRedirectWith(command);
 	}
 
@@ -126,7 +126,7 @@ public class BooksControllerPagerTest {
 
 		thenExpectValidationNotInvoked();
 		assertThatScrolledToPage(pageNumber);
-		thenExpectNoMessages(mvcMockPerformResult);
+		thenExpectNoFlashMessages(mvcMockPerformResult);
 		thenExpectHttpRedirectWith(command);
 	}
 
@@ -202,7 +202,7 @@ public class BooksControllerPagerTest {
 						hasBeanProperty("pager.pageSize", equalTo(pageSize))));
 	}
 
-	private void assertThatSortedBy(PageSorterColumn sortColumn, PageSorterDirection sortDirection) throws Exception {
+	private void thenExpectSortedBy(PageSorterColumn sortColumn, PageSorterDirection sortDirection) throws Exception {
 		mvcMockPerformResult
 				.andExpect(status().isFound())
 				.andExpect(flash().attribute(BOOKS_COMMAND,

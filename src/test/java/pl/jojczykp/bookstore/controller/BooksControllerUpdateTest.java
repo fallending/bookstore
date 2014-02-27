@@ -42,9 +42,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
-import static pl.jojczykp.bookstore.testutils.matchers.MessagesControllerTestUtils.thenExpectErrorOnlyMessages;
-import static pl.jojczykp.bookstore.testutils.matchers.MessagesControllerTestUtils.thenExpectInfoOnlyMessages;
-import static pl.jojczykp.bookstore.testutils.matchers.MessagesControllerTestUtils.thenExpectWarnOnlyMessages;
+import static pl.jojczykp.bookstore.testutils.controller.MessagesControllerTestUtils.thenExpectErrorOnlyFlashMessages;
+import static pl.jojczykp.bookstore.testutils.controller.MessagesControllerTestUtils.thenExpectInfoOnlyFlashMessages;
+import static pl.jojczykp.bookstore.testutils.controller.MessagesControllerTestUtils.thenExpectWarnOnlyFlashMessages;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -86,7 +86,7 @@ public class BooksControllerUpdateTest {
 		thenExpectValidationInvokedFor(command);
 		thenExpectAssemblingCommandToDomainInvokedFor(command.getUpdatedBook());
 		thenExpectUpdateInvokedOnRepository();
-		thenExpectInfoOnlyMessages(mvcMockPerformResult, "Object updated.");
+		thenExpectInfoOnlyFlashMessages(mvcMockPerformResult, "Object updated.");
 		thenExpectHttpRedirectWith(command);
 	}
 
@@ -100,7 +100,7 @@ public class BooksControllerUpdateTest {
 		thenExpectValidationInvokedFor(command);
 		thenExpectAssemblingCommandToDomainInvokedFor(command.getUpdatedBook());
 		thenExpectUpdateInvokedOnRepository();
-		thenExpectWarnOnlyMessages(mvcMockPerformResult,
+		thenExpectWarnOnlyFlashMessages(mvcMockPerformResult,
 				"Object updated or deleted by another user. Please try again with actual data.");
 		thenExpectHttpRedirectWith(command);
 	}
@@ -115,7 +115,7 @@ public class BooksControllerUpdateTest {
 		thenExpectValidationInvokedFor(command);
 		thenExpectAssemblingCommandToDomainNotInvoked();
 		thenExpectUpdateNotInvokedOnRepository();
-		thenExpectErrorOnlyMessages(mvcMockPerformResult, VALIDATOR_ERROR_MESSAGE);
+		thenExpectErrorOnlyFlashMessages(mvcMockPerformResult, VALIDATOR_ERROR_MESSAGE);
 		thenExpectHttpRedirectWith(command);
 	}
 
