@@ -36,9 +36,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 import static pl.jojczykp.bookstore.testutils.matchers.HasBeanProperty.hasBeanProperty;
-import static pl.jojczykp.bookstore.testutils.matchers.MessagesControllerTestUtils.thenExpectErrorOnlyMessage;
-import static pl.jojczykp.bookstore.testutils.matchers.MessagesControllerTestUtils.thenExpectInfoOnlyMessage;
-import static pl.jojczykp.bookstore.testutils.matchers.MessagesControllerTestUtils.thenExpectNoMessage;
+import static pl.jojczykp.bookstore.testutils.matchers.MessagesControllerTestUtils.thenExpectErrorOnlyMessages;
+import static pl.jojczykp.bookstore.testutils.matchers.MessagesControllerTestUtils.thenExpectInfoOnlyMessages;
+import static pl.jojczykp.bookstore.testutils.matchers.MessagesControllerTestUtils.thenExpectNoMessages;
 import static pl.jojczykp.bookstore.utils.PageSorterColumn.BOOK_TITLE;
 import static pl.jojczykp.bookstore.utils.PageSorterDirection.ASC;
 import static pl.jojczykp.bookstore.utils.PageSorterDirection.DESC;
@@ -85,8 +85,8 @@ public class BooksControllerPagerTest {
 		whenUrlActionPerformedWithCommand(URL_ACTION_SORT, command);
 
 		thenExpectValidationNotInvoked();
-		thenExpectNoMessage(mvcMockPerformResult);
 		assertThatSortedBy(sortColumn, sortDirection);
+		thenExpectNoMessages(mvcMockPerformResult);
 		thenExpectHttpRedirectWith(command);
 	}
 
@@ -98,8 +98,8 @@ public class BooksControllerPagerTest {
 		whenUrlActionPerformedWithCommand(URL_ACTION_SET_PAGE_SIZE, command);
 
 		thenExpectValidationInvoked();
-		thenExpectInfoOnlyMessage(mvcMockPerformResult, "Page size changed.");
 		thenExpectPageSizeSetTo(pageSize);
+		thenExpectInfoOnlyMessages(mvcMockPerformResult, "Page size changed.");
 		thenExpectHttpRedirectWith(command);
 	}
 
@@ -112,8 +112,8 @@ public class BooksControllerPagerTest {
 		whenUrlActionPerformedWithCommand(URL_ACTION_SET_PAGE_SIZE, command);
 
 		thenExpectValidationInvoked();
-		thenExpectErrorOnlyMessage(mvcMockPerformResult, VALIDATOR_ERROR_MESSAGE);
 		thenExpectPageSizeSetTo(defaultPageSize);
+		thenExpectErrorOnlyMessages(mvcMockPerformResult, VALIDATOR_ERROR_MESSAGE);
 		thenExpectHttpRedirectWith(command);
 	}
 
@@ -124,7 +124,9 @@ public class BooksControllerPagerTest {
 
 		whenUrlActionPerformedWithCommand(URL_ACTION_GO_TO_PAGE, command);
 
+		thenExpectValidationNotInvoked();
 		assertThatScrolledToPage(pageNumber);
+		thenExpectNoMessages(mvcMockPerformResult);
 		thenExpectHttpRedirectWith(command);
 	}
 

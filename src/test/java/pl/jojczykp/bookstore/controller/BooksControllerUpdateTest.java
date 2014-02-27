@@ -42,9 +42,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
-import static pl.jojczykp.bookstore.testutils.matchers.MessagesControllerTestUtils.thenExpectErrorOnlyMessage;
-import static pl.jojczykp.bookstore.testutils.matchers.MessagesControllerTestUtils.thenExpectInfoOnlyMessage;
-import static pl.jojczykp.bookstore.testutils.matchers.MessagesControllerTestUtils.thenExpectWarnOnlyMessage;
+import static pl.jojczykp.bookstore.testutils.matchers.MessagesControllerTestUtils.thenExpectErrorOnlyMessages;
+import static pl.jojczykp.bookstore.testutils.matchers.MessagesControllerTestUtils.thenExpectInfoOnlyMessages;
+import static pl.jojczykp.bookstore.testutils.matchers.MessagesControllerTestUtils.thenExpectWarnOnlyMessages;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -86,7 +86,7 @@ public class BooksControllerUpdateTest {
 		thenExpectValidationInvokedFor(command);
 		thenExpectAssemblingCommandToDomainInvokedFor(command.getUpdatedBook());
 		thenExpectUpdateInvokedOnRepository();
-		thenExpectInfoOnlyMessage(mvcMockPerformResult, "Object updated.");
+		thenExpectInfoOnlyMessages(mvcMockPerformResult, "Object updated.");
 		thenExpectHttpRedirectWith(command);
 	}
 
@@ -100,7 +100,7 @@ public class BooksControllerUpdateTest {
 		thenExpectValidationInvokedFor(command);
 		thenExpectAssemblingCommandToDomainInvokedFor(command.getUpdatedBook());
 		thenExpectUpdateInvokedOnRepository();
-		thenExpectWarnOnlyMessage(mvcMockPerformResult,
+		thenExpectWarnOnlyMessages(mvcMockPerformResult,
 				"Object updated or deleted by another user. Please try again with actual data.");
 		thenExpectHttpRedirectWith(command);
 	}
@@ -115,7 +115,7 @@ public class BooksControllerUpdateTest {
 		thenExpectValidationInvokedFor(command);
 		thenExpectAssemblingCommandToDomainNotInvoked();
 		thenExpectUpdateNotInvokedOnRepository();
-		thenExpectErrorOnlyMessage(mvcMockPerformResult, VALIDATOR_ERROR_MESSAGE);
+		thenExpectErrorOnlyMessages(mvcMockPerformResult, VALIDATOR_ERROR_MESSAGE);
 		thenExpectHttpRedirectWith(command);
 	}
 

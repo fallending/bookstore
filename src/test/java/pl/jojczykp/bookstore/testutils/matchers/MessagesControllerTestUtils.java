@@ -12,7 +12,7 @@ public abstract class MessagesControllerTestUtils {
 
 	private static final String BOOKS_COMMAND_ATTR = "booksCommand";
 
-	public static void thenExpectInfoOnlyMessage(ResultActions mvcMockPerformResult, String... expectedMessages) {
+	public static void thenExpectInfoOnlyMessages(ResultActions mvcMockPerformResult, String... expectedMessages) {
 		try {
 			mvcMockPerformResult
 				.andExpect(flash().attribute(BOOKS_COMMAND_ATTR, hasBeanProperty("messages.infos",
@@ -24,7 +24,7 @@ public abstract class MessagesControllerTestUtils {
 		}
 	}
 
-	public static void thenExpectWarnOnlyMessage(ResultActions mvcMockPerformResult, String... expectedMessages) {
+	public static void thenExpectWarnOnlyMessages(ResultActions mvcMockPerformResult, String... expectedMessages) {
 		try {
 			mvcMockPerformResult
 				.andExpect(flash().attribute(BOOKS_COMMAND_ATTR, hasBeanProperty("messages.infos", empty())))
@@ -36,7 +36,7 @@ public abstract class MessagesControllerTestUtils {
 		}
 	}
 
-	public static void thenExpectErrorOnlyMessage(ResultActions mvcMockPerformResult, String... expectedMessages) {
+	public static void thenExpectErrorOnlyMessages(ResultActions mvcMockPerformResult, String... expectedMessages) {
 		try {
 			mvcMockPerformResult
 				.andExpect(flash().attribute(BOOKS_COMMAND_ATTR, hasBeanProperty("messages.infos", empty())))
@@ -48,7 +48,7 @@ public abstract class MessagesControllerTestUtils {
 		}
 	}
 
-	public static void thenExpectNoMessage(ResultActions mvcMockPerformResult) {
+	public static void thenExpectNoMessages(ResultActions mvcMockPerformResult) {
 		try {
 			mvcMockPerformResult
 				.andExpect(flash().attribute(BOOKS_COMMAND_ATTR, hasBeanProperty("messages.infos", empty())))

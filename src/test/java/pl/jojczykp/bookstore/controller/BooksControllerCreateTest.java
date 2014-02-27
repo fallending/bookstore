@@ -40,8 +40,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
-import static pl.jojczykp.bookstore.testutils.matchers.MessagesControllerTestUtils.thenExpectErrorOnlyMessage;
-import static pl.jojczykp.bookstore.testutils.matchers.MessagesControllerTestUtils.thenExpectInfoOnlyMessage;
+import static pl.jojczykp.bookstore.testutils.matchers.MessagesControllerTestUtils.thenExpectErrorOnlyMessages;
+import static pl.jojczykp.bookstore.testutils.matchers.MessagesControllerTestUtils.thenExpectInfoOnlyMessages;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -82,7 +82,7 @@ public class BooksControllerCreateTest {
 		thenExpectValidationInvokedFor(command);
 		thenExpectAssemblingCommandToDomainInvokedFor(command.getNewBook());
 		thenExpectCreateInvokedOnRepository();
-		thenExpectInfoOnlyMessage(mvcMockPerformResult, "Object created.");
+		thenExpectInfoOnlyMessages(mvcMockPerformResult, "Object created.");
 		thenExpectHttpRedirectWith(command);
 	}
 
@@ -96,7 +96,7 @@ public class BooksControllerCreateTest {
 		thenExpectValidationInvokedFor(command);
 		thenExpectAssemblingCommandToDomainNotInvoked();
 		thenExpectCreateNotInvokedOnRepository();
-		thenExpectErrorOnlyMessage(mvcMockPerformResult, VALIDATOR_ERROR_MESSAGE);
+		thenExpectErrorOnlyMessages(mvcMockPerformResult, VALIDATOR_ERROR_MESSAGE);
 		thenExpectHttpRedirectWith(command);
 	}
 
