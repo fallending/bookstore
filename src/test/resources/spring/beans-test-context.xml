@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:mockito="http://www.mockito.org/spring/mockito"
+       xsi:schemaLocation="
+			http://www.springframework.org/schema/context
+			http://www.springframework.org/schema/context/spring-context-3.0.xsd
+			http://www.springframework.org/schema/mvc
+			http://www.springframework.org/schema/mvc/spring-mvc.xsd
+			http://www.springframework.org/schema/beans
+			http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+			http://www.mockito.org/spring/mockito
+			http://www.mockito.org/spring/mockito.xsd">
+
+	<context:property-placeholder location="classpath:spring/config.properties" />
+
+	<context:component-scan base-package="pl.jojczykp.bookstore"/>
+
+	<mvc:annotation-driven/>
+
+	<mockito:mock id="pageParamsLimiter" class="pl.jojczykp.bookstore.utils.PagerLimiter"/>
+
+	<mockito:mock id="booksCommandFactory" class="pl.jojczykp.bookstore.utils.BooksCommandFactory" />
+
+	<mockito:mock id="bookAssembler" class="pl.jojczykp.bookstore.assembler.BookAssembler"/>
+
+	<mockito:mock id="bookRepository" class="pl.jojczykp.bookstore.repository.BookRepository"/>
+
+	<mockito:mock id="booksCreateValidator" class="pl.jojczykp.bookstore.validators.BooksCreateValidator" />
+	<mockito:mock id="booksUpdateValidator" class="pl.jojczykp.bookstore.validators.BooksUpdateValidator" />
+	<mockito:mock id="booksSetPageSizeValidator" class="pl.jojczykp.bookstore.validators.BooksSetPageSizeValidator" />
+
+</beans>

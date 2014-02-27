@@ -23,10 +23,7 @@ import static pl.jojczykp.bookstore.testutils.matchers.HasBeanProperty.hasBeanPr
 @WebAppConfiguration
 @ContextConfiguration({
 		"file:src/main/webapp/WEB-INF/mvc-dispatcher-servlet.xml",
-		"classpath:spring/config-test-context.xml",
-		"classpath:spring/repository-mock-context.xml",
-		"classpath:spring/books-command-factory-mock-context.xml",
-		"classpath:spring/book-command-validator-mock-context.xml",
+		"classpath:spring/beans-test-context.xml",
 		"classpath:spring/exception-throwing-controller-context.xml"
 })
 public class ControllerExceptionHandlerTest {
