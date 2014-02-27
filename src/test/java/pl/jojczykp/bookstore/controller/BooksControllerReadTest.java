@@ -1,6 +1,5 @@
 package pl.jojczykp.bookstore.controller;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,6 +41,7 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -97,16 +97,25 @@ public class BooksControllerReadTest {
 	@Captor private ArgumentCaptor<PageSorterColumn> pageSorterColumnCaptor;
 	@Captor private ArgumentCaptor<PageSorterDirection> pageSorterDirectionCaptor;
 
+	private BooksCommand defaultCommand = new BooksCommand();
+
 	@Before
 	public void setUp() {
 		mvcMock = webAppContextSetup(wac).build();
 
 		MockitoAnnotations.initMocks(this);
 
+		givenBooksCommandFactoryMockConfigured();
 		givenRepositoryMockConfigured();
 		givenRepeatingPageParamsLimiterMockConfigured();
 		givenBookAssemblerMockConfigured();
 	}
+
+	private void givenBooksCommandFactoryMockConfigured() {
+		reset(booksCommandFactory);
+		given(booksCommandFactory.create()).willReturn(defaultCommand);
+	}
+
 	private void givenRepositoryMockConfigured() {
 		reset(bookRepository);
 		given(bookRepository.totalCount()).willReturn(REPO_TOTAL_COUNT);
@@ -127,18 +136,24 @@ public class BooksControllerReadTest {
 
 	@Test
 	public void shouldUseDefaultBooksCommandWhenNoCommandPresent() throws Exception {
-		final BooksCommand defaultCommand = new BooksCommand();
-		given(booksCommandFactory.create()).willReturn(defaultCommand);
+		whenControllerReadPerformedWithNoCommand();
 
-		mvcMock.perform(get(URL_ACTION_READ))
-				.andExpect(status().isOk())
-				.andExpect(model().attribute(BOOKS_COMMAND, is(Matchers.sameInstance(defaultCommand))));
+		thenExpectBooksCommandFactoryInvoked();
+		thenExpectProcessedCommandInstance(defaultCommand);
+	}
+
+	private ResultActions thenExpectProcessedCommandInstance(BooksCommand command) throws Exception {
+		return mvcMockPerformResult.andExpect(model().attribute(BOOKS_COMMAND, is(sameInstance(command))));
 	}
 
 	@Test
 	public void shouldWalkThroughComponentsAndReturnData() throws Exception {
-		whenControllerReadPerformedWithCommand();
+		BooksCommand command = aRequestedBooksCommand();
 
+		whenControllerReadPerformedWith(command);
+
+		thenExpectBooksCommandFactoryNotInvoked();
+		thenExpectProcessedCommandInstance(command);
 		thenExpectBookRepositoryTotalCountTaken();
 		thenExpectParametersLimitationUsage();
 		thenExpectBookRepositoryRead();
@@ -146,9 +161,22 @@ public class BooksControllerReadTest {
 		thenExpectCorrectViewSelectedAndModelSet();
 	}
 
-	private void whenControllerReadPerformedWithCommand() throws Exception {
+	private void whenControllerReadPerformedWithNoCommand() throws Exception {
+		mvcMockPerformResult = mvcMock.perform(get(URL_ACTION_READ));
+	}
+
+	private void whenControllerReadPerformedWith(BooksCommand booksCommand) throws Exception {
 		mvcMockPerformResult = mvcMock.perform(get(URL_ACTION_READ)
-				.flashAttr(BOOKS_COMMAND, aRequestedBooksCommand()));
+				.flashAttr(BOOKS_COMMAND, booksCommand));
+	}
+
+	private void thenExpectBooksCommandFactoryInvoked() {
+		verify(booksCommandFactory).create();
+		verifyNoMoreInteractions(booksCommandFactory);
+	}
+
+	private void thenExpectBooksCommandFactoryNotInvoked() {
+		verifyZeroInteractions(booksCommandFactory);
 	}
 
 	private void thenExpectBookRepositoryTotalCountTaken() {
