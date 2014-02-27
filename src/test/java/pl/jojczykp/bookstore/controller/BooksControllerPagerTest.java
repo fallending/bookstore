@@ -59,7 +59,7 @@ public class BooksControllerPagerTest {
 	private static final int PAGES_COUNT = 4;
 	private static final PageSorterColumn SORT_COLUMN = BOOK_TITLE;
 	private static final PageSorterDirection SORT_DIRECTION = ASC;
-	private static final String VALIDATOR_ERROR_MESSAGE = "Negative or zero page size is not allowed.";
+	private static final String VALIDATOR_ERROR_MESSAGE = "Negative or zero page size is not allowed. Defaults used.";
 
 	private MockMvc mvcMock;
 	private ResultActions mvcMockPerformResult;

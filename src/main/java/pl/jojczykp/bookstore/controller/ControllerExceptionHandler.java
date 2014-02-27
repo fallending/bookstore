@@ -12,7 +12,7 @@ import static pl.jojczykp.bookstore.controller.BooksConsts.EXCEPTION_VIEW;
 public class ControllerExceptionHandler {
 
 	@ExceptionHandler(Exception.class)
-	public ModelAndView handleAnyException(RuntimeException ex) {
+	public ModelAndView handleAnyException(Exception ex) {
 		ModelAndView model = new ModelAndView(EXCEPTION_VIEW);
 		model.addObject("exceptionCommand", anExceptionCommandFor(ex));
 

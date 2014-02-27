@@ -20,7 +20,7 @@ public class BooksSetPageSizeValidator implements Validator {
 
 		if (pageSize <= 0) {
 			errors.rejectValue("pager.pageSize", "pager.pageSize.notPositive",
-					"Negative or zero page size is not allowed.");
+					"Negative or zero page size is not allowed. Defaults used.");
 		}
 	}
 }

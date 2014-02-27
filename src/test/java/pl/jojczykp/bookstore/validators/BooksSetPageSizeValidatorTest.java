@@ -61,7 +61,7 @@ public class BooksSetPageSizeValidatorTest {
 		assertThat(errors.hasErrors(), is(true));
 		assertThat(errors.getErrorCount(), is(equalTo(1)));
 		assertThatFieldErrorHas(errors.getFieldError("pager.pageSize"),
-				"pager.pageSize.notPositive", "Negative or zero page size is not allowed.");
+				"pager.pageSize.notPositive", "Negative or zero page size is not allowed. Defaults used.");
 	}
 
 	private void assertThatFieldErrorHas(FieldError fieldError, String fieldCode, String defaultMessage) {
