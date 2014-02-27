@@ -42,7 +42,7 @@ import static pl.jojczykp.bookstore.utils.PageSorterDirection.DESC;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration("classpath:spring/beans-test-context.xml")
+@ContextConfiguration("classpath:spring/application-test-context.xml")
 public class BooksControllerPagerTest {
 
 	private static final String BOOKS_COMMAND = "booksCommand";
@@ -61,7 +61,7 @@ public class BooksControllerPagerTest {
 	private MockMvc mvcMock;
 	private ResultActions mvcMockPerformResult;
 	@Autowired private BookRepository bookRepository;
-	@Autowired private BooksSetPageSizeValidator booksSetPageSizeValidatorMock;
+	@Autowired private BooksSetPageSizeValidator booksSetPageSizeValidator;
 	@Autowired private WebApplicationContext wac;
 
 	@Value("${view.books.defaultPageSize}") private int defaultPageSize;
@@ -70,7 +70,7 @@ public class BooksControllerPagerTest {
 	public void setUp() {
 		given(bookRepository.totalCount()).willReturn(PAGES_COUNT * PAGE_SIZE - 2);
 		mvcMock = webAppContextSetup(wac).build();
-		reset(booksSetPageSizeValidatorMock);
+		reset(booksSetPageSizeValidator);
 	}
 
 	@Test
@@ -154,7 +154,7 @@ public class BooksControllerPagerTest {
 
 	private void givenNegativeValidation() {
 		doAnswer(validationError())
-				.when(booksSetPageSizeValidatorMock).validate(anyObject(), any(Errors.class));
+				.when(booksSetPageSizeValidator).validate(anyObject(), any(Errors.class));
 	}
 
 	private Answer<Void> validationError() {
@@ -169,7 +169,7 @@ public class BooksControllerPagerTest {
 	}
 
 	private void thenExpectValidationInvoked() {
-		verify(booksSetPageSizeValidatorMock).validate(anyObject(), any(Errors.class));
+		verify(booksSetPageSizeValidator).validate(anyObject(), any(Errors.class));
 	}
 
 	private void assertThatScrolledToPage(int pageNumber) throws Exception {

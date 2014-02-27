@@ -35,7 +35,7 @@ import static pl.jojczykp.bookstore.testutils.matchers.MessagesControllerTestUti
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration("classpath:spring/beans-test-context.xml")
+@ContextConfiguration("classpath:spring/application-test-context.xml")
 public class BooksControllerDeleteTest {
 
 	private static final int NOT_EXISTING_ID = 98;
@@ -43,7 +43,7 @@ public class BooksControllerDeleteTest {
 
 	private MockMvc mvcMock;
 	private ResultActions mvcMockPerformResult;
-	@Autowired private BookRepository bookRepositoryMock;
+	@Autowired private BookRepository bookRepository;
 	@Autowired private WebApplicationContext wac;
 
 	@Captor private ArgumentCaptor<Integer> idOfBookToRemove;
@@ -56,8 +56,8 @@ public class BooksControllerDeleteTest {
 	}
 
 	private void setUpBookRepositoryMock() {
-		reset(bookRepositoryMock);
-		doThrow(ObjectNotFoundException.class).when(bookRepositoryMock).delete(NOT_EXISTING_ID);
+		reset(bookRepository);
+		doThrow(ObjectNotFoundException.class).when(bookRepository).delete(NOT_EXISTING_ID);
 	}
 
 	@Test
@@ -130,7 +130,7 @@ public class BooksControllerDeleteTest {
 	}
 
 	private void thenExpectDeletedBooksWithIds(Integer... ids) {
-		verify(bookRepositoryMock, times(ids.length)).delete(idOfBookToRemove.capture());
+		verify(bookRepository, times(ids.length)).delete(idOfBookToRemove.capture());
 		assertThat(idOfBookToRemove.getAllValues(), hasItems(ids));
 	}
 

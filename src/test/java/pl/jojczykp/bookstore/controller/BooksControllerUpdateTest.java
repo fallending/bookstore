@@ -48,33 +48,33 @@ import static pl.jojczykp.bookstore.testutils.matchers.MessagesControllerTestUti
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration("classpath:spring/beans-test-context.xml")
+@ContextConfiguration("classpath:spring/application-test-context.xml")
 public class BooksControllerUpdateTest {
 
 	private static final String VALIDATOR_ERROR_MESSAGE = "An error message from validator.";
 
 	private MockMvc mvcMock;
 	private ResultActions mvcMockPerformResult;
-	@Autowired private BooksUpdateValidator booksUpdateValidatorMock;
-	@Autowired private BookAssembler bookAssemblerMock;
-	@Autowired private BookRepository bookRepositoryMock;
+	@Autowired private BooksUpdateValidator booksUpdateValidator;
+	@Autowired private BookAssembler bookAssembler;
+	@Autowired private BookRepository bookRepository;
 	@Autowired private WebApplicationContext wac;
 
 	@Captor private ArgumentCaptor<BooksCommand> booksCommandCaptor;
 	@Captor private ArgumentCaptor<BookCommand> bookCommandCaptor;
 	@Captor private ArgumentCaptor<Book> updatedBookCaptor;
 
-	@Mock private StaleObjectStateException staleObjectStateExceptionMock;
+	@Mock private StaleObjectStateException staleObjectStateException;
 	@Mock private Book book;
 
 	@Before
 	public void setUp() {
 		mvcMock = webAppContextSetup(wac).build();
 		MockitoAnnotations.initMocks(this);
-		reset(booksUpdateValidatorMock);
-		reset(bookAssemblerMock);
-		reset(bookRepositoryMock);
-		given(bookAssemblerMock.toDomain(any(BookCommand.class))).willReturn(book);
+		reset(booksUpdateValidator);
+		reset(bookAssembler);
+		reset(bookRepository);
+		given(bookAssembler.toDomain(any(BookCommand.class))).willReturn(book);
 	}
 
 	@Test
@@ -120,12 +120,12 @@ public class BooksControllerUpdateTest {
 	}
 
 	private void givenObjectConcurrentlyUpdated() {
-		doThrow(staleObjectStateExceptionMock).when(bookRepositoryMock).update(any(Book.class));
+		doThrow(staleObjectStateException).when(bookRepository).update(any(Book.class));
 	}
 
 	private void givenNegativeValidation() {
 		doAnswer(validationError())
-				.when(booksUpdateValidatorMock).validate(anyObject(), any(Errors.class));
+				.when(booksUpdateValidator).validate(anyObject(), any(Errors.class));
 	}
 
 	private Answer<Void> validationError() {
@@ -145,27 +145,27 @@ public class BooksControllerUpdateTest {
 	}
 
 	private void thenExpectValidationInvokedFor(BooksCommand booksCommand) {
-		verify(booksUpdateValidatorMock).validate(booksCommandCaptor.capture(), any(Errors.class));
+		verify(booksUpdateValidator).validate(booksCommandCaptor.capture(), any(Errors.class));
 		assertThat(booksCommandCaptor.getValue(), is(sameInstance(booksCommand)));
 	}
 
 	private void thenExpectAssemblingCommandToDomainInvokedFor(BookCommand bookCommand) {
-		verify(bookAssemblerMock).toDomain(bookCommandCaptor.capture());
+		verify(bookAssembler).toDomain(bookCommandCaptor.capture());
 		assertThat(bookCommandCaptor.getValue(), is(sameInstance(bookCommand)));
 	}
 
 	private void thenExpectAssemblingCommandToDomainNotInvoked() {
-		verifyZeroInteractions(bookAssemblerMock);
+		verifyZeroInteractions(bookAssembler);
 	}
 
 	private void thenExpectUpdateInvokedOnRepository() {
-		verify(bookRepositoryMock).update(updatedBookCaptor.capture());
+		verify(bookRepository).update(updatedBookCaptor.capture());
 		assertThat(updatedBookCaptor.getValue(), is(sameInstance(book)));
-		verifyNoMoreInteractions(bookRepositoryMock);
+		verifyNoMoreInteractions(bookRepository);
 	}
 
 	private void thenExpectUpdateNotInvokedOnRepository() {
-		verifyZeroInteractions(bookRepositoryMock);
+		verifyZeroInteractions(bookRepository);
 	}
 
 	private void thenExpectHttpRedirectWith(BooksCommand command) throws Exception {

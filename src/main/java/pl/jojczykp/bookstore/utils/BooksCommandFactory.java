@@ -1,8 +1,10 @@
 package pl.jojczykp.bookstore.utils;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import pl.jojczykp.bookstore.command.BooksCommand;
 
+@Service
 public class BooksCommandFactory {
 
 	@Value("${view.books.defaultPageNumber}") private int defaultPageNumber;

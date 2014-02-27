@@ -14,10 +14,7 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration({
-		"classpath:spring/config-context.xml",
-		"classpath:spring/books-command-factory-context.xml"
-})
+@ContextConfiguration("classpath:spring/books-command-factory-test-context.xml")
 public class BooksCommandFactoryTest {
 
 	@Value("${view.books.defaultPageNumber}") private int defaultPageNumber;

@@ -11,11 +11,9 @@
 		<init-param>
 			<param-name>contextConfigLocation</param-name>
 			<param-value>
-				/WEB-INF/mvc-dispatcher-servlet.xml,
+				/WEB-INF/mvc-dispatcher-servlet.xml
+				classpath:spring/application-context.xml
 				classpath:spring/repository-context.xml
-				classpath:spring/config-context.xml
-				classpath:spring/books-command-factory-context.xml,
-				classpath:spring/book-command-validator-context.xml
 			</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>

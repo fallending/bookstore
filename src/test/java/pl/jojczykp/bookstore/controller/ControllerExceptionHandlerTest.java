@@ -23,7 +23,7 @@ import static pl.jojczykp.bookstore.testutils.matchers.HasBeanProperty.hasBeanPr
 @WebAppConfiguration
 @ContextConfiguration({
 		"file:src/main/webapp/WEB-INF/mvc-dispatcher-servlet.xml",
-		"classpath:spring/beans-test-context.xml",
+		"classpath:spring/application-test-context.xml",
 		"classpath:spring/exception-throwing-controller-context.xml"
 })
 public class ControllerExceptionHandlerTest {

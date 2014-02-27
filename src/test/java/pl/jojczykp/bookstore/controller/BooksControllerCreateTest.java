@@ -45,16 +45,16 @@ import static pl.jojczykp.bookstore.testutils.matchers.MessagesControllerTestUti
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration("classpath:spring/beans-test-context.xml")
+@ContextConfiguration("classpath:spring/application-test-context.xml")
 public class BooksControllerCreateTest {
 
 	private static final String VALIDATOR_ERROR_MESSAGE = "An error message from validator.";
 
 	private MockMvc mvcMock;
 	private ResultActions mvcMockPerformResult;
-	@Autowired private BooksCreateValidator booksCreateValidatorMock;
-	@Autowired private BookAssembler bookAssemblerMock;
-	@Autowired private BookRepository bookRepositoryMock;
+	@Autowired private BooksCreateValidator booksCreateValidator;
+	@Autowired private BookAssembler bookAssembler;
+	@Autowired private BookRepository bookRepository;
 	@Autowired private WebApplicationContext wac;
 
 	@Captor private ArgumentCaptor<BooksCommand> booksCommandCaptor;
@@ -67,10 +67,10 @@ public class BooksControllerCreateTest {
 	public void setUp() {
 		mvcMock = webAppContextSetup(wac).build();
 		MockitoAnnotations.initMocks(this);
-		reset(booksCreateValidatorMock);
-		reset(bookAssemblerMock);
-		reset(bookRepositoryMock);
-		given(bookAssemblerMock.toDomain(any(BookCommand.class))).willReturn(book);
+		reset(booksCreateValidator);
+		reset(bookAssembler);
+		reset(bookRepository);
+		given(bookAssembler.toDomain(any(BookCommand.class))).willReturn(book);
 	}
 
 	@Test
@@ -102,7 +102,7 @@ public class BooksControllerCreateTest {
 
 	private void givenNegativeValidation() {
 		doAnswer(validationError())
-				.when(booksCreateValidatorMock).validate(anyObject(), any(Errors.class));
+				.when(booksCreateValidator).validate(anyObject(), any(Errors.class));
 	}
 
 	private Answer<Void> validationError() {
@@ -122,27 +122,27 @@ public class BooksControllerCreateTest {
 	}
 
 	private void thenExpectValidationInvokedFor(BooksCommand booksCommand) {
-		verify(booksCreateValidatorMock).validate(booksCommandCaptor.capture(), any(Errors.class));
+		verify(booksCreateValidator).validate(booksCommandCaptor.capture(), any(Errors.class));
 		assertThat(booksCommandCaptor.getValue(), is(sameInstance(booksCommand)));
 	}
 
 	private void thenExpectAssemblingCommandToDomainInvokedFor(BookCommand bookCommand) {
-		verify(bookAssemblerMock).toDomain(bookCommandCaptor.capture());
+		verify(bookAssembler).toDomain(bookCommandCaptor.capture());
 		assertThat(bookCommandCaptor.getValue(), is(sameInstance(bookCommand)));
 	}
 
 	private void thenExpectAssemblingCommandToDomainNotInvoked() {
-		verifyZeroInteractions(bookAssemblerMock);
+		verifyZeroInteractions(bookAssembler);
 	}
 
 	private void thenExpectCreateInvokedOnRepository() {
-		verify(bookRepositoryMock).create(newBookCaptor.capture());
+		verify(bookRepository).create(newBookCaptor.capture());
 		assertThat(newBookCaptor.getValue(), is(sameInstance(book)));
-		verifyNoMoreInteractions(bookRepositoryMock);
+		verifyNoMoreInteractions(bookRepository);
 	}
 
 	private void thenExpectCreateNotInvokedOnRepository() {
-		verifyZeroInteractions(bookRepositoryMock);
+		verifyZeroInteractions(bookRepository);
 	}
 
 	private void thenExpectHttpRedirectWith(BooksCommand command) throws Exception {

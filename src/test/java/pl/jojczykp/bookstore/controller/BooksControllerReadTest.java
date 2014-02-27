@@ -53,7 +53,7 @@ import static pl.jojczykp.bookstore.utils.PageSorterDirection.DESC;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration("classpath:spring/beans-test-context.xml")
+@ContextConfiguration("classpath:spring/application-test-context.xml")
 public class BooksControllerReadTest {
 
 	private static final String BOOKS_COMMAND = "booksCommand";
@@ -83,9 +83,9 @@ public class BooksControllerReadTest {
 	private ResultActions mvcMockPerformResult;
 
 	@Autowired private BooksCommandFactory booksCommandFactory;
-	@Autowired private BookRepository bookRepositoryMock;
-	@Autowired private BookAssembler bookAssemblerMock;
-	@Autowired private PagerLimiter pagerLimiterMock;
+	@Autowired private BookRepository bookRepository;
+	@Autowired private BookAssembler bookAssembler;
+	@Autowired private PagerLimiter pagerLimiter;
 	@Autowired private WebApplicationContext wac;
 
 	@Captor private ArgumentCaptor<List<Book>> assembledListCaptor;
@@ -107,21 +107,21 @@ public class BooksControllerReadTest {
 		givenBookAssemblerMockConfigured();
 	}
 	private void givenRepositoryMockConfigured() {
-		reset(bookRepositoryMock);
-		given(bookRepositoryMock.totalCount()).willReturn(REPO_TOTAL_COUNT);
-		given(bookRepositoryMock
+		reset(bookRepository);
+		given(bookRepository.totalCount()).willReturn(REPO_TOTAL_COUNT);
+		given(bookRepository
 				.read(anyInt(), anyInt(), any(PageSorterColumn.class), any(PageSorterDirection.class)))
 				.willReturn(REPO_DATA);
 	}
 
 	private void givenRepeatingPageParamsLimiterMockConfigured() {
-		reset(pagerLimiterMock);
-		given(pagerLimiterMock.createLimited(any(PagerCommand.class), anyInt())).willReturn(aLimitedPager());
+		reset(pagerLimiter);
+		given(pagerLimiter.createLimited(any(PagerCommand.class), anyInt())).willReturn(aLimitedPager());
 	}
 
 	private void givenBookAssemblerMockConfigured() {
-		reset(bookAssemblerMock);
-		given(bookAssemblerMock.toCommands(REPO_DATA)).willReturn(ASSEMBLER_RESULT_DATA);
+		reset(bookAssembler);
+		given(bookAssembler.toCommands(REPO_DATA)).willReturn(ASSEMBLER_RESULT_DATA);
 	}
 
 	@Test
@@ -151,17 +151,17 @@ public class BooksControllerReadTest {
 	}
 
 	private void thenExpectBookRepositoryTotalCountTaken() {
-		verify(bookRepositoryMock, times(1)).totalCount();
+		verify(bookRepository, times(1)).totalCount();
 	}
 
 	private void thenExpectParametersLimitationUsage() {
-		verify(pagerLimiterMock, times(1)).createLimited(pagerCommandCaptor.capture(), totalCountCaptor.capture());
+		verify(pagerLimiter, times(1)).createLimited(pagerCommandCaptor.capture(), totalCountCaptor.capture());
 		assertPagersEqual(pagerCommandCaptor.getValue(), aRequestedPager());
 		assertThat(totalCountCaptor.getValue(), equalTo(REPO_TOTAL_COUNT));
 	}
 
 	private void thenExpectBookRepositoryRead() {
-		verify(bookRepositoryMock, times(1)).read(
+		verify(bookRepository, times(1)).read(
 				offsetCaptor.capture(),
 				sizeCaptor.capture(),
 				pageSorterColumnCaptor.capture(),
@@ -174,7 +174,7 @@ public class BooksControllerReadTest {
 	}
 
 	private void thenExpectBookAssemblerInvoked() {
-		verify(bookAssemblerMock, times(1)).toCommands(assembledListCaptor.capture());
+		verify(bookAssembler, times(1)).toCommands(assembledListCaptor.capture());
 		assertThat(assembledListCaptor.getValue(), sameInstance(REPO_DATA));
 	}
 

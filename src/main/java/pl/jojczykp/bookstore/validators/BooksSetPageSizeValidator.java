@@ -1,9 +1,11 @@
 package pl.jojczykp.bookstore.validators;
 
+import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import pl.jojczykp.bookstore.command.BooksCommand;
 
+@Service
 public class BooksSetPageSizeValidator implements Validator {
 
 	@Override
