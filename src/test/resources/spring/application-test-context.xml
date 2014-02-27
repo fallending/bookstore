@@ -16,7 +16,7 @@
 
 	<context:property-placeholder location="classpath:spring/config.properties" />
 
-	<context:component-scan base-package="pl.jojczykp.bookstore"/>
+	<context:component-scan base-package="pl.jojczykp.bookstore.controller"/>
 
 	<mvc:annotation-driven/>
 

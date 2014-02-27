@@ -25,6 +25,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
@@ -132,6 +133,7 @@ public class BooksControllerDeleteTest {
 	private void thenExpectDeletedBooksWithIds(Integer... ids) {
 		verify(bookRepository, times(ids.length)).delete(idOfBookToRemove.capture());
 		assertThat(idOfBookToRemove.getAllValues(), hasItems(ids));
+		verifyNoMoreInteractions(bookRepository);
 	}
 
 	private void thenExpectHttpRedirect(BooksCommand command) throws Exception {

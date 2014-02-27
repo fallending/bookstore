@@ -41,6 +41,7 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -151,13 +152,14 @@ public class BooksControllerReadTest {
 	}
 
 	private void thenExpectBookRepositoryTotalCountTaken() {
-		verify(bookRepository, times(1)).totalCount();
+		verify(bookRepository).totalCount();
 	}
 
 	private void thenExpectParametersLimitationUsage() {
-		verify(pagerLimiter, times(1)).createLimited(pagerCommandCaptor.capture(), totalCountCaptor.capture());
+		verify(pagerLimiter).createLimited(pagerCommandCaptor.capture(), totalCountCaptor.capture());
 		assertPagersEqual(pagerCommandCaptor.getValue(), aRequestedPager());
 		assertThat(totalCountCaptor.getValue(), equalTo(REPO_TOTAL_COUNT));
+		verifyNoMoreInteractions(pagerLimiter);
 	}
 
 	private void thenExpectBookRepositoryRead() {
@@ -171,11 +173,14 @@ public class BooksControllerReadTest {
 		assertThat(sizeCaptor.getValue(), equalTo(LIMITED_PAGE_SIZE));
 		assertThat(pageSorterColumnCaptor.getValue(), equalTo(LIMITED_SORT_COLUMN));
 		assertThat(pageSorterDirectionCaptor.getValue(), equalTo(LIMITED_SORT_DIRECTION));
+
+		verifyNoMoreInteractions(bookRepository);
 	}
 
 	private void thenExpectBookAssemblerInvoked() {
-		verify(bookAssembler, times(1)).toCommands(assembledListCaptor.capture());
+		verify(bookAssembler).toCommands(assembledListCaptor.capture());
 		assertThat(assembledListCaptor.getValue(), sameInstance(REPO_DATA));
+		verifyNoMoreInteractions(bookAssembler);
 	}
 
 	private void thenExpectCorrectViewSelectedAndModelSet() throws Exception {

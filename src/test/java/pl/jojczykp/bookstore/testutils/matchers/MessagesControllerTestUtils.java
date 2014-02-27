@@ -48,4 +48,15 @@ public abstract class MessagesControllerTestUtils {
 		}
 	}
 
+	public static void thenExpectNoMessage(ResultActions mvcMockPerformResult) {
+		try {
+			mvcMockPerformResult
+				.andExpect(flash().attribute(BOOKS_COMMAND_ATTR, hasBeanProperty("messages.infos", empty())))
+				.andExpect(flash().attribute(BOOKS_COMMAND_ATTR, hasBeanProperty("messages.warns", empty())))
+				.andExpect(flash().attribute(BOOKS_COMMAND_ATTR, hasBeanProperty("messages.errors", empty())));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 }

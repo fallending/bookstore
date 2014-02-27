@@ -28,6 +28,8 @@ import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
@@ -36,6 +38,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 import static pl.jojczykp.bookstore.testutils.matchers.HasBeanProperty.hasBeanProperty;
 import static pl.jojczykp.bookstore.testutils.matchers.MessagesControllerTestUtils.thenExpectErrorOnlyMessage;
 import static pl.jojczykp.bookstore.testutils.matchers.MessagesControllerTestUtils.thenExpectInfoOnlyMessage;
+import static pl.jojczykp.bookstore.testutils.matchers.MessagesControllerTestUtils.thenExpectNoMessage;
 import static pl.jojczykp.bookstore.utils.PageSorterColumn.BOOK_TITLE;
 import static pl.jojczykp.bookstore.utils.PageSorterDirection.ASC;
 import static pl.jojczykp.bookstore.utils.PageSorterDirection.DESC;
@@ -81,6 +84,8 @@ public class BooksControllerPagerTest {
 
 		whenUrlActionPerformedWithCommand(URL_ACTION_SORT, command);
 
+		thenExpectValidationNotInvoked();
+		thenExpectNoMessage(mvcMockPerformResult);
 		assertThatSortedBy(sortColumn, sortDirection);
 		thenExpectHttpRedirectWith(command);
 	}
@@ -170,6 +175,11 @@ public class BooksControllerPagerTest {
 
 	private void thenExpectValidationInvoked() {
 		verify(booksSetPageSizeValidator).validate(anyObject(), any(Errors.class));
+		verifyNoMoreInteractions(booksSetPageSizeValidator);
+	}
+
+	private void thenExpectValidationNotInvoked() {
+		verifyZeroInteractions(booksSetPageSizeValidator);
 	}
 
 	private void assertThatScrolledToPage(int pageNumber) throws Exception {

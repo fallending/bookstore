@@ -147,11 +147,13 @@ public class BooksControllerUpdateTest {
 	private void thenExpectValidationInvokedFor(BooksCommand booksCommand) {
 		verify(booksUpdateValidator).validate(booksCommandCaptor.capture(), any(Errors.class));
 		assertThat(booksCommandCaptor.getValue(), is(sameInstance(booksCommand)));
+		verifyNoMoreInteractions(booksUpdateValidator);
 	}
 
 	private void thenExpectAssemblingCommandToDomainInvokedFor(BookCommand bookCommand) {
 		verify(bookAssembler).toDomain(bookCommandCaptor.capture());
 		assertThat(bookCommandCaptor.getValue(), is(sameInstance(bookCommand)));
+		verifyNoMoreInteractions(bookAssembler);
 	}
 
 	private void thenExpectAssemblingCommandToDomainNotInvoked() {
