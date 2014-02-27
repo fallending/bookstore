@@ -22,7 +22,7 @@ import pl.jojczykp.bookstore.command.BookCommand;
 import pl.jojczykp.bookstore.command.BooksCommand;
 import pl.jojczykp.bookstore.domain.Book;
 import pl.jojczykp.bookstore.repository.BookRepository;
-import pl.jojczykp.bookstore.validators.BookUpdateValidator;
+import pl.jojczykp.bookstore.validators.BooksUpdateValidator;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.sameInstance;
@@ -63,7 +63,7 @@ public class BooksControllerUpdateTest {
 	private ResultActions mvcMockPerformResult;
 	@Mock private StaleObjectStateException staleObjectStateExceptionMock;
 	@Autowired private BookRepository bookRepositoryMock;
-	@Autowired private BookUpdateValidator bookUpdateValidatorMock;
+	@Autowired private BooksUpdateValidator booksUpdateValidatorMock;
 	@Autowired private WebApplicationContext wac;
 
 	@Captor private ArgumentCaptor<Book> updatedBookCaptor;
@@ -73,7 +73,7 @@ public class BooksControllerUpdateTest {
 		mvcMock = webAppContextSetup(wac).build();
 		MockitoAnnotations.initMocks(this);
 		reset(bookRepositoryMock);
-		reset(bookUpdateValidatorMock);
+		reset(booksUpdateValidatorMock);
 	}
 
 	@Test
@@ -131,7 +131,7 @@ public class BooksControllerUpdateTest {
 
 	private void givenNegativeValidation() {
 		doAnswer(validationError())
-				.when(bookUpdateValidatorMock).validate(anyObject(), any(Errors.class));
+				.when(booksUpdateValidatorMock).validate(anyObject(), any(Errors.class));
 	}
 
 	private Answer<Void> validationError() {
@@ -151,7 +151,7 @@ public class BooksControllerUpdateTest {
 	}
 
 	private void thenExpectValidationInvoked() {
-		verify(bookUpdateValidatorMock).validate(anyObject(), any(Errors.class));
+		verify(booksUpdateValidatorMock).validate(anyObject(), any(Errors.class));
 	}
 
 	private void thenExpectUpdateInvokedOnRepository(int id, String title) {

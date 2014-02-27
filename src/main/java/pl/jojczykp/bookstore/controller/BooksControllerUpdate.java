@@ -12,7 +12,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import pl.jojczykp.bookstore.assembler.BookAssembler;
 import pl.jojczykp.bookstore.command.BooksCommand;
 import pl.jojczykp.bookstore.repository.BookRepository;
-import pl.jojczykp.bookstore.validators.BookUpdateValidator;
+import pl.jojczykp.bookstore.validators.BooksUpdateValidator;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static pl.jojczykp.bookstore.controller.BooksConsts.BOOKS_COMMAND;
@@ -22,7 +22,7 @@ import static pl.jojczykp.bookstore.controller.BooksConsts.URL_ACTION_UPDATE;
 @Controller
 public class BooksControllerUpdate {
 
-	@Autowired private BookUpdateValidator bookUpdateValidator;
+	@Autowired private BooksUpdateValidator booksUpdateValidator;
 	@Autowired private BookRepository bookRepository;
 	@Autowired private BookAssembler bookAssembler;
 
@@ -32,7 +32,7 @@ public class BooksControllerUpdate {
 			RedirectAttributes redirectAttributes,
 			BindingResult bindingResult)
 	{
-		bookUpdateValidator.validate(booksCommand, bindingResult);
+		booksUpdateValidator.validate(booksCommand, bindingResult);
 		if (bindingResult.hasErrors()) {
 			processWhenCommandInvalid(booksCommand, bindingResult);
 		} else {

@@ -6,7 +6,7 @@ import pl.jojczykp.bookstore.command.BooksCommand;
 
 import static org.springframework.validation.ValidationUtils.rejectIfEmptyOrWhitespace;
 
-public class BookCreateValidator implements Validator {
+public class BooksUpdateValidator implements Validator {
 
 	@Override
 	public boolean supports(Class<?> clazz) {
@@ -16,6 +16,6 @@ public class BookCreateValidator implements Validator {
 	@Override
 	public void validate(Object object, Errors errors) {
 		rejectIfEmptyOrWhitespace(errors,
-				"newBook.title", "newBook.title.empty", "Creating with empty title is not allowed.");
+				"updatedBook.title", "updatedBook.title.empty", "Updating with empty title is not allowed.");
 	}
 }

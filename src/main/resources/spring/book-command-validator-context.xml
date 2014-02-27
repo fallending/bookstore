@@ -5,9 +5,9 @@
 			http://www.springframework.org/schema/beans
 			http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-	<bean id="bookCreateValidator" class="pl.jojczykp.bookstore.validators.BookCreateValidator" />
+	<bean id="booksCreateValidator" class="pl.jojczykp.bookstore.validators.BooksCreateValidator" />
 
-	<bean id="bookUpdateValidator" class="pl.jojczykp.bookstore.validators.BookUpdateValidator" />
+	<bean id="booksUpdateValidator" class="pl.jojczykp.bookstore.validators.BooksUpdateValidator" />
 
 	<bean id="booksSetPageSizeValidator" class="pl.jojczykp.bookstore.validators.BooksSetPageSizeValidator" />
 

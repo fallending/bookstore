@@ -12,13 +12,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
-public class BookCreateValidatorTest {
+public class BooksCreateValidatorTest {
 
-	private BookCreateValidator testee;
+	private BooksCreateValidator testee;
 
 	@Before
 	public void setUpTestee() {
-		testee = new BookCreateValidator();
+		testee = new BooksCreateValidator();
 	}
 
 	@Test
