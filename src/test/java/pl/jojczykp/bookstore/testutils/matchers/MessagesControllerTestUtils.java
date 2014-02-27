@@ -12,11 +12,11 @@ public abstract class MessagesControllerTestUtils {
 
 	private static final String BOOKS_COMMAND_ATTR = "booksCommand";
 
-	public static void thenExpectInfoOnlyMessage(ResultActions mvcMockPerformResult, String expectedMessage) {
+	public static void thenExpectInfoOnlyMessage(ResultActions mvcMockPerformResult, String... expectedMessages) {
 		try {
 			mvcMockPerformResult
 				.andExpect(flash().attribute(BOOKS_COMMAND_ATTR, hasBeanProperty("messages.infos",
-						equalTo(asList(expectedMessage)))))
+						equalTo(asList(expectedMessages)))))
 				.andExpect(flash().attribute(BOOKS_COMMAND_ATTR, hasBeanProperty("messages.warns", empty())))
 				.andExpect(flash().attribute(BOOKS_COMMAND_ATTR, hasBeanProperty("messages.errors", empty())));
 		} catch (Exception e) {
@@ -24,25 +24,25 @@ public abstract class MessagesControllerTestUtils {
 		}
 	}
 
-	public static void thenExpectWarnOnlyMessage(ResultActions mvcMockPerformResult, String expectedMessage) {
+	public static void thenExpectWarnOnlyMessage(ResultActions mvcMockPerformResult, String... expectedMessages) {
 		try {
 			mvcMockPerformResult
 				.andExpect(flash().attribute(BOOKS_COMMAND_ATTR, hasBeanProperty("messages.infos", empty())))
 				.andExpect(flash().attribute(BOOKS_COMMAND_ATTR, hasBeanProperty("messages.warns",
-						equalTo(asList(expectedMessage)))))
+						equalTo(asList(expectedMessages)))))
 				.andExpect(flash().attribute(BOOKS_COMMAND_ATTR, hasBeanProperty("messages.errors", empty())));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	public static void thenExpectErrorOnlyMessage(ResultActions mvcMockPerformResult, String expectedMessage) {
+	public static void thenExpectErrorOnlyMessage(ResultActions mvcMockPerformResult, String... expectedMessages) {
 		try {
 			mvcMockPerformResult
 				.andExpect(flash().attribute(BOOKS_COMMAND_ATTR, hasBeanProperty("messages.infos", empty())))
 				.andExpect(flash().attribute(BOOKS_COMMAND_ATTR, hasBeanProperty("messages.warns", empty())))
 				.andExpect(flash().attribute(BOOKS_COMMAND_ATTR, hasBeanProperty("messages.errors",
-						equalTo(asList(expectedMessage)))));
+						equalTo(asList(expectedMessages)))));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

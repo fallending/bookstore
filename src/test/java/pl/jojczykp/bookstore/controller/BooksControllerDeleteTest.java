@@ -39,8 +39,9 @@ import static pl.jojczykp.bookstore.testutils.matchers.MessagesControllerTestUti
 @ContextConfiguration("classpath:spring/application-test-context.xml")
 public class BooksControllerDeleteTest {
 
+	private static final int EXISTING_ID_1 = 3;
+	private static final int EXISTING_ID_2 = 7;
 	private static final int NOT_EXISTING_ID = 98;
-	private static final int EXISTING_ID = 7;
 
 	private MockMvc mvcMock;
 	private ResultActions mvcMockPerformResult;
@@ -53,59 +54,34 @@ public class BooksControllerDeleteTest {
 	public void setUp() {
 		mvcMock = webAppContextSetup(wac).build();
 		MockitoAnnotations.initMocks(this);
-		setUpBookRepositoryMock();
+		givenExceptionOnDeletingNotExistingId();
 	}
 
-	private void setUpBookRepositoryMock() {
+	@Test
+	public void shouldDeleteExistingBooks() throws Exception {
+		final BooksCommand command = aCommandToRemoveByIds(EXISTING_ID_1, EXISTING_ID_2);
+
+		whenControllerDeletePerformedWithCommand(command);
+
+		thenExpectDeleteInvokedOnRepository(EXISTING_ID_1, EXISTING_ID_2);
+		thenExpectInfoOnlyMessage(mvcMockPerformResult, "Object deleted.", "Object deleted.");
+		thenExpectHttpRedirectWith(command);
+	}
+
+	@Test
+	public void shouldFailOnDeletingNotExistingBook() throws Exception {
+		final BooksCommand command = aCommandToRemoveByIds(NOT_EXISTING_ID);
+
+		whenControllerDeletePerformedWithCommand(command);
+
+		thenExpectDeleteInvokedOnRepository(NOT_EXISTING_ID);
+		thenExpectWarnOnlyMessage(mvcMockPerformResult, "Object already deleted.");
+		thenExpectHttpRedirectWith(command);
+	}
+
+	private void givenExceptionOnDeletingNotExistingId() {
 		reset(bookRepository);
 		doThrow(ObjectNotFoundException.class).when(bookRepository).delete(NOT_EXISTING_ID);
-	}
-
-	@Test
-	public void shouldDeleteBook() throws Exception {
-		final int id1 = 9;
-		final int id2 = 11;
-		final BooksCommand command = aCommandToRemoveByIds(id1, id2);
-
-		whenControllerDeletePerformedWithCommand(command);
-
-		thenExpectDeletedBooksWithIds(id1, id2);
-	}
-
-	@Test
-	public void shouldRedirectAfterDeletingExisting() throws Exception {
-		final BooksCommand command = aCommandToRemoveByIds(EXISTING_ID);
-
-		whenControllerDeletePerformedWithCommand(command);
-
-		thenExpectHttpRedirect(command);
-	}
-
-	@Test
-	public void shouldRedirectAfterDeletingNotExisting() throws Exception {
-		final BooksCommand command = aCommandToRemoveByIds(NOT_EXISTING_ID);
-
-		whenControllerDeletePerformedWithCommand(command);
-
-		thenExpectHttpRedirect(command);
-	}
-
-	@Test
-	public void shouldDisplayMessageAfterDeletingExisting() throws Exception {
-		final BooksCommand command = aCommandToRemoveByIds(EXISTING_ID);
-
-		whenControllerDeletePerformedWithCommand(command);
-
-		thenExpectInfoOnlyMessage(mvcMockPerformResult, "Object deleted.");
-	}
-
-	@Test
-	public void shouldDisplayMessageAfterDeletingNotExisting() throws Exception {
-		final BooksCommand command = aCommandToRemoveByIds(NOT_EXISTING_ID);
-
-		whenControllerDeletePerformedWithCommand(command);
-
-		thenExpectWarnOnlyMessage(mvcMockPerformResult, "Object already deleted.");
 	}
 
 	private BooksCommand aCommandToRemoveByIds(int... ids) {
@@ -130,13 +106,13 @@ public class BooksControllerDeleteTest {
 				.flashAttr("booksCommand", command));
 	}
 
-	private void thenExpectDeletedBooksWithIds(Integer... ids) {
+	private void thenExpectDeleteInvokedOnRepository(Integer... ids) {
 		verify(bookRepository, times(ids.length)).delete(idOfBookToRemove.capture());
 		assertThat(idOfBookToRemove.getAllValues(), hasItems(ids));
 		verifyNoMoreInteractions(bookRepository);
 	}
 
-	private void thenExpectHttpRedirect(BooksCommand command) throws Exception {
+	private void thenExpectHttpRedirectWith(BooksCommand command) throws Exception {
 		mvcMockPerformResult
 				.andExpect(status().isFound())
 				.andExpect(redirectedUrl("/books/read"))
