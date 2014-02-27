@@ -205,6 +205,7 @@
 				<version>3.0.1</version>
 				<configuration>
 					<minimumTokens>100</minimumTokens>
+					<targetJdk>1.7</targetJdk>
 					<verbose>true</verbose>
 					<rulesets>
 						<ruleset>configs/pmd.xml</ruleset>
@@ -215,6 +216,7 @@
 						<phase>validate</phase>
 						<goals>
 							<goal>check</goal>
+							<goal>cpd-check</goal>
 						</goals>
 					</execution>
 				</executions>
