@@ -9,6 +9,8 @@
 
 	<mvc:annotation-driven/>
 
+	<mvc:resources mapping="/js/**" location="/js/" />
+
 	<bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
 		<property name="templateLoaderPath" value="/WEB-INF/pages/"/>
 	</bean>

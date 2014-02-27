@@ -11,119 +11,25 @@
 		<meta http-equiv="content-type" content="application/xhtml+xml; charset=utf-8" />
 		<title>Bookstore</title>
 		<style type="text/css">
-			input.setPageSizeInput { width: 50px }
 			input.deleteCheckbox { }
 		</style>
 		<script type="text/javascript">
-
-			DEFAULT_PARAMS = {
+			ORIGINAL_PARAMS = {
 				'pager.pageNumber' : ${booksCommand.pager.pageNumber},
 				'pager.pageSize' : ${booksCommand.pager.pageSize},
 				'pager.sorter.column' : '${booksCommand.pager.sorter.column}',
 				'pager.sorter.direction' : '${booksCommand.pager.sorter.direction}'
 			}
-
-			function sendCreate() {
-				var title = document.getElementById('newBook.title').value;
-				sendPost('create', {
-					'newBook.title' : title
-				})
-			}
-
-			function sendUpdate(id, index) {
-				var version = document.getElementById('books' + index + '.version').value;
-				var title = document.getElementById('books' + index + '.title').value;
-				sendPost('update', {
-					'updatedBook.id' : id,
-					'updatedBook.version' : version,
-					'updatedBook.title' : title
-				})
-			}
-
-			function sendDelete() {
-				var params = {};
-				var checkboxes = document.getElementsByClassName('deleteCheckbox');
-				for (var index = 0; index < checkboxes.length; index++) {
-					if (checkboxes[index].checked) {
-						params[('books[' + index + '].id')] = checkboxes[index].getAttribute('bookId')
-						params[('books[' + index + '].checked')] = 'on';
-					}
-				}
-				sendPost('delete', params)
-			}
-
-			function sendGoToPage(newPageNumber) {
-				sendPost('goToPage', {
-					'pager.pageNumber' : newPageNumber
-				})
-			}
-
-			function sendSetPageSize() {
-				var newPageSize = document.getElementsByClassName('setPageSizeInput')[0].value;
-				sendPost('setPageSize', {
-					'pager.pageSize' : newPageSize
-				})
-			}
-
-			function sendSort(column, direction) {
-				sendPost('sort', {
-					'pager.sorter.column' : column,
-					'pager.sorter.direction' : direction
-				})
-			}
-
-			function sendPost(action, actualParams) {
-				var params = {};
-				updateParams(params, DEFAULT_PARAMS);
-				updateParams(params, actualParams);
-
-				var form = createFormFor(action)
-				updateFormWithParams(form, params);
-
-				document.body.appendChild(form);
-				form.submit();
-			}
-
-			function createFormFor(action) {
-				var form = document.createElement("form");
-				form.setAttribute("method", "post");
-				form.setAttribute("action", action);
-
-				return form;
-			}
-
-			function updateParams(finalParams, partialParams) {
-				for(var key in partialParams) {
-					if(partialParams.hasOwnProperty(key)) {
-						finalParams[key] = partialParams[key];
-					}
-				}
-			}
-
-			function updateFormWithParams(form, params) {
-				for(var key in params) {
-					if(params.hasOwnProperty(key)) {
-						form.appendChild(createHiddenInput(key, params[key]));
-					}
-				}
-			}
-
-			function createHiddenInput(key, value) {
-				var hiddenField = document.createElement("input");
-				hiddenField.setAttribute("type", "hidden");
-				hiddenField.setAttribute("name", key);
-				hiddenField.setAttribute("value", value);
-
-				return hiddenField;
-			}
-
 		</script>
+		<script type="text/javascript" src="/js/books.js"></script>
 	</head>
 	<body>
 		<@sectionTitle/>
 		<@sectionMessages/>
-		<@sectionPager/>
-		<@sectionDataTable/>
+		<#if (pagesCount > 0) >
+			<@sectionPager/>
+			<@sectionDataTable/>
+		</#if>
 		<@sectionCreate/>
 	</body>
 </html>
@@ -140,15 +46,14 @@
 
 <#macro sectionMessages>
 	<#list booksCommand.messages.infos as message>
-		INFO: ${message}<br>
+		INFO: ${message}<br/>
 	</#list>
 	<#list booksCommand.messages.warns as message>
-		WARN: ${message}<br>
+		WARN: ${message}<br/>
 	</#list>
 	<#list booksCommand.messages.errors as message>
-		ERROR: ${message}<br>
+		ERROR: ${message}<br/>
 	</#list>
-	<br/>
 </#macro>
 
 <#macro sectionPager>
@@ -165,73 +70,106 @@
 
 <#macro formPagerPrev>
 	<#if (pageNumber <= 1) >
-		<input type="button" value="&lt;" disabled="true" />
+		<input type="button" value="&#x25C0;" disabled="true" />
 	<#else>
-		<input type="button" value="&lt;" onClick="sendGoToPage(${pageNumber - 1})" />
+		<input type="button" value="&#x25C0;" onClick="sendGoToPage(${pageNumber - 1})" />
 	</#if>
 </#macro>
 
 <#macro formPagerSetPageSize>
-	<#assign possibleSizes = {"1":1, "5":5, "10":10, "15":15, "25":25, "50":50, "100":100}>
-	<@spring.formSingleSelect "booksCommand.pager.pageSize" possibleSizes "class='setPageSizeInput' onChange='sendSetPageSize()''" />
+	<#assign possibleSizes = {"1":1, "2":2, "5":5, "10":10, "15":15, "25":25, "50":50, "100":100}>
+	<@spring.formSingleSelect "booksCommand.pager.pageSize" possibleSizes "onChange='sendSetPageSize()'" />
 </#macro>
 
 <#macro formPagerNext>
 	<#if (pageNumber >= pagesCount) >
-		<input type="button" value="&gt;" disabled="true" />
+		<input type="button" value="&#x25B6;" disabled="true" />
 	<#else>
-		<input type="button" value="&gt;" onClick="sendGoToPage(${pageNumber + 1})" />
+		<input type="button" value="&#x25B6;" onClick="sendGoToPage(${pageNumber + 1})" />
 	</#if>
 </#macro>
 
 <#macro formPagerGoToPage>
-	<#if (pageNumber > 5)>
-		...
+	<#assign min = pageNumber - 2 />
+	<#assign max = pageNumber + 2 />
+
+	<#if (min < 1) >
+		<#assign max = max + (-min + 1) />
+		<#assign min = 1 />
 	</#if>
-	<#list (pageNumber - 5)..(pageNumber + 5) as p>
-		<#if (1 <= p && p <= pagesCount)>
+
+	<#if (max > pagesCount) >
+		<#assign min = min - (max - pagesCount) />
+		<#assign max = pagesCount />
+	</#if>
+
+	<#if (min < 1 || max < min ) >
+		<#assign min = 1 />
+	</#if>
+
+	<#if (min > 1) >
+		<#assign min = min + 1 />
+		<#assign leftDots = true />
+	</#if>
+
+	<#if (max < pagesCount) >
+		<#assign max = max - 1 />
+		<#assign rightDots = true />
+	</#if>
+
+	<#if (leftDots??) >...</#if>
+	<#list min..max as p>
+		<#if (p = pageNumber) >
+			<input type="button" value="${p}" disabled="true" />
+		<#else>
 			<input type="button" value="${p}" onClick="sendGoToPage(${p})" />
 		</#if>
 	</#list>
-	<#if (pageNumber < pagesCount - 5)>
-		...
-	</#if>
+	<#if (rightDots??) >...</#if>
 </#macro>
 
 <#macro sectionDataTable>
-	<#if (pagesCount <= 0) >
-		<#return>
-	<#else>
-		<table><tr>
-			<td>
-				<table>
+	<table><tr>
+		<td>
+			<table>
+				<tr>
+					<th></th>
+					<th>Id</th>
+					<th>
+						<@sectionDataTableSorter 'BOOK_TITLE' 'Title'/>
+					</th>
+				</tr>
+				<#list booksCommand.books as book>
 					<tr>
-						<th></th>
-						<th>Id</th>
-						<th>
-							Title
-							<input type="button" value="^" onClick="sendSort('BOOK_TITLE', 'ASC')"/>
-							<input type="button" value="v" onClick="sendSort('BOOK_TITLE', 'DESC')"/>
-						</th>
+						<td>
+							<@spring.formCheckbox path="booksCommand.books[" + book_index + "].checked" attributes="class='deleteCheckbox' bookId='${booksCommand.books[book_index].id}'"/>
+						</td>
+						<td>#${book.id}</td>
+						<td>
+							<@spring.formHiddenInput "booksCommand.books[" + book_index + "].version"/>
+							<@spring.formInput "booksCommand.books[" + book_index + "].title"/>
+							<@spring.showErrors "<br>" />
+							<input type="button" value="update" onClick="sendUpdate(${booksCommand.books[book_index].id}, ${book_index})"/>
+						</td>
 					</tr>
-					<#list booksCommand.books as book>
-						<tr>
-							<td>
-								<@spring.formCheckbox path="booksCommand.books[" + book_index + "].checked" attributes="class='deleteCheckbox' bookId='${booksCommand.books[book_index].id}'"/>
-							</td>
-							<td>#${book.id}</td>
-							<td>
-								<@spring.formHiddenInput "booksCommand.books[" + book_index + "].version"/>
-								<@spring.formInput "booksCommand.books[" + book_index + "].title"/>
-								<@spring.showErrors "<br>" />
-								<input type="button" value="update" onClick="sendUpdate(${booksCommand.books[book_index].id}, ${book_index})"/>
-							</td>
-						</tr>
-					</#list>
-				</table>
-			</td>
-		</tr></table>
-		<input type="button" value="delete selected" onClick="sendDelete()"/>
+				</#list>
+			</table>
+		</td>
+	</tr></table>
+	<input type="button" value="delete selected" onClick="sendDelete()"/>
+</#macro>
+
+<#macro sectionDataTableSorter columnName columnTitle>
+	<@sectionDataTableSorterDirection columnName columnTitle 'DESC' '&#x25BC'/>
+	${columnTitle}
+	<@sectionDataTableSorterDirection columnName columnTitle 'ASC' '&#x25B2'/>
+</#macro>
+
+<#macro sectionDataTableSorterDirection columnName columnTitle direction marker>
+	<#if (booksCommand.pager.sorter.direction = '${direction}')>
+		<input type="button" value="${marker}" disabled="true"/>
+	<#else>
+		<input type="button" value="${marker}" onClick="sendSort('${columnName}', '${direction}')"/>
 	</#if>
 </#macro>
 
