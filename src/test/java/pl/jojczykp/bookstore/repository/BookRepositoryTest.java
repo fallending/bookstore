@@ -25,7 +25,7 @@ import static pl.jojczykp.bookstore.utils.PageSorterDirection.ASC;
 import static pl.jojczykp.bookstore.utils.PageSorterDirection.DESC;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("classpath:spring/repository-test-context.xml")
+@ContextConfiguration("classpath:spring/repositories-test-context.xml")
 @Transactional
 public class BookRepositoryTest {
 

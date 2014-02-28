@@ -16,7 +16,10 @@
 
 	<context:property-placeholder location="classpath:spring/config.properties" />
 
-	<context:component-scan base-package="pl.jojczykp.bookstore.controller"/>
+	<context:component-scan base-package="pl.jojczykp.bookstore" use-default-filters="false">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+		<context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
+	</context:component-scan>
 
 	<mvc:annotation-driven/>
 
