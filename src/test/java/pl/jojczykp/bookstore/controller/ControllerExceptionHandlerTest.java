@@ -21,11 +21,7 @@ import static pl.jojczykp.bookstore.testutils.matchers.HasBeanProperty.hasBeanPr
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration({
-		"file:src/main/webapp/WEB-INF/mvc-dispatcher-servlet.xml",
-		"classpath:spring/application-test-context.xml",
-		"classpath:spring/exception-throwing-controller-context.xml"
-})
+@ContextConfiguration("classpath:spring/controllers-test-context.xml")
 public class ControllerExceptionHandlerTest {
 
 	private MockMvc mockMvc;
@@ -38,7 +34,7 @@ public class ControllerExceptionHandlerTest {
 
 	@Test
 	public void shouldHandleExceptionFromController() throws Exception {
-		mockMvc.perform(get("/throw/exception"))
+		mockMvc.perform(get("/throw/some_exception"))
 				.andExpect(status().isOk())
 				.andExpect(view().name("exception"))
 				.andExpect(model().attribute("exceptionCommand",

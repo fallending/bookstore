@@ -45,7 +45,7 @@ import static pl.jojczykp.bookstore.testutils.controller.MessagesControllerTestU
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration("classpath:spring/application-test-context.xml")
+@ContextConfiguration("classpath:spring/controllers-test-context.xml")
 public class BooksControllerCreateTest {
 
 	private static final String VALIDATOR_ERROR_MESSAGE = "An error message from validator.";

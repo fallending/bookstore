@@ -6,9 +6,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class ExceptionThrowingController {
-	@RequestMapping(value = "/throw/exception")
+
+	@RequestMapping(value = "/throw/some_exception")
 	public ModelAndView throwException() {
 		throw new RuntimeException("a controller exception");
 	}
-}
 
+}

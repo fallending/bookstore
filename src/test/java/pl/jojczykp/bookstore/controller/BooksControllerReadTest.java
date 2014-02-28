@@ -57,7 +57,7 @@ import static pl.jojczykp.bookstore.utils.PageSorterDirection.DESC;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration("classpath:spring/application-test-context.xml")
+@ContextConfiguration("classpath:spring/controllers-test-context.xml")
 public class BooksControllerReadTest {
 
 	private static final String BOOKS_COMMAND = "booksCommand";
