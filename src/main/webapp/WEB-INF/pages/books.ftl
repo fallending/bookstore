@@ -6,13 +6,11 @@
 <#assign totalCount = booksCommand.pager.totalCount>
 
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/html">
 	<head>
 		<meta http-equiv="content-type" content="application/xhtml+xml; charset=utf-8" />
 		<title>Bookstore</title>
-		<style type="text/css">
-			input.deleteCheckbox { }
-		</style>
+		<link rel="stylesheet" type="text/css" href="/css/books.css"/>
 		<script type="text/javascript">
 			ORIGINAL_PARAMS = {
 				'pager.pageNumber' : ${booksCommand.pager.pageNumber},
@@ -24,68 +22,85 @@
 		<script type="text/javascript" src="/js/books.js"></script>
 	</head>
 	<body>
-		<@sectionTitle/>
-		<@sectionMessages/>
-		<#if (pagesCount > 0) >
-			<@sectionPager/>
-			<@sectionDataTable/>
-		</#if>
-		<@sectionCreate/>
+		<div class="all">
+			<@sectionTitle/>
+			<div class="sectionMain">
+				<@sectionMessages/>
+				<#if (pagesCount > 0) >
+					<@sectionPager/>
+					<@sectionDataTable/>
+				<#else>
+					No books to display.
+				</#if>
+				<@sectionCreate/>
+			</div>
+		</div>
 	</body>
 </html>
 
 <#macro sectionTitle>
-<h1>
-	<#if totalCount <= 0>
-		No books for given range to display.
-	<#else>
-		Page ${pageNumber} of ${pagesCount}:
-	</#if>
-</h1>
+	<h1 class="sectionTitle">
+		Bookstore
+	</h1>
 </#macro>
 
 <#macro sectionMessages>
-	<#list booksCommand.messages.infos as message>
-		INFO: ${message}<br/>
-	</#list>
-	<#list booksCommand.messages.warns as message>
-		WARN: ${message}<br/>
-	</#list>
-	<#list booksCommand.messages.errors as message>
-		ERROR: ${message}<br/>
-	</#list>
+	<@sectionSingleKindMessages booksCommand.messages.infos 'sectionMessagesInfo' 'info'/>
+	<@sectionSingleKindMessages booksCommand.messages.warns 'sectionMessagesWarn' 'warn'/>
+	<@sectionSingleKindMessages booksCommand.messages.errors 'sectionMessagesError' 'error'/>
+</#macro>
+
+<#macro sectionSingleKindMessages collection class image>
+	<#if (collection?size > 0) >
+		<div class="${class}">
+			<table><tr>
+				<td align="center" valign="center" width="50"><img src="/img/${image}.png"/></td>
+				<td><ul>
+					<#list collection as message>
+						<li>${message}</li>
+					</#list>
+				</ul></td>
+			</tr></table>
+		</div>
+	</#if>
 </#macro>
 
 <#macro sectionPager>
-	<table>
-		<tr>
-			<td align="left">Page size: <@formPagerSetPageSize/></td>
-			<td align="center">Go to page:</td>
-			<td align="left"><@formPagerPrev/></td>
-			<td align="center"><@formPagerGoToPage/></td>
-			<td aling="right"><@formPagerNext/></td>
-		</tr>
-	</table>
+	<div class="sectionPager">
+		<table>
+			<tr>
+				<td align="left">Page size: <@formPagerSetPageSize/></td>
+				<td aling="left">
+					Total pages:
+					<input type="text" value="${pagesCount}" disabled="true" class="pagesCount"/>
+				</td>
+				<td align="center">Go to page:</td>
+				<td align="left"><@formPagerPrev/></td>
+				<td align="center"><@formPagerGoToPage/></td>
+				<td aling="right"><@formPagerNext/></td>
+			</tr>
+		</table>
+	</div>
 </#macro>
 
 <#macro formPagerPrev>
 	<#if (pageNumber <= 1) >
-		<input type="button" value="&#x25C0;" disabled="true" />
+		<input type="button" value="&#x25C0;" class="arrowsButtons" disabled="true" />
 	<#else>
-		<input type="button" value="&#x25C0;" onClick="sendGoToPage(${pageNumber - 1})" />
+		<input type="button" value="&#x25C0;" class="arrowsButtons" onClick="sendGoToPage(${pageNumber - 1})" />
 	</#if>
 </#macro>
 
 <#macro formPagerSetPageSize>
-	<#assign possibleSizes = {"1":1, "2":2, "5":5, "10":10, "15":15, "25":25, "50":50, "100":100}>
-	<@spring.formSingleSelect "booksCommand.pager.pageSize" possibleSizes "onChange='sendSetPageSize()'" />
+	<#assign possibleSizes = {"1":1, "2":2, "3":3, "5":5, "10":10, "15":15, "25":25, "50":50, "100":100}>
+	<@spring.formSingleSelect "booksCommand.pager.pageSize" possibleSizes "class='setPageSizeInput' onChange='sendSetPageSize()'" />
 </#macro>
 
 <#macro formPagerNext>
 	<#if (pageNumber >= pagesCount) >
-		<input type="button" value="&#x25B6;" disabled="true" />
+		<input type="button" value="&#x25B6;" class="arrowsButtons" disabled="true" />
 	<#else>
-		<input type="button" value="&#x25B6;" onClick="sendGoToPage(${pageNumber + 1})" />
+		<input type="button" value="&#x25B6;" class="arrowsButtons" onClick="sendGoToPage(${pageNumber + 1})" />
 	</#if>
 </#macro>
 
@@ -117,46 +132,51 @@
 		<#assign rightDots = true />
 	</#if>
 
-	<#if (leftDots??) >...</#if>
+	<table cellspacing="0" cellpadding="0"><tr>
+	<#if (leftDots??) ><td class="pagerScrollCell">...</td></#if>
 	<#list min..max as p>
 		<#if (p = pageNumber) >
-			<input type="button" value="${p}" disabled="true" />
+			<td class="pagerScrollCell">
+				<input type="button" value="${p}" class="pageNumberButton" disabled="true" />
+			</td>
 		<#else>
-			<input type="button" value="${p}" onClick="sendGoToPage(${p})" />
+			<td class="pagerScrollCell">
+				<input type="button" value="${p}" class="pageNumberButton" onClick="sendGoToPage(${p})" />
+			</td>
 		</#if>
 	</#list>
-	<#if (rightDots??) >...</#if>
+	<#if (rightDots??) ><td class="pagerScrollCell">...</td></#if>
+	</tr></table>
 </#macro>
 
 <#macro sectionDataTable>
-	<table><tr>
-		<td>
-			<table>
+	<div class="sectionDataTable">
+		<table>
+			<tr>
+				<th class="deleteCheckboxHeader"></th>
+				<th class="idHeader">Id</th>
+				<th class="titleHeader">
+					<@sectionDataTableSorter 'BOOK_TITLE' 'Title'/>
+				</th>
+			</tr>
+			<#list booksCommand.books as book>
 				<tr>
-					<th></th>
-					<th>Id</th>
-					<th>
-						<@sectionDataTableSorter 'BOOK_TITLE' 'Title'/>
-					</th>
+					<td>
+						<@spring.formCheckbox path="booksCommand.books[" + book_index + "].checked" attributes="class='deleteCheckbox' bookId='${booksCommand.books[book_index].id}'"/>
+					</td>
+					<td>#${book.id}</td>
+					<td>
+						<@spring.formHiddenInput "booksCommand.books[" + book_index + "].version"/>
+						<@spring.formInput "booksCommand.books[" + book_index + "].title" "class='updateInput'"/>
+						<input type="button" value="update" onClick="sendUpdate(${booksCommand.books[book_index].id}, ${book_index})"/>
+					</td>
 				</tr>
-				<#list booksCommand.books as book>
-					<tr>
-						<td>
-							<@spring.formCheckbox path="booksCommand.books[" + book_index + "].checked" attributes="class='deleteCheckbox' bookId='${booksCommand.books[book_index].id}'"/>
-						</td>
-						<td>#${book.id}</td>
-						<td>
-							<@spring.formHiddenInput "booksCommand.books[" + book_index + "].version"/>
-							<@spring.formInput "booksCommand.books[" + book_index + "].title"/>
-							<@spring.showErrors "<br>" />
-							<input type="button" value="update" onClick="sendUpdate(${booksCommand.books[book_index].id}, ${book_index})"/>
-						</td>
-					</tr>
-				</#list>
-			</table>
-		</td>
-	</tr></table>
-	<input type="button" value="delete selected" onClick="sendDelete()"/>
+			</#list>
+		</table>
+	</div>
+	<div class="sectionDataTableButtons">
+		<input type="button" value="delete selected" class="deleteButton" onClick="sendDelete()"/>
+	</div>
 </#macro>
 
 <#macro sectionDataTableSorter columnName columnTitle>
@@ -167,14 +187,16 @@
 
 <#macro sectionDataTableSorterDirection columnName columnTitle direction marker>
 	<#if (booksCommand.pager.sorter.direction = '${direction}')>
-		<input type="button" value="${marker}" disabled="true"/>
+		<input type="button" value="${marker}" class="arrowsButtons" disabled="true"/>
 	<#else>
-		<input type="button" value="${marker}" onClick="sendSort('${columnName}', '${direction}')"/>
+		<input type="button" value="${marker}" class="arrowsButtons" onClick="sendSort('${columnName}', '${direction}')"/>
 	</#if>
 </#macro>
 
 <#macro sectionCreate>
-	<h2>Create new book:</h2>
-	Title: <@spring.formInput "booksCommand.newBook.title"/>
-	<input type="button" value="create" onClick="sendCreate()"/>
+	<div class="sectionCreate">
+		<h3>Create new book:</h3>
+		Title: <@spring.formInput "booksCommand.newBook.title" "class='createInput'"/>
+		<input type="button" value="create" class="createButton" onClick="sendCreate()"/>
+	</div>
 </#macro>

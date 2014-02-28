@@ -1,0 +1,22 @@
+body {
+	background-color: #EFEFEF;
+	color: #111111;
+}
+
+.sectionTitle {
+	margin: 10px;
+	padding: 10px;
+}
+
+.sectionMain {
+	width: 90%;
+	margin: 10px;
+	padding: 10px;
+	background: rgb(255,233,237);
+	color: darkred;
+	border-radius: 10px;
+	box-shadow: 6px 6px 3px #999999;
+	border-style: solid;
+	border-color: darkred;
+	border-width: 1px;
+}
