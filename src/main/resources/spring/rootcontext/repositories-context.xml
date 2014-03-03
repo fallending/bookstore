@@ -35,9 +35,10 @@
 		</property>
 	</bean>
 
-	<jdbc:embedded-database id="dataSource">
+	<jdbc:embedded-database id="dataSource" type="HSQL">
 		<jdbc:script location="classpath:spring/sql/schema.sql"/>
-		<jdbc:script location="classpath:spring/sql/data.sql"/>
+		<jdbc:script location="classpath:spring/sql/data/books.sql"/>
+		<jdbc:script location="classpath:spring/sql/data/security.sql"/>
 	</jdbc:embedded-database>
 
 </beans>

@@ -15,67 +15,67 @@ public class BookTest {
 
 	@Test
 	public void shouldHaveNoParameterConstructorForHibernate() {
-		Book book = new Book();
+		Book testee = new Book();
 
-		assertThat(book.getId(), is(0));
-		assertThat(book.getVersion(), is(0));
-		assertThat(book.getTitle(), is(""));
+		assertThat(testee.getId(), is(0));
+		assertThat(testee.getVersion(), is(0));
+		assertThat(testee.getTitle(), is(""));
 	}
 
 	@Test
 	public void shouldHaveOnlyIdConstructor() {
-		Book book = new Book(ID);
+		Book testee = new Book(ID);
 
-		assertThat(book.getId(), is(ID));
-		assertThat(book.getTitle(), is(""));
+		assertThat(testee.getId(), is(ID));
+		assertThat(testee.getTitle(), is(""));
 	}
 
 	@Test
 	public void shouldHaveNoIdConstructor() {
-		Book book = new Book(TITLE);
+		Book testee = new Book(TITLE);
 
-		assertThat(book.getId(), is(0));
-		assertThat(book.getTitle(), is(TITLE));
+		assertThat(testee.getId(), is(0));
+		assertThat(testee.getTitle(), is(TITLE));
 	}
 
 	@Test
 	public void shouldCreateBookWithParamsPassedToConstructor() {
-		Book book = new Book(ID, VERSION, TITLE);
+		Book testee = new Book(ID, VERSION, TITLE);
 
-		assertThat(book.getId(), is(ID));
-		assertThat(book.getVersion(), is(VERSION));
-		assertThat(book.getTitle(), is(TITLE));
+		assertThat(testee.getId(), is(ID));
+		assertThat(testee.getVersion(), is(VERSION));
+		assertThat(testee.getTitle(), is(TITLE));
 	}
 
 	@Test
 	public void shouldSetId() {
-		Book book = new Book();
+		Book testee = new Book();
 
-		book.setId(ID);
+		testee.setId(ID);
 
-		assertThat(book.getId(), is(ID));
+		assertThat(testee.getId(), is(ID));
 	}
 
 	@Test
 	public void shouldSetVersion() {
-		Book book = new Book();
+		Book testee = new Book();
 
-		book.setVersion(VERSION);
+		testee.setVersion(VERSION);
 
-		assertThat(book.getVersion(), is(VERSION));
+		assertThat(testee.getVersion(), is(VERSION));
 	}
 
 	@Test
 	public void shouldSetTitle() {
-		Book book = new Book();
+		Book testee = new Book();
 
-		book.setTitle(TITLE);
+		testee.setTitle(TITLE);
 
-		assertThat(book.getTitle(), is(TITLE));
+		assertThat(testee.getTitle(), is(TITLE));
 	}
 
 	@Test
-	public void shouldMeetEqualsHashcodeContract() {
+	public void shouldMeetEqualsHashCodeContract() {
 		EqualsVerifier.forClass(Book.class)
 				.usingGetClass()
 				.verify();

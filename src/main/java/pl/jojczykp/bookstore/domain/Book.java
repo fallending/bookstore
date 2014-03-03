@@ -8,7 +8,7 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 
 @Entity
-@Table(name = "BOOK")
+@Table(name = "BOOKS")
 public class Book {
 
 	@Id
@@ -84,4 +84,5 @@ public class Book {
 	public String toString() {
 		return "Book{id=" + id + ", version=" + version + ", title='" + title + "'}";
 	}
+
 }

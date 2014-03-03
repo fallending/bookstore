@@ -42,6 +42,7 @@ public class BookRepositoryTest {
 	@Autowired private BookRepository testee;
 
 	@Test
+	@Rollback(true)
 	public void shouldComputeTotalCountOfBooks() {
 		final Book[] givenBooks = {BOOK_A, BOOK_B, BOOK_C, BOOK_D, BOOK_E};
 		givenRepositoryWith(givenBooks);
@@ -50,118 +51,130 @@ public class BookRepositoryTest {
 	}
 
 	@Test
+	@Rollback(true)
 	public void shouldGetBook() {
 		givenRepositoryWith(BOOK_A, BOOK_B, BOOK_C, BOOK_D, BOOK_E);
 
-		Book readBook = testee.get(BOOK_D.getId());
+		Book foundBook = testee.get(BOOK_D.getId());
 
-		assertEqualFields(readBook, BOOK_D);
+		assertEqualFields(foundBook, BOOK_D);
 	}
 
 	@Test
-	public void shouldReadBooksByOffsetAndSize() {
+	@Rollback(true)
+	public void shouldfoundBooksByOffsetAndSize() {
 		final int offset = 1;
 		final int size = 3;
 		givenRepositoryWith(BOOK_A, BOOK_B, BOOK_C, BOOK_D, BOOK_E);
 
-		List<Book> readBooks = testee.read(offset, size, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
+		List<Book> foundBooks = testee.read(offset, size, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
 
-		assertThatHasOnly(readBooks, BOOK_B, BOOK_C, BOOK_D);
+		assertThatHasOnly(foundBooks, BOOK_B, BOOK_C, BOOK_D);
 	}
 
 	@Test
-	public void shouldReadBooksWhenOffsetInRangeAndSizeOutOfRange() {
+	@Rollback(true)
+	public void shouldfoundBooksWhenOffsetInRangeAndSizeOutOfRange() {
 		final Book[] givenBooks = {BOOK_A, BOOK_B, BOOK_C, BOOK_D, BOOK_E};
 		givenRepositoryWith(givenBooks);
 
-		List<Book> readBooks = testee.read(2, givenBooks.length + 1, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
+		List<Book> foundBooks = testee.read(2, givenBooks.length + 1, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
 
-		assertThatHasOnly(readBooks, BOOK_C, BOOK_D, BOOK_E);
+		assertThatHasOnly(foundBooks, BOOK_C, BOOK_D, BOOK_E);
 	}
 
 	@Test
-	public void shouldReadBooksFromOffsetZeroWhenGivenNegativeOffset() {
+	@Rollback(true)
+	public void shouldfoundBooksFromOffsetZeroWhenGivenNegativeOffset() {
 		final int negativeOffset = -2;
 		final Book[] givenBooks = {BOOK_A, BOOK_B, BOOK_C};
 		givenRepositoryWith(givenBooks);
 
-		List<Book> readBooks = testee.read(negativeOffset, 2, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
+		List<Book> foundBooks = testee.read(negativeOffset, 2, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
 
-		assertThatHasOnly(readBooks, BOOK_A, BOOK_B);
+		assertThatHasOnly(foundBooks, BOOK_A, BOOK_B);
 	}
 
 	@Test
+	@Rollback(true)
 	public void shouldReadEmptyBooksListWhenGivenOutOfRangeOffset() {
 		final Book[] givenBooks = {BOOK_A, BOOK_B, BOOK_C, BOOK_D, BOOK_E};
 		final int outOfRangeOffset = givenBooks.length + 2;
 		final int anySize = 8;
 		givenRepositoryWith(givenBooks);
 
-		List<Book> readBooks = testee.read(outOfRangeOffset, anySize, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
+		List<Book> foundBooks = testee.read(outOfRangeOffset, anySize, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
 
-		assertThat(readBooks.size(), is(0));
+		assertThat(foundBooks.size(), is(0));
 	}
 
 	@Test
+	@Rollback(true)
 	public void shouldReadEmptyBooksListWhenGivenNegativeSize() {
 		final int anyOffset = 2;
 		final int negativeSize = -1;
 		givenRepositoryWith(BOOK_A, BOOK_B);
 
-		List<Book> readBooks = testee.read(anyOffset, negativeSize, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
+		List<Book> foundBooks = testee.read(anyOffset, negativeSize, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
 
-		assertThat(readBooks.size(), is(0));
+		assertThat(foundBooks.size(), is(0));
 	}
 
 	@Test
+	@Rollback(true)
 	public void shouldReadEmptyBooksListWhenGivenZeroSize() {
 		final int anyOffset = 7;
 		givenRepositoryWith(BOOK_A, BOOK_B);
 
-		List<Book> readBooks = testee.read(anyOffset, 0, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
+		List<Book> foundBooks = testee.read(anyOffset, 0, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
 
-		assertThat(readBooks.size(), is(0));
+		assertThat(foundBooks.size(), is(0));
 	}
 
 	@Test
-	public void shouldReadBooksOrderingAsc() throws NoSuchFieldException {
+	@Rollback(true)
+	public void shouldfoundBooksOrderingAsc() throws NoSuchFieldException {
 		final Book[] givenBooks = {BOOK_B, BOOK_A, BOOK_C};
 		givenRepositoryWith(givenBooks);
 		givenIgnoreCaseWhileSort(BOOK_TITLE, true);
 
-		List<Book> readBooks = testee.read(0, givenBooks.length, SAMPLE_SORT_COLUMN, ASC);
+		List<Book> foundBooks = testee.read(0, givenBooks.length, SAMPLE_SORT_COLUMN, ASC);
 
-		assertThatHasOnly(readBooks, BOOK_A, BOOK_B, BOOK_C);
+		assertThatHasOnly(foundBooks, BOOK_A, BOOK_B, BOOK_C);
 	}
 
 	@Test
-	public void shouldReadBooksOrderingDesc() throws NoSuchFieldException {
+	@Rollback(true)
+	public void shouldfoundBooksOrderingDesc() throws NoSuchFieldException {
 		final Book[] givenBooks = {BOOK_B, BOOK_A, BOOK_C};
 		givenRepositoryWith(givenBooks);
 		givenIgnoreCaseWhileSort(BOOK_TITLE, true);
 
-		List<Book> readBooks = testee.read(0, givenBooks.length, SAMPLE_SORT_COLUMN, DESC);
+		List<Book> foundBooks = testee.read(0, givenBooks.length, SAMPLE_SORT_COLUMN, DESC);
 
-		assertThatHasOnly(readBooks, BOOK_C, BOOK_B, BOOK_A);
+		assertThatHasOnly(foundBooks, BOOK_C, BOOK_B, BOOK_A);
 	}
 
 	@Test
-	public void shouldReadBooksOrderingCaseInsensitively() throws NoSuchFieldException {
+	@Rollback(true)
+	public void shouldfoundBooksOrderingCaseInsensitively() throws NoSuchFieldException {
 		givenIgnoreCaseWhileSort(BOOK_TITLE, true);
 		givenRepositoryWith(BOOK_C_LOW_CASE, BOOK_A);
 
-		List<Book> readBooks = testee.read(0, 2, SAMPLE_SORT_COLUMN, ASC);
+		List<Book> foundBooks = testee.read(0, 2, SAMPLE_SORT_COLUMN, ASC);
 
-		assertThatHasOnly(readBooks, BOOK_A, BOOK_C_LOW_CASE);
+		assertThatHasOnly(foundBooks, BOOK_A, BOOK_C_LOW_CASE);
 	}
+
 	@Test
-	public void shouldReadBooksOrderingCaseSensitively() throws NoSuchFieldException {
+	@Rollback(true)
+	public void shouldfoundBooksOrderingCaseSensitively() throws NoSuchFieldException {
 		givenIgnoreCaseWhileSort(BOOK_TITLE, false);
 		givenRepositoryWith(BOOK_C_LOW_CASE, BOOK_D);
 
-		List<Book> readBooks = testee.read(0, 2, SAMPLE_SORT_COLUMN, ASC);
+		List<Book> foundBooks = testee.read(0, 2, SAMPLE_SORT_COLUMN, ASC);
 
-		assertThatHasOnly(readBooks, BOOK_D, BOOK_C_LOW_CASE);
+		assertThatHasOnly(foundBooks, BOOK_D, BOOK_C_LOW_CASE);
 	}
 
 	@Test
@@ -177,13 +190,13 @@ public class BookRepositoryTest {
 	@Rollback(true)
 	public void shouldUpdateBook() {
 		final int id = 4;
-		Book bookOld = new Book(id, 2, "Old Title");
-		Book bookNew = new Book(id, 2, "New Title");
-		givenRepositoryWith(bookOld);
+		Book oldBook = new Book(id, 2, "Old Title");
+		Book newBook = new Book(id, 2, "New Title");
+		givenRepositoryWith(oldBook);
 
-		testee.update(bookNew);
+		testee.update(newBook);
 
-		assertEqualFields(testee.get(id), bookNew);
+		assertEqualFields(testee.get(id), newBook);
 	}
 
 	@Test(expected = StaleObjectStateException.class)
@@ -191,11 +204,11 @@ public class BookRepositoryTest {
 	public void shouldFailUpdatingBookWhenModifiedByOtherSession() {
 		final int anyId = 7;
 		final int currentVersion = 7;
-		Book bookOld = new Book(anyId, currentVersion, "Old Title");
-		givenRepositoryWith(bookOld);
-		Book bookNew = new Book(bookOld.getId(), currentVersion - 1, "New Title");
+		Book oldBook = new Book(anyId, currentVersion, "Old Title");
+		givenRepositoryWith(oldBook);
+		Book newBook = new Book(oldBook.getId(), currentVersion - 1, "New Title");
 
-		testee.update(bookNew);
+		testee.update(newBook);
 	}
 
 	@Test
@@ -226,7 +239,7 @@ public class BookRepositoryTest {
 	}
 
 	private void givenRepositoryWith(Book... books) {
-		for(Book book: books) {
+		for (Book book: books) {
 			testee.create(book);
 		}
 	}
@@ -238,17 +251,17 @@ public class BookRepositoryTest {
 		}
 	}
 
-	private void assertFieldValuesAreEqual(Field field, Book readBook, Book givenBook) {
-		try {
-			assertThat(field.get(readBook), is(equalTo(field.get(givenBook))));
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+	private void assertEqualFields(Book foundBook, Book givenBook) {
+		for (Field field: Book.class.getFields()) {
+			assertFieldValuesAreEqual(field, foundBook, givenBook);
 		}
 	}
 
-	private void assertEqualFields(Book readBook, Book givenBook) {
-		for (Field field: Book.class.getFields()) {
-			assertFieldValuesAreEqual(field, readBook, givenBook);
+	private void assertFieldValuesAreEqual(Field field, Book foundBook, Book givenBook) {
+		try {
+			assertThat(field.get(foundBook), is(equalTo(field.get(givenBook))));
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
 		}
 	}
 
