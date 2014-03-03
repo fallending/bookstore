@@ -9,7 +9,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 import pl.jojczykp.bookstore.command.BookCommand;
 import pl.jojczykp.bookstore.command.BooksCommand;
-import pl.jojczykp.bookstore.repository.BookRepository;
+import pl.jojczykp.bookstore.repository.BooksRepository;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static pl.jojczykp.bookstore.controller.BooksConsts.BOOKS_COMMAND;
@@ -19,7 +19,7 @@ import static pl.jojczykp.bookstore.controller.BooksConsts.URL_ACTION_READ;
 @Controller
 public class BooksControllerDelete {
 
-	@Autowired private BookRepository bookRepository;
+	@Autowired private BooksRepository booksRepository;
 
 	@RequestMapping(value = URL_ACTION_DELETE, method = POST)
 	public RedirectView delete(
@@ -37,7 +37,7 @@ public class BooksControllerDelete {
 
 	private void deleteBookFromRepository(int bookId, BooksCommand messagesContainer) {
 		try {
-			bookRepository.delete(bookId);
+			booksRepository.delete(bookId);
 			messagesContainer.getMessages().addInfos("Object deleted.");
 		} catch (ObjectNotFoundException ex) {
 			messagesContainer.getMessages().addWarns("Object already deleted.");

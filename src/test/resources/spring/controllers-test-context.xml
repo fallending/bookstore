@@ -29,7 +29,7 @@
 
 	<mockito:mock id="bookAssembler" class="pl.jojczykp.bookstore.assembler.BookAssembler"/>
 
-	<mockito:mock id="bookRepository" class="pl.jojczykp.bookstore.repository.BookRepository"/>
+	<mockito:mock id="booksRepository" class="pl.jojczykp.bookstore.repository.BooksRepository"/>
 
 	<mockito:mock id="booksCreateValidator" class="pl.jojczykp.bookstore.validators.BooksCreateValidator" />
 	<mockito:mock id="booksUpdateValidator" class="pl.jojczykp.bookstore.validators.BooksUpdateValidator" />

@@ -11,7 +11,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 import pl.jojczykp.bookstore.assembler.BookAssembler;
 import pl.jojczykp.bookstore.command.BooksCommand;
-import pl.jojczykp.bookstore.repository.BookRepository;
+import pl.jojczykp.bookstore.repository.BooksRepository;
 import pl.jojczykp.bookstore.validators.BooksUpdateValidator;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -23,7 +23,7 @@ import static pl.jojczykp.bookstore.controller.BooksConsts.URL_ACTION_UPDATE;
 public class BooksControllerUpdate {
 
 	@Autowired private BooksUpdateValidator booksUpdateValidator;
-	@Autowired private BookRepository bookRepository;
+	@Autowired private BooksRepository booksRepository;
 	@Autowired private BookAssembler bookAssembler;
 
 	@RequestMapping(value = URL_ACTION_UPDATE, method = POST)
@@ -51,7 +51,7 @@ public class BooksControllerUpdate {
 
 	private void processWhenCommandValid(BooksCommand booksCommand) {
 		try {
-			bookRepository.update(bookAssembler.toDomain(booksCommand.getUpdatedBook()));
+			booksRepository.update(bookAssembler.toDomain(booksCommand.getUpdatedBook()));
 			booksCommand.getMessages().addInfos("Object updated.");
 		} catch (StaleObjectStateException e) {
 			booksCommand.getMessages().addWarns(

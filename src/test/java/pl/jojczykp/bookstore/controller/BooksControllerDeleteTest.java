@@ -16,7 +16,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.context.WebApplicationContext;
 import pl.jojczykp.bookstore.command.BookCommand;
 import pl.jojczykp.bookstore.command.BooksCommand;
-import pl.jojczykp.bookstore.repository.BookRepository;
+import pl.jojczykp.bookstore.repository.BooksRepository;
 
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.sameInstance;
@@ -45,7 +45,7 @@ public class BooksControllerDeleteTest {
 
 	private MockMvc mvcMock;
 	private ResultActions mvcMockPerformResult;
-	@Autowired private BookRepository bookRepository;
+	@Autowired private BooksRepository booksRepository;
 	@Autowired private WebApplicationContext wac;
 
 	@Captor private ArgumentCaptor<Integer> idOfBookToRemove;
@@ -80,8 +80,8 @@ public class BooksControllerDeleteTest {
 	}
 
 	private void givenExceptionOnDeletingNotExistingId() {
-		reset(bookRepository);
-		doThrow(ObjectNotFoundException.class).when(bookRepository).delete(NOT_EXISTING_ID);
+		reset(booksRepository);
+		doThrow(ObjectNotFoundException.class).when(booksRepository).delete(NOT_EXISTING_ID);
 	}
 
 	private BooksCommand aCommandToRemoveByIds(int... ids) {
@@ -107,9 +107,9 @@ public class BooksControllerDeleteTest {
 	}
 
 	private void thenExpectDeleteInvokedOnRepository(Integer... ids) {
-		verify(bookRepository, times(ids.length)).delete(idOfBookToRemove.capture());
+		verify(booksRepository, times(ids.length)).delete(idOfBookToRemove.capture());
 		assertThat(idOfBookToRemove.getAllValues(), hasItems(ids));
-		verifyNoMoreInteractions(bookRepository);
+		verifyNoMoreInteractions(booksRepository);
 	}
 
 	private void thenExpectHttpRedirectWith(BooksCommand command) throws Exception {

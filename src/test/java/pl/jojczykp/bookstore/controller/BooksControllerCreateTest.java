@@ -21,7 +21,7 @@ import pl.jojczykp.bookstore.assembler.BookAssembler;
 import pl.jojczykp.bookstore.command.BookCommand;
 import pl.jojczykp.bookstore.command.BooksCommand;
 import pl.jojczykp.bookstore.domain.Book;
-import pl.jojczykp.bookstore.repository.BookRepository;
+import pl.jojczykp.bookstore.repository.BooksRepository;
 import pl.jojczykp.bookstore.validators.BooksCreateValidator;
 
 import static org.hamcrest.Matchers.is;
@@ -54,7 +54,7 @@ public class BooksControllerCreateTest {
 	private ResultActions mvcMockPerformResult;
 	@Autowired private BooksCreateValidator booksCreateValidator;
 	@Autowired private BookAssembler bookAssembler;
-	@Autowired private BookRepository bookRepository;
+	@Autowired private BooksRepository booksRepository;
 	@Autowired private WebApplicationContext wac;
 
 	@Captor private ArgumentCaptor<BooksCommand> booksCommandCaptor;
@@ -69,7 +69,7 @@ public class BooksControllerCreateTest {
 		MockitoAnnotations.initMocks(this);
 		reset(booksCreateValidator);
 		reset(bookAssembler);
-		reset(bookRepository);
+		reset(booksRepository);
 		given(bookAssembler.toDomain(any(BookCommand.class))).willReturn(book);
 	}
 
@@ -138,13 +138,13 @@ public class BooksControllerCreateTest {
 	}
 
 	private void thenExpectCreateInvokedOnRepository() {
-		verify(bookRepository).create(newBookCaptor.capture());
+		verify(booksRepository).create(newBookCaptor.capture());
 		assertThat(newBookCaptor.getValue(), is(sameInstance(book)));
-		verifyNoMoreInteractions(bookRepository);
+		verifyNoMoreInteractions(booksRepository);
 	}
 
 	private void thenExpectCreateNotInvokedOnRepository() {
-		verifyZeroInteractions(bookRepository);
+		verifyZeroInteractions(booksRepository);
 	}
 
 	private void thenExpectHttpRedirectWith(BooksCommand command) throws Exception {

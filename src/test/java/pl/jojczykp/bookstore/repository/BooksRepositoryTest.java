@@ -27,7 +27,7 @@ import static pl.jojczykp.bookstore.utils.PageSorterDirection.DESC;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:spring/repositories-test-context.xml")
 @Transactional
-public class BookRepositoryTest {
+public class BooksRepositoryTest {
 
 	private static final PageSorterColumn SAMPLE_SORT_COLUMN = BOOK_TITLE;
 	private static final PageSorterDirection SAMPLE_DIRECTION = ASC;
@@ -39,7 +39,7 @@ public class BookRepositoryTest {
 	private static final Book BOOK_E = new Book(0, 5, "Book Title E");
 	private static final Book BOOK_C_LOW_CASE = new Book(0, 2, "Book Title c");
 
-	@Autowired private BookRepository testee;
+	@Autowired private BooksRepository testee;
 
 	@Test
 	@Rollback(true)

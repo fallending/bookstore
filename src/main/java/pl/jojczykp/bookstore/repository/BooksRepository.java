@@ -19,7 +19,7 @@ import static pl.jojczykp.bookstore.utils.PageSorter.orderBy;
 
 @Repository
 @Transactional
-public class BookRepository {
+public class BooksRepository {
 
 	@Autowired private SessionFactory sessionFactory;
 

@@ -19,7 +19,7 @@ import pl.jojczykp.bookstore.command.BooksCommand;
 import pl.jojczykp.bookstore.command.MessagesCommand;
 import pl.jojczykp.bookstore.command.PagerCommand;
 import pl.jojczykp.bookstore.domain.Book;
-import pl.jojczykp.bookstore.repository.BookRepository;
+import pl.jojczykp.bookstore.repository.BooksRepository;
 import pl.jojczykp.bookstore.utils.BooksCommandFactory;
 import pl.jojczykp.bookstore.utils.PageSorterColumn;
 import pl.jojczykp.bookstore.utils.PageSorterDirection;
@@ -87,7 +87,7 @@ public class BooksControllerReadTest {
 	private ResultActions mvcMockPerformResult;
 
 	@Autowired private BooksCommandFactory booksCommandFactory;
-	@Autowired private BookRepository bookRepository;
+	@Autowired private BooksRepository booksRepository;
 	@Autowired private BookAssembler bookAssembler;
 	@Autowired private PagerLimiter pagerLimiter;
 	@Autowired private WebApplicationContext wac;
@@ -120,9 +120,9 @@ public class BooksControllerReadTest {
 	}
 
 	private void givenRepositoryMockConfigured() {
-		reset(bookRepository);
-		given(bookRepository.totalCount()).willReturn(REPO_TOTAL_COUNT);
-		given(bookRepository
+		reset(booksRepository);
+		given(booksRepository.totalCount()).willReturn(REPO_TOTAL_COUNT);
+		given(booksRepository
 				.read(anyInt(), anyInt(), any(PageSorterColumn.class), any(PageSorterDirection.class)))
 				.willReturn(REPO_DATA);
 	}
@@ -153,9 +153,9 @@ public class BooksControllerReadTest {
 
 		thenExpectBooksCommandFactoryNotInvoked();
 		thenExpectProcessedCommandInstance(command);
-		thenExpectBookRepositoryTotalCountTaken();
+		thenExpectBooksRepositoryTotalCountTaken();
 		thenExpectParametersLimitationUsage();
-		thenExpectBookRepositoryRead();
+		thenExpectBooksRepositoryRead();
 		thenExpectBookAssemblerInvoked();
 		thenExpectCorrectViewSelectedAndModelSet();
 	}
@@ -196,8 +196,8 @@ public class BooksControllerReadTest {
 		verifyZeroInteractions(booksCommandFactory);
 	}
 
-	private void thenExpectBookRepositoryTotalCountTaken() {
-		verify(bookRepository).totalCount();
+	private void thenExpectBooksRepositoryTotalCountTaken() {
+		verify(booksRepository).totalCount();
 	}
 
 	private void thenExpectParametersLimitationUsage() {
@@ -207,8 +207,8 @@ public class BooksControllerReadTest {
 		verifyNoMoreInteractions(pagerLimiter);
 	}
 
-	private void thenExpectBookRepositoryRead() {
-		verify(bookRepository, times(1)).read(
+	private void thenExpectBooksRepositoryRead() {
+		verify(booksRepository, times(1)).read(
 				offsetCaptor.capture(),
 				sizeCaptor.capture(),
 				pageSorterColumnCaptor.capture(),
@@ -219,7 +219,7 @@ public class BooksControllerReadTest {
 		assertThat(pageSorterColumnCaptor.getValue(), equalTo(LIMITED_SORT_COLUMN));
 		assertThat(pageSorterDirectionCaptor.getValue(), equalTo(LIMITED_SORT_DIRECTION));
 
-		verifyNoMoreInteractions(bookRepository);
+		verifyNoMoreInteractions(booksRepository);
 	}
 
 	private void thenExpectBookAssemblerInvoked() {

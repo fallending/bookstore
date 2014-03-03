@@ -10,7 +10,7 @@ import pl.jojczykp.bookstore.assembler.BookAssembler;
 import pl.jojczykp.bookstore.command.BooksCommand;
 import pl.jojczykp.bookstore.command.PagerCommand;
 import pl.jojczykp.bookstore.domain.Book;
-import pl.jojczykp.bookstore.repository.BookRepository;
+import pl.jojczykp.bookstore.repository.BooksRepository;
 import pl.jojczykp.bookstore.utils.BooksCommandFactory;
 import pl.jojczykp.bookstore.utils.PagerLimiter;
 
@@ -26,7 +26,7 @@ public class BooksControllerRead {
 
 	@Autowired private BooksCommandFactory booksCommandFactory;
 	@Autowired private PagerLimiter pagerLimiter;
-	@Autowired private BookRepository bookRepository;
+	@Autowired private BooksRepository booksRepository;
 	@Autowired private BookAssembler bookAssembler;
 
 	@ModelAttribute(BOOKS_COMMAND)
@@ -38,7 +38,7 @@ public class BooksControllerRead {
 	public ModelAndView read(
 			@ModelAttribute(BOOKS_COMMAND) BooksCommand booksCommand)
 	{
-		PagerCommand limitedPager = pagerLimiter.createLimited(booksCommand.getPager(), bookRepository.totalCount());
+		PagerCommand limitedPager = pagerLimiter.createLimited(booksCommand.getPager(), booksRepository.totalCount());
 		booksCommand.setPager(limitedPager);
 
 		List<Book> books = read(booksCommand.getPager());
@@ -52,7 +52,7 @@ public class BooksControllerRead {
 		int pageNumber = pager.getPageNumber();
 		int offset = (pageNumber - 1) * pageSize;
 
-		return bookRepository.read(
+		return booksRepository.read(
 					offset,
 					pageSize,
 					pager.getSorter().getColumn(),

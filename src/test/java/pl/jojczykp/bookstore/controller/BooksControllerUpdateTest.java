@@ -22,7 +22,7 @@ import pl.jojczykp.bookstore.assembler.BookAssembler;
 import pl.jojczykp.bookstore.command.BookCommand;
 import pl.jojczykp.bookstore.command.BooksCommand;
 import pl.jojczykp.bookstore.domain.Book;
-import pl.jojczykp.bookstore.repository.BookRepository;
+import pl.jojczykp.bookstore.repository.BooksRepository;
 import pl.jojczykp.bookstore.validators.BooksUpdateValidator;
 
 import static org.hamcrest.Matchers.is;
@@ -57,7 +57,7 @@ public class BooksControllerUpdateTest {
 	private ResultActions mvcMockPerformResult;
 	@Autowired private BooksUpdateValidator booksUpdateValidator;
 	@Autowired private BookAssembler bookAssembler;
-	@Autowired private BookRepository bookRepository;
+	@Autowired private BooksRepository booksRepository;
 	@Autowired private WebApplicationContext wac;
 
 	@Captor private ArgumentCaptor<BooksCommand> booksCommandCaptor;
@@ -73,7 +73,7 @@ public class BooksControllerUpdateTest {
 		MockitoAnnotations.initMocks(this);
 		reset(booksUpdateValidator);
 		reset(bookAssembler);
-		reset(bookRepository);
+		reset(booksRepository);
 		given(bookAssembler.toDomain(any(BookCommand.class))).willReturn(book);
 	}
 
@@ -120,7 +120,7 @@ public class BooksControllerUpdateTest {
 	}
 
 	private void givenObjectConcurrentlyUpdated() {
-		doThrow(staleObjectStateException).when(bookRepository).update(any(Book.class));
+		doThrow(staleObjectStateException).when(booksRepository).update(any(Book.class));
 	}
 
 	private void givenNegativeValidation() {
@@ -161,13 +161,13 @@ public class BooksControllerUpdateTest {
 	}
 
 	private void thenExpectUpdateInvokedOnRepository() {
-		verify(bookRepository).update(updatedBookCaptor.capture());
+		verify(booksRepository).update(updatedBookCaptor.capture());
 		assertThat(updatedBookCaptor.getValue(), is(sameInstance(book)));
-		verifyNoMoreInteractions(bookRepository);
+		verifyNoMoreInteractions(booksRepository);
 	}
 
 	private void thenExpectUpdateNotInvokedOnRepository() {
-		verifyZeroInteractions(bookRepository);
+		verifyZeroInteractions(booksRepository);
 	}
 
 	private void thenExpectHttpRedirectWith(BooksCommand command) throws Exception {
