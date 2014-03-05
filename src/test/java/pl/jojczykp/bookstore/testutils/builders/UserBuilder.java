@@ -1,6 +1,6 @@
 package pl.jojczykp.bookstore.testutils.builders;
 
-import pl.jojczykp.bookstore.domain.Permission;
+import pl.jojczykp.bookstore.domain.Authority;
 import pl.jojczykp.bookstore.domain.User;
 
 import java.util.Set;
@@ -14,7 +14,7 @@ public class UserBuilder {
 	private boolean notLocked;
 	private boolean credentialsNotExpired;
 	private boolean enabled;
-	private Set<Permission> permissions;
+	private Set<Authority> authorities;
 
 	public static UserBuilder aUser() {
 		return new UserBuilder();
@@ -55,8 +55,8 @@ public class UserBuilder {
 		return this;
 	}
 
-	public UserBuilder withPermissions(Set<Permission> permissions) {
-		this.permissions = permissions;
+	public UserBuilder withAuthorities(Set<Authority> authorities) {
+		this.authorities = authorities;
 		return this;
 	}
 
@@ -69,7 +69,7 @@ public class UserBuilder {
 		user.setNotLocked(notLocked);
 		user.setCredentialsNotExpired(credentialsNotExpired);
 		user.setEnabled(enabled);
-		user.setPermissions(permissions);
+		user.setAuthorities(authorities);
 
 		return user;
 	}

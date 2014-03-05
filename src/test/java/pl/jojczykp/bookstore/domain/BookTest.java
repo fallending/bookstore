@@ -14,7 +14,7 @@ public class BookTest {
 	private static final String TITLE = "some title";
 
 	@Test
-	public void shouldHaveNoParameterConstructorForHibernate() {
+	public void shouldHaveDefaultConstructorForHibernate() {
 		Book testee = new Book();
 
 		assertThat(testee.getId(), is(0));

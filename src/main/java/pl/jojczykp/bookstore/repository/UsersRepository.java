@@ -23,11 +23,10 @@ public class UsersRepository {
 		return (User) getCurrentSession().get(User.class, id);
 	}
 
-	public User findByNameAndPassword(String name, String password) {
+	public User findByName(String name) {
 		return (User) getCurrentSession()
 				.createCriteria(User.class)
 				.add(eq("name", name))
-				.add(eq("password", password))
 				.uniqueResult();
 	}
 

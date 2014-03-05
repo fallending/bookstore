@@ -1,5 +1,6 @@
 package pl.jojczykp.bookstore.repository;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,17 +8,14 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+import pl.jojczykp.bookstore.domain.Authority;
 import pl.jojczykp.bookstore.domain.User;
 
-import java.lang.reflect.Field;
-
-import static java.util.EnumSet.of;
+import static java.util.Collections.singleton;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static pl.jojczykp.bookstore.domain.Permission.READ;
-import static pl.jojczykp.bookstore.domain.Permission.WRITE;
+import static org.hamcrest.Matchers.samePropertyValuesAs;
 import static pl.jojczykp.bookstore.testutils.builders.UserBuilder.aUser;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -25,15 +23,18 @@ import static pl.jojczykp.bookstore.testutils.builders.UserBuilder.aUser;
 @Transactional
 public class UsersRepositoryTest {
 
+	private static final Authority AUTHORITY_1 = new Authority();
+	private static final Authority AUTHORITY_2 = new Authority();
+
 	private static final User USER_1 = aUser().withId(1)
-			.withName("user_1").withPassword("password_1")
+			.withName("name_1").withPassword("password_1")
 			.withNotExpired(true).withNotLocked(true).withCredentialsNotExpired(true).withEnabled(true)
-			.withPermissions(of(READ, WRITE)).build();
+			.withAuthorities(singleton(AUTHORITY_1)).build();
 
 	private static final User USER_2 = aUser().withId(2)
-			.withName("user_2").withPassword("password_2")
+			.withName("name_2").withPassword("password_2")
 			.withNotExpired(false).withNotLocked(false).withCredentialsNotExpired(false).withEnabled(false)
-			.withPermissions(of(READ)).build();
+			.withAuthorities(singleton(AUTHORITY_2)).build();
 
 	@Autowired private UsersRepository testee;
 
@@ -42,7 +43,7 @@ public class UsersRepositoryTest {
 	public void shouldCreateUser() {
 		int id = testee.create(USER_2);
 
-		assertEqualFields(testee.get(id), USER_2);
+		assertThat(testee.get(id), samePropertyValuesAs(USER_2));
 	}
 
 	@Test
@@ -52,7 +53,7 @@ public class UsersRepositoryTest {
 
 		User foundUser = testee.get(USER_2.getId());
 
-		assertEqualFields(foundUser, USER_2);
+		assertThat(foundUser, samePropertyValuesAs(USER_2));
 	}
 
 	@Test
@@ -60,9 +61,9 @@ public class UsersRepositoryTest {
 	public void shouldFindUser() {
 		givenRepositoryWith(USER_1, USER_2);
 
-		User foundUser = testee.findByNameAndPassword(USER_1.getName(), USER_1.getPassword());
+		User foundUser = testee.findByName(USER_1.getName());
 
-		assertEqualFields(foundUser, USER_1);
+		assertThat(foundUser, samePropertyValuesAs(USER_1));
 	}
 
 	@Test
@@ -70,38 +71,25 @@ public class UsersRepositoryTest {
 	public void shouldNotFindUserWithNotExistingName() {
 		givenRepositoryWith(USER_1, USER_2);
 
-		User foundUser = testee.findByNameAndPassword("not" + USER_1.getName(), USER_1.getPassword());
+		User foundUser = testee.findByName("not" + USER_1.getName());
 
 		assertThat(foundUser, is(nullValue()));
 	}
 
+	@Ignore("TODO: fix integration testing")
 	@Test
 	@Rollback(true)
-	public void shouldNotFindUserWithWrongPassword() {
+	public void shouldReadUserAuthorities() {
 		givenRepositoryWith(USER_1, USER_2);
 
-		User foundUser = testee.findByNameAndPassword(USER_2.getName(), "wrong" + USER_2.getPassword());
+		User foundUser = testee.findByName(USER_2.getName());
 
-		assertThat(foundUser, is(nullValue()));
+		assertThat(foundUser, samePropertyValuesAs(USER_1));
 	}
 
 	private void givenRepositoryWith(User... users) {
 		for (User user: users) {
 			testee.create(user);
-		}
-	}
-
-	private void assertEqualFields(User foundUser, User givenUser) {
-		for (Field field: User.class.getFields()) {
-			assertFieldValuesAreEqual(field, foundUser, givenUser);
-		}
-	}
-
-	private void assertFieldValuesAreEqual(Field field, User foundUser, User givenUser) {
-		try {
-			assertThat(field.get(foundUser), is(equalTo(field.get(givenUser))));
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
 		}
 	}
 

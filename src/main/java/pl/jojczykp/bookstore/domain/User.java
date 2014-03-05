@@ -2,18 +2,17 @@ package pl.jojczykp.bookstore.domain;
 
 
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.Set;
 
-import static javax.persistence.EnumType.STRING;
+import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.EAGER;
 
 @Entity
@@ -43,11 +42,11 @@ public class User {
 	@Column(name = "ENABLED", nullable = false)
 	private boolean enabled;
 
-	@ElementCollection(fetch = EAGER)
-	@JoinTable(name = "PERMISSIONS", joinColumns = @JoinColumn(name = "USER_ID"))
-	@Column(name = "PERMISSION")
-	@Enumerated(STRING)
-	private Set<Permission> permissions;
+	@ManyToMany(fetch = EAGER, cascade = ALL)
+	@JoinTable(name = "USERS_AUTHORITIES",
+			joinColumns = @JoinColumn(name = "USER_ID"),
+			inverseJoinColumns = @JoinColumn(name = "AUTHORITY_ID"))
+	private Set<Authority> authorities;
 
 	public User() {
 		this.id = 0;
@@ -57,7 +56,7 @@ public class User {
 		this.notLocked = false;
 		this.credentialsNotExpired = false;
 		this.enabled = false;
-		this.permissions = EnumSet.noneOf(Permission.class);
+		this.authorities = new HashSet<>();
 	}
 
 	public int getId() {
@@ -116,12 +115,12 @@ public class User {
 		this.enabled = enabled;
 	}
 
-	public Set<Permission> getPermissions() {
-		return permissions;
+	public Set<Authority> getAuthorities() {
+		return authorities;
 	}
 
-	public void setPermissions(Set<Permission> permissions) {
-		this.permissions = permissions;
+	public void setAuthorities(Set<Authority> authorities) {
+		this.authorities = authorities;
 	}
 
 	@Override
@@ -148,7 +147,7 @@ public class User {
 				+ "', notLocked='" + notLocked
 				+ "', credentialsNotExpired='" + credentialsNotExpired
 				+ "', enabled='" + enabled + "'"
-				+ ", permissions=" + permissions + "}";
+				+ ", authorities=" + authorities + "}";
 	}
 
 }
