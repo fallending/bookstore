@@ -11,17 +11,9 @@ import static org.hibernate.criterion.Restrictions.eq;
 
 @Repository
 @Transactional
-public class UsersRepository {
+public class SecurityRepository {
 
 	@Autowired private SessionFactory sessionFactory;
-
-	public int create(User user) {
-		return (int) getCurrentSession().save(user);
-	}
-
-	public User get(int id) {
-		return (User) getCurrentSession().get(User.class, id);
-	}
 
 	public User findByName(String name) {
 		return (User) getCurrentSession()

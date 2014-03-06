@@ -16,6 +16,7 @@ import static com.google.common.primitives.Ints.checkedCast;
 import static java.util.Collections.emptyList;
 import static org.hibernate.criterion.Projections.rowCount;
 import static pl.jojczykp.bookstore.utils.PageSorter.orderBy;
+import static pl.jojczykp.bookstore.utils.SuppressUnchecked.suppressUnchecked;
 
 @Repository
 @Transactional
@@ -25,10 +26,6 @@ public class BooksRepository {
 
 	public int create(Book book) {
 		return (int) getCurrentSession().save(book);
-	}
-
-	public Book get(int id) {
-		return (Book) getCurrentSession().get(Book.class, id);
 	}
 
 	public List<Book> read(int offset, int size, PageSorterColumn sortColumn, PageSorterDirection sortDirection) {
@@ -49,14 +46,8 @@ public class BooksRepository {
 		return suppressUnchecked(criteria.list());
 	}
 
-	@SuppressWarnings("unchecked")
-	private <T> List<T> suppressUnchecked(List list) {
-		return (List<T>) list;
-	}
-
 	public void update(Book template) {
-		Book book = (Book) getCurrentSession().merge(template);
-		getCurrentSession().update(book);
+		getCurrentSession().merge(template);
 	}
 
 	public void delete(int id) {
