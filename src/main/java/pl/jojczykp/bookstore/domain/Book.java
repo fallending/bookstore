@@ -24,21 +24,9 @@ public class Book {
 	private String title;
 
 	public Book() {
-		this(0, 0, "");
-	}
-
-	public Book(String title) {
-		this(0, 0, title);
-	}
-
-	public Book(int id) {
-		this(id, 0, "");
-	}
-
-	public Book(int id, int version, String title) {
-		this.id = id;
-		this.version = version;
-		this.title = title;
+		this.id = 0;
+		this.version = 0;
+		this.title = "";
 	}
 
 	public int getId() {
@@ -67,8 +55,13 @@ public class Book {
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+		if (this == o) {
+			return true;
+		}
+
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
 
 		Book book = (Book) o;
 

@@ -41,12 +41,17 @@ public class Authority {
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+		if (this == o) {
+			return true;
+		}
 
-		Authority book = (Authority) o;
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
 
-		return (id == book.id);
+		Authority authority = (Authority) o;
+
+		return (id == authority.id);
 	}
 
 	@Override

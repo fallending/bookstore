@@ -67,7 +67,7 @@ public class SecurityRepositoryTest {
 	}
 
 	private void givenRepositoryWith(User... users) {
-		testRepository.givenRepositoryWith(users);
+		testRepository.givenRepositoryWith((Object[]) users);
 	}
 
 }

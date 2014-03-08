@@ -10,6 +10,7 @@ import java.util.List;
 import static java.util.Arrays.asList;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
+import static pl.jojczykp.bookstore.testutils.builders.BookBuilder.aBook;
 
 public class BookAssemblerTest {
 
@@ -42,8 +43,8 @@ public class BookAssemblerTest {
 
 	private List<Book> aDomainObjectsList() {
 		return asList(
-				new Book(ID1, VERSION1, TITLE1),
-				new Book(ID2, VERSION2, TITLE2));
+				aBook(ID1, VERSION1, TITLE1),
+				aBook(ID2, VERSION2, TITLE2));
 	}
 
 	@Test

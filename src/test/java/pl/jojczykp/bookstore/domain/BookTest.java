@@ -6,6 +6,7 @@ import org.junit.Test;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static pl.jojczykp.bookstore.testutils.builders.BookBuilder.aBook;
 
 public class BookTest {
 
@@ -20,31 +21,6 @@ public class BookTest {
 		assertThat(testee.getId(), is(0));
 		assertThat(testee.getVersion(), is(0));
 		assertThat(testee.getTitle(), is(""));
-	}
-
-	@Test
-	public void shouldHaveOnlyIdConstructor() {
-		Book testee = new Book(ID);
-
-		assertThat(testee.getId(), is(ID));
-		assertThat(testee.getTitle(), is(""));
-	}
-
-	@Test
-	public void shouldHaveNoIdConstructor() {
-		Book testee = new Book(TITLE);
-
-		assertThat(testee.getId(), is(0));
-		assertThat(testee.getTitle(), is(TITLE));
-	}
-
-	@Test
-	public void shouldCreateBookWithParamsPassedToConstructor() {
-		Book testee = new Book(ID, VERSION, TITLE);
-
-		assertThat(testee.getId(), is(ID));
-		assertThat(testee.getVersion(), is(VERSION));
-		assertThat(testee.getTitle(), is(TITLE));
 	}
 
 	@Test
@@ -83,7 +59,7 @@ public class BookTest {
 
 	@Test
 	public void shouldHaveToStringWithDetailsForDiagnostic() {
-		Book testee = new Book(ID, VERSION, TITLE);
+		Book testee = aBook(ID, VERSION, TITLE);
 
 		String toStringResult = testee.toString();
 

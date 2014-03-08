@@ -19,7 +19,8 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static pl.jojczykp.bookstore.testutils.matchers.SameNoIdPropertyValuesAs.sameNoIdPropertyValuesAs;
+import static org.hamcrest.Matchers.samePropertyValuesAs;
+import static pl.jojczykp.bookstore.testutils.builders.BookBuilder.aBook;
 import static pl.jojczykp.bookstore.testutils.repository.TestRepository.ID_TO_GENERATE;
 import static pl.jojczykp.bookstore.utils.PageSorterColumn.BOOK_TITLE;
 import static pl.jojczykp.bookstore.utils.PageSorterDirection.ASC;
@@ -37,12 +38,12 @@ public class BooksRepositoryTest {
 	private static final PageSorterColumn SAMPLE_SORT_COLUMN = BOOK_TITLE;
 	private static final PageSorterDirection SAMPLE_DIRECTION = ASC;
 
-	private Book bookA = new Book(ID_TO_GENERATE, 1, "Book Title A");
-	private Book bookB = new Book(ID_TO_GENERATE, 2, "Book Title B");
-	private Book bookC = new Book(ID_TO_GENERATE, 1, "Book Title C");
-	private Book bookD = new Book(ID_TO_GENERATE, 2, "Book Title D");
-	private Book bookE = new Book(ID_TO_GENERATE, 1, "Book Title E");
-	private Book bookLowCaseC = new Book(ID_TO_GENERATE, 2, "Book Title c");
+	private Book bookA = aBook(ID_TO_GENERATE, 1, "Book Title A");
+	private Book bookB = aBook(ID_TO_GENERATE, 2, "Book Title B");
+	private Book bookC = aBook(ID_TO_GENERATE, 1, "Book Title C");
+	private Book bookD = aBook(ID_TO_GENERATE, 2, "Book Title D");
+	private Book bookE = aBook(ID_TO_GENERATE, 1, "Book Title E");
+	private Book bookLowCaseC = aBook(ID_TO_GENERATE, 2, "Book Title c");
 
 	@Autowired private TestRepository testRepository;
 	@Autowired private BooksRepository testee;
@@ -171,10 +172,10 @@ public class BooksRepositoryTest {
 
 	@Test
 	public void shouldUpdateBook() {
-		Book oldBook = new Book(ID_TO_GENERATE, OLD_VERSION, OLD_TITLE);
+		Book oldBook = aBook(ID_TO_GENERATE, OLD_VERSION, OLD_TITLE);
 		givenRepositoryWith(oldBook);
-		Book updatingBook = new Book(oldBook.getId(), OLD_VERSION, NEW_TITLE);
-		Book updatedBook = new Book(oldBook.getId(), OLD_VERSION + 1, NEW_TITLE);
+		Book updatingBook = aBook(oldBook.getId(), OLD_VERSION, NEW_TITLE);
+		Book updatedBook = aBook(oldBook.getId(), OLD_VERSION + 1, NEW_TITLE);
 
 		testee.update(updatingBook);
 
@@ -183,9 +184,9 @@ public class BooksRepositoryTest {
 
 	@Test(expected = StaleObjectStateException.class)
 	public void shouldFailUpdatingBookWhenModifiedByOtherSession() {
-		Book oldBook = new Book(ID_TO_GENERATE, OLD_VERSION, OLD_TITLE);
+		Book oldBook = aBook(ID_TO_GENERATE, OLD_VERSION, OLD_TITLE);
 		givenRepositoryWith(oldBook);
-		Book updatingBook = new Book(oldBook.getId(), OLD_VERSION - 1, NEW_TITLE);
+		Book updatingBook = aBook(oldBook.getId(), OLD_VERSION - 1, NEW_TITLE);
 
 		testee.update(updatingBook);
 	}
@@ -214,7 +215,7 @@ public class BooksRepositoryTest {
 	}
 
 	private void givenRepositoryWith(Book... books) {
-		testRepository.givenRepositoryWith(books);
+		testRepository.givenRepositoryWith((Object[]) books);
 	}
 
 	private void assertThatRepositoryContainsOnly(Book... books) {
@@ -226,7 +227,7 @@ public class BooksRepositoryTest {
 		for (int i = 0; i < given.size(); i++) {
 			Book givenBook = given.get(i);
 			Book expectedBook = books[i];
-			assertThat(givenBook, sameNoIdPropertyValuesAs(expectedBook));
+			assertThat(givenBook, samePropertyValuesAs(expectedBook));
 		}
 	}
 
