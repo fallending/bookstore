@@ -9,7 +9,7 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static pl.jojczykp.bookstore.testutils.matchers.HasBeanProperty.hasBeanProperty;
 
-public class HasBeanPropertyTest {
+public class HasBeanPropertyUnitTest {
 
 	private class Bean {
 

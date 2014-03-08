@@ -9,7 +9,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static pl.jojczykp.bookstore.testutils.builders.BookBuilder.aBook;
 
-public class BookTest {
+public class BookUnitTest {
 
 	private static final int ID = 8;
 	private static final int VERSION = 76;

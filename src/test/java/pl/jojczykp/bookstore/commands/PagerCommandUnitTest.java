@@ -9,7 +9,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertThat;
 
-public class PagerCommandTest {
+public class PagerCommandUnitTest {
 
 	private PagerCommand testee;
 

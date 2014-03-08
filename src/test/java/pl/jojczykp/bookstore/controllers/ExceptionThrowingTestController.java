@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-public class ExceptionThrowingController {
+public class ExceptionThrowingTestController {
 
 	@RequestMapping(value = "/throw/some_exception")
 	public ModelAndView throwException() {

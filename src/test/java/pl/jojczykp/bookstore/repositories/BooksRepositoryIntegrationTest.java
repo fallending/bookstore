@@ -29,7 +29,7 @@ import static pl.jojczykp.bookstore.utils.PageSorterDirection.DESC;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:spring/repositories-test-context.xml")
 @Transactional
-public class BooksRepositoryTest {
+public class BooksRepositoryIntegrationTest {
 
 	private static final int OLD_VERSION = 3;
 	private static final String OLD_TITLE = "Old Title";

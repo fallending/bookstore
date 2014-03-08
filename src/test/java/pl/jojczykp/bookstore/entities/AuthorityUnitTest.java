@@ -9,7 +9,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class AuthorityTest {
+public class AuthorityUnitTest {
 
 	private static final int ID = 7;
 	private static final String ROLE = "some_role";

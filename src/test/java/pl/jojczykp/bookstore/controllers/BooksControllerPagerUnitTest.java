@@ -46,7 +46,7 @@ import static pl.jojczykp.bookstore.utils.PageSorterDirection.DESC;
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration("classpath:spring/controllers-test-context.xml")
-public class BooksControllerPagerTest {
+public class BooksControllerPagerUnitTest {
 
 	private static final String BOOKS_COMMAND = "booksCommand";
 

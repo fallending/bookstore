@@ -29,7 +29,7 @@ import static pl.jojczykp.bookstore.testutils.builders.AuthorityBuilder.anAuthor
 import static pl.jojczykp.bookstore.testutils.builders.UserBuilder.anUser;
 
 @RunWith(MockitoJUnitRunner.class)
-public class UserAuthenticationProviderTest {
+public class UserAuthenticationProviderUnitTest {
 
 	private static final User USER = anUser().withId(1)
 			.withName("a_user_name").withPassword("password_1")

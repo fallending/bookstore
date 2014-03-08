@@ -22,7 +22,7 @@ import static pl.jojczykp.bookstore.testutils.matchers.HasBeanProperty.hasBeanPr
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration("classpath:spring/controllers-test-context.xml")
-public class ControllerExceptionHandlerTest {
+public class ControllerExceptionHandlerUnitTest {
 
 	private MockMvc mockMvc;
 	@Autowired private WebApplicationContext wac;

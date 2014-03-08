@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration("classpath:spring/controllers-test-context.xml")
-public class WelcomeControllerTest {
+public class WelcomeControllerUnitTest {
 
 	private MockMvc mockMvc;
 	@Autowired private WebApplicationContext wac;

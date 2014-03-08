@@ -12,7 +12,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 import static pl.jojczykp.bookstore.testutils.builders.BookBuilder.aBook;
 
-public class BookAssemblerTest {
+public class BookAssemblerUnitTest {
 
 	private static final int ID1 = 34;
 	private static final int VERSION1 = 45;

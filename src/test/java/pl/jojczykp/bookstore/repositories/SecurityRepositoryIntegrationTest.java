@@ -20,7 +20,7 @@ import static pl.jojczykp.bookstore.testutils.repositories.TestRepository.ID_TO_
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:spring/repositories-test-context.xml")
 @Transactional
-public class SecurityRepositoryTest {
+public class SecurityRepositoryIntegrationTest {
 
 	private User userA = anUser()
 			.withId(ID_TO_GENERATE)

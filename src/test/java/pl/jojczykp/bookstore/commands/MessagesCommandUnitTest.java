@@ -15,7 +15,7 @@ import static org.hamcrest.Matchers.sameInstance;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class MessagesCommandTest {
+public class MessagesCommandUnitTest {
 
 	private static final String MESSAGE_1 = "sample message 1";
 	private static final String MESSAGE_2 = "sample message 2";

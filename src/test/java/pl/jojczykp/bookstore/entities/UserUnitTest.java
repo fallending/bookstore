@@ -14,7 +14,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class UserTest {
+public class UserUnitTest {
 
 	private static final int ID = 3;
 	private static final String NAME = "some_name";

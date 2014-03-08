@@ -37,7 +37,7 @@ import static pl.jojczykp.bookstore.testutils.controllers.MessagesControllerTest
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration("classpath:spring/controllers-test-context.xml")
-public class BooksControllerDeleteTest {
+public class BooksControllerDeleteUnitTest {
 
 	private static final int EXISTING_ID_1 = 3;
 	private static final int EXISTING_ID_2 = 7;

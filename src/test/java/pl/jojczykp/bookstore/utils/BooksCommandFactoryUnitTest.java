@@ -15,7 +15,7 @@ import static org.junit.Assert.assertThat;
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration("classpath:spring/books-command-factory-test-context.xml")
-public class BooksCommandFactoryTest {
+public class BooksCommandFactoryUnitTest {
 
 	@Value("${view.books.defaultPageNumber}") private int defaultPageNumber;
 	@Value("${view.books.defaultPageSize}") private int defaultPageSize;

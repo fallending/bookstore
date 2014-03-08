@@ -11,7 +11,7 @@ import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.Matchers.empty;
 import static org.junit.Assert.assertThat;
 
-public class BooksCommandTest {
+public class BooksCommandUnitTest {
 
 	private BooksCommand testee;
 

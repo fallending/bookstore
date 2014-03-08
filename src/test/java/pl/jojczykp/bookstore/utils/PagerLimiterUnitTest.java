@@ -10,7 +10,7 @@ import static org.junit.Assert.assertThat;
 import static pl.jojczykp.bookstore.utils.PageSorterColumn.BOOK_TITLE;
 import static pl.jojczykp.bookstore.utils.PageSorterDirection.DESC;
 
-public class PagerLimiterTest {
+public class PagerLimiterUnitTest {
 
 	private static final int PAGE_NUMBER = 5;
 	private static final int PAGE_SIZE = 12;

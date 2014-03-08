@@ -7,7 +7,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
-public class BookCommandTest {
+public class BookCommandUnitTest {
 
 	private BookCommand testee;
 
