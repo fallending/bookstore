@@ -6,64 +6,64 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
-import pl.jojczykp.bookstore.domain.Authority;
 import pl.jojczykp.bookstore.domain.User;
 import pl.jojczykp.bookstore.testutils.repository.TestRepository;
 
-import static java.util.Collections.singleton;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.samePropertyValuesAs;
-import static pl.jojczykp.bookstore.testutils.builders.UserBuilder.aUser;
-import static pl.jojczykp.bookstore.testutils.repository.TestRepository.ID_TO_BE_GENERATED;
+import static pl.jojczykp.bookstore.testutils.builders.AuthorityBuilder.anAuthority;
+import static pl.jojczykp.bookstore.testutils.builders.UserBuilder.anUser;
+import static pl.jojczykp.bookstore.testutils.repository.TestRepository.ID_TO_GENERATE;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:spring/repositories-test-context.xml")
 @Transactional
 public class SecurityRepositoryTest {
 
-	private static final Authority AUTHORITY_1 = new Authority();
-	private static final Authority AUTHORITY_2 = new Authority();
-
-	private static final User USER_1 = aUser().withId(ID_TO_BE_GENERATED)
-			.withName("name_1").withPassword("password_1")
+	private User userA = anUser()
+			.withId(ID_TO_GENERATE)
+			.withName("nameA").withPassword("passwordA")
 			.withNotExpired(true).withNotLocked(true).withCredentialsNotExpired(true).withEnabled(true)
-			.withAuthorities(singleton(AUTHORITY_1)).build();
+			.withAuthorities(anAuthority(ID_TO_GENERATE, "ROLE_1"))
+			.build();
 
-	private static final User USER_2 = aUser().withId(ID_TO_BE_GENERATED)
-			.withName("name_2").withPassword("password_2")
+	private User userB = anUser()
+			.withId(ID_TO_GENERATE)
+			.withName("nameB").withPassword("passwordB")
 			.withNotExpired(false).withNotLocked(false).withCredentialsNotExpired(false).withEnabled(false)
-			.withAuthorities(singleton(AUTHORITY_2)).build();
+			.withAuthorities(anAuthority(ID_TO_GENERATE, "ROLE_2"))
+			.build();
 
 	@Autowired private TestRepository testRepository;
 	@Autowired private SecurityRepository testee;
 
 	@Test
 	public void shouldFindUser() {
-		givenRepositoryWith(USER_1, USER_2);
+		givenRepositoryWith(userA, userB);
 
-		User foundUser = testee.findByName(USER_1.getName());
+		User foundUser = testee.findByName(userB.getName());
 
-		assertThat(foundUser, samePropertyValuesAs(USER_1));
+		assertThat(foundUser, samePropertyValuesAs(userB));
 	}
 
 	@Test
 	public void shouldNotFindUserWithNotExistingName() {
-		givenRepositoryWith(USER_1, USER_2);
+		givenRepositoryWith(userA, userB);
 
-		User foundUser = testee.findByName("not" + USER_1.getName());
+		User foundUser = testee.findByName("not" + userA.getName());
 
 		assertThat(foundUser, is(nullValue()));
 	}
 
 	@Test
 	public void shouldReadUserAuthorities() {
-		givenRepositoryWith(USER_1, USER_2);
+		givenRepositoryWith(userA, userB);
 
-		User foundUser = testee.findByName(USER_2.getName());
+		User foundUser = testee.findByName(userB.getName());
 
-		assertThat(foundUser, samePropertyValuesAs(USER_2));
+		assertThat(foundUser, samePropertyValuesAs(userB));
 	}
 
 	private void givenRepositoryWith(User... users) {

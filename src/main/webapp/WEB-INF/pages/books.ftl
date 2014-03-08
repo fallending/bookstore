@@ -23,6 +23,7 @@
 	</head>
 	<body>
 		<div class="all">
+			<@sectionUserStatus/>
 			<@sectionTitle/>
 			<div class="sectionMain">
 				<@sectionMessages/>
@@ -37,6 +38,10 @@
 		</div>
 	</body>
 </html>
+
+<#macro sectionUserStatus>
+	<a href="/j_spring_security_logout" >Logout</a>
+</#macro>
 
 <#macro sectionTitle>
 	<h1 class="sectionTitle">

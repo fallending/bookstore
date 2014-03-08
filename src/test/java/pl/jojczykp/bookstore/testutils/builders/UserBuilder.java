@@ -3,7 +3,10 @@ package pl.jojczykp.bookstore.testutils.builders;
 import pl.jojczykp.bookstore.domain.Authority;
 import pl.jojczykp.bookstore.domain.User;
 
+import java.util.HashSet;
 import java.util.Set;
+
+import static java.util.Arrays.asList;
 
 public class UserBuilder {
 
@@ -14,9 +17,9 @@ public class UserBuilder {
 	private boolean notLocked;
 	private boolean credentialsNotExpired;
 	private boolean enabled;
-	private Set<Authority> authorities;
+	private Set<Authority> authorities = new HashSet<>();
 
-	public static UserBuilder aUser() {
+	public static UserBuilder anUser() {
 		return new UserBuilder();
 	}
 
@@ -55,8 +58,8 @@ public class UserBuilder {
 		return this;
 	}
 
-	public UserBuilder withAuthorities(Set<Authority> authorities) {
-		this.authorities = authorities;
+	public UserBuilder withAuthorities(Authority... authorities) {
+		this.authorities.addAll(asList(authorities));
 		return this;
 	}
 

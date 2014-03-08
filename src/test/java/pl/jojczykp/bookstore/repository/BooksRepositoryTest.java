@@ -19,8 +19,8 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.samePropertyValuesAs;
-import static pl.jojczykp.bookstore.testutils.repository.TestRepository.ID_TO_BE_GENERATED;
+import static pl.jojczykp.bookstore.testutils.matchers.SameNoIdPropertyValuesAs.sameNoIdPropertyValuesAs;
+import static pl.jojczykp.bookstore.testutils.repository.TestRepository.ID_TO_GENERATE;
 import static pl.jojczykp.bookstore.utils.PageSorterColumn.BOOK_TITLE;
 import static pl.jojczykp.bookstore.utils.PageSorterDirection.ASC;
 import static pl.jojczykp.bookstore.utils.PageSorterDirection.DESC;
@@ -37,19 +37,19 @@ public class BooksRepositoryTest {
 	private static final PageSorterColumn SAMPLE_SORT_COLUMN = BOOK_TITLE;
 	private static final PageSorterDirection SAMPLE_DIRECTION = ASC;
 
-	private static final Book BOOK_A = new Book(0, 1, "Book Title A");
-	private static final Book BOOK_B = new Book(0, 7, "Book Title B");
-	private static final Book BOOK_C = new Book(0, 3, "Book Title C");
-	private static final Book BOOK_D = new Book(0, 4, "Book Title D");
-	private static final Book BOOK_E = new Book(0, 5, "Book Title E");
-	private static final Book BOOK_C_LOW_CASE = new Book(0, 2, "Book Title c");
+	private Book bookA = new Book(ID_TO_GENERATE, 1, "Book Title A");
+	private Book bookB = new Book(ID_TO_GENERATE, 2, "Book Title B");
+	private Book bookC = new Book(ID_TO_GENERATE, 1, "Book Title C");
+	private Book bookD = new Book(ID_TO_GENERATE, 2, "Book Title D");
+	private Book bookE = new Book(ID_TO_GENERATE, 1, "Book Title E");
+	private Book bookLowCaseC = new Book(ID_TO_GENERATE, 2, "Book Title c");
 
 	@Autowired private TestRepository testRepository;
 	@Autowired private BooksRepository testee;
 
 	@Test
 	public void shouldComputeTotalCountOfBooks() {
-		final Book[] givenBooks = {BOOK_A, BOOK_B, BOOK_C, BOOK_D, BOOK_E};
+		final Book[] givenBooks = {bookA, bookB, bookC, bookD, bookE};
 		givenRepositoryWith(givenBooks);
 
 		assertThat(testee.totalCount(), is(givenBooks.length));
@@ -59,37 +59,37 @@ public class BooksRepositoryTest {
 	public void shouldFindBooksByOffsetAndSize() {
 		final int offset = 1;
 		final int size = 3;
-		givenRepositoryWith(BOOK_A, BOOK_B, BOOK_C, BOOK_D, BOOK_E);
+		givenRepositoryWith(bookA, bookB, bookC, bookD, bookE);
 
 		List<Book> foundBooks = testee.read(offset, size, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
 
-		assertThatCollectionContainsOnly(foundBooks, BOOK_B, BOOK_C, BOOK_D);
+		assertThatCollectionContainsOnly(foundBooks, bookB, bookC, bookD);
 	}
 
 	@Test
 	public void shouldFindBooksWhenOffsetInRangeAndSizeOutOfRange() {
-		final Book[] givenBooks = {BOOK_A, BOOK_B, BOOK_C, BOOK_D, BOOK_E};
+		final Book[] givenBooks = {bookA, bookB, bookC, bookD, bookE};
 		givenRepositoryWith(givenBooks);
 
 		List<Book> foundBooks = testee.read(2, givenBooks.length + 1, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
 
-		assertThatCollectionContainsOnly(foundBooks, BOOK_C, BOOK_D, BOOK_E);
+		assertThatCollectionContainsOnly(foundBooks, bookC, bookD, bookE);
 	}
 
 	@Test
 	public void shouldFindBooksFromOffsetZeroWhenGivenNegativeOffset() {
 		final int negativeOffset = -2;
-		final Book[] givenBooks = {BOOK_A, BOOK_B, BOOK_C};
+		final Book[] givenBooks = {bookA, bookB, bookC};
 		givenRepositoryWith(givenBooks);
 
 		List<Book> foundBooks = testee.read(negativeOffset, 2, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
 
-		assertThatCollectionContainsOnly(foundBooks, BOOK_A, BOOK_B);
+		assertThatCollectionContainsOnly(foundBooks, bookA, bookB);
 	}
 
 	@Test
 	public void shouldReadEmptyBooksListWhenGivenOutOfRangeOffset() {
-		final Book[] givenBooks = {BOOK_A, BOOK_B, BOOK_C, BOOK_D, BOOK_E};
+		final Book[] givenBooks = {bookA, bookB, bookC, bookD, bookE};
 		final int outOfRangeOffset = givenBooks.length + 2;
 		final int anySize = 8;
 		givenRepositoryWith(givenBooks);
@@ -103,7 +103,7 @@ public class BooksRepositoryTest {
 	public void shouldReadEmptyBooksListWhenGivenNegativeSize() {
 		final int anyOffset = 2;
 		final int negativeSize = -1;
-		givenRepositoryWith(BOOK_A, BOOK_B);
+		givenRepositoryWith(bookA, bookB);
 
 		List<Book> foundBooks = testee.read(anyOffset, negativeSize, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
 
@@ -113,7 +113,7 @@ public class BooksRepositoryTest {
 	@Test
 	public void shouldReadEmptyBooksListWhenGivenZeroSize() {
 		final int anyOffset = 7;
-		givenRepositoryWith(BOOK_A, BOOK_B);
+		givenRepositoryWith(bookA, bookB);
 
 		List<Book> foundBooks = testee.read(anyOffset, 0, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
 
@@ -122,56 +122,56 @@ public class BooksRepositoryTest {
 
 	@Test
 	public void shouldFindBooksOrderingAsc() throws NoSuchFieldException {
-		final Book[] givenBooks = {BOOK_B, BOOK_A, BOOK_C};
+		final Book[] givenBooks = {bookB, bookA, bookC};
 		givenRepositoryWith(givenBooks);
 		givenIgnoreCaseWhileSort(BOOK_TITLE, true);
 
 		List<Book> foundBooks = testee.read(0, givenBooks.length, SAMPLE_SORT_COLUMN, ASC);
 
-		assertThatCollectionContainsOnly(foundBooks, BOOK_A, BOOK_B, BOOK_C);
+		assertThatCollectionContainsOnly(foundBooks, bookA, bookB, bookC);
 	}
 
 	@Test
 	public void shouldFindBooksOrderingDesc() throws NoSuchFieldException {
-		final Book[] givenBooks = {BOOK_B, BOOK_A, BOOK_C};
+		final Book[] givenBooks = {bookB, bookA, bookC};
 		givenRepositoryWith(givenBooks);
 		givenIgnoreCaseWhileSort(BOOK_TITLE, true);
 
 		List<Book> foundBooks = testee.read(0, givenBooks.length, SAMPLE_SORT_COLUMN, DESC);
 
-		assertThatCollectionContainsOnly(foundBooks, BOOK_C, BOOK_B, BOOK_A);
+		assertThatCollectionContainsOnly(foundBooks, bookC, bookB, bookA);
 	}
 
 	@Test
 	public void shouldFindBooksOrderingCaseInsensitively() throws NoSuchFieldException {
 		givenIgnoreCaseWhileSort(BOOK_TITLE, true);
-		givenRepositoryWith(BOOK_C_LOW_CASE, BOOK_A);
+		givenRepositoryWith(bookLowCaseC, bookA);
 
 		List<Book> foundBooks = testee.read(0, 2, SAMPLE_SORT_COLUMN, ASC);
 
-		assertThatCollectionContainsOnly(foundBooks, BOOK_A, BOOK_C_LOW_CASE);
+		assertThatCollectionContainsOnly(foundBooks, bookA, bookLowCaseC);
 	}
 
 	@Test
 	public void shouldFindBooksOrderingCaseSensitively() throws NoSuchFieldException {
 		givenIgnoreCaseWhileSort(BOOK_TITLE, false);
-		givenRepositoryWith(BOOK_C_LOW_CASE, BOOK_D);
+		givenRepositoryWith(bookLowCaseC, bookD);
 
 		List<Book> foundBooks = testee.read(0, 2, SAMPLE_SORT_COLUMN, ASC);
 
-		assertThatCollectionContainsOnly(foundBooks, BOOK_D, BOOK_C_LOW_CASE);
+		assertThatCollectionContainsOnly(foundBooks, bookD, bookLowCaseC);
 	}
 
 	@Test
 	public void shouldCreateBook() {
-		testee.create(BOOK_C);
+		testee.create(bookC);
 
-		assertThatRepositoryContainsOnly(BOOK_C);
+		assertThatRepositoryContainsOnly(bookC);
 	}
 
 	@Test
 	public void shouldUpdateBook() {
-		Book oldBook = new Book(ID_TO_BE_GENERATED, OLD_VERSION, OLD_TITLE);
+		Book oldBook = new Book(ID_TO_GENERATE, OLD_VERSION, OLD_TITLE);
 		givenRepositoryWith(oldBook);
 		Book updatingBook = new Book(oldBook.getId(), OLD_VERSION, NEW_TITLE);
 		Book updatedBook = new Book(oldBook.getId(), OLD_VERSION + 1, NEW_TITLE);
@@ -183,7 +183,7 @@ public class BooksRepositoryTest {
 
 	@Test(expected = StaleObjectStateException.class)
 	public void shouldFailUpdatingBookWhenModifiedByOtherSession() {
-		Book oldBook = new Book(ID_TO_BE_GENERATED, OLD_VERSION, OLD_TITLE);
+		Book oldBook = new Book(ID_TO_GENERATE, OLD_VERSION, OLD_TITLE);
 		givenRepositoryWith(oldBook);
 		Book updatingBook = new Book(oldBook.getId(), OLD_VERSION - 1, NEW_TITLE);
 
@@ -192,17 +192,17 @@ public class BooksRepositoryTest {
 
 	@Test
 	public void shouldDeleteBook() {
-		givenRepositoryWith(BOOK_A, BOOK_B, BOOK_C);
+		givenRepositoryWith(bookA, bookB, bookC);
 
-		testee.delete(BOOK_B.getId());
+		testee.delete(bookB.getId());
 
-		assertThatRepositoryContainsOnly(BOOK_A, BOOK_C);
+		assertThatRepositoryContainsOnly(bookA, bookC);
 	}
 
 	@Test(expected = ObjectNotFoundException.class)
 	public void shouldFailDeletingNotExistingBook() {
-		givenRepositoryWith(BOOK_A, BOOK_B);
-		int notExistingId = BOOK_A.getId() + BOOK_B.getId();
+		givenRepositoryWith(bookA, bookB);
+		int notExistingId = bookA.getId() + bookB.getId();
 
 		testee.delete(notExistingId);
 	}
@@ -226,7 +226,7 @@ public class BooksRepositoryTest {
 		for (int i = 0; i < given.size(); i++) {
 			Book givenBook = given.get(i);
 			Book expectedBook = books[i];
-			assertThat(givenBook, samePropertyValuesAs(expectedBook));
+			assertThat(givenBook, sameNoIdPropertyValuesAs(expectedBook));
 		}
 	}
 

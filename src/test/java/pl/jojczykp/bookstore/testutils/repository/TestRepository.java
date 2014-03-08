@@ -5,7 +5,6 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import pl.jojczykp.bookstore.domain.Book;
-import pl.jojczykp.bookstore.domain.User;
 
 import java.util.List;
 
@@ -14,24 +13,24 @@ import static pl.jojczykp.bookstore.utils.SuppressUnchecked.suppressUnchecked;
 @Repository
 public class TestRepository {
 
-	public static final int ID_TO_BE_GENERATED = 0;
+	public static final int ID_TO_GENERATE = 0;
 
 	@Autowired private SessionFactory sessionFactory;
 
 	public List<Book> getAllBooks() {
-		return suppressUnchecked(getCurrentSession().createCriteria(Book.class).list());
+		return getAll(Book.class);
 	}
 
-	public void givenRepositoryWith(Book... books) {
-		for (Book book: books) {
-			getCurrentSession().save(book);
-		}
+	private List<Book> getAll(Class clazz) {
+		return suppressUnchecked(getCurrentSession().createCriteria(clazz).list());
 	}
 
-	public void givenRepositoryWith(User... users) {
-		for (User user : users) {
-			getCurrentSession().save(user);
+	public void givenRepositoryWith(Object... objects) {
+		for (Object object: objects) {
+			getCurrentSession().persist(object);
 		}
+		getCurrentSession().flush();
+		getCurrentSession().clear();
 	}
 
 	private Session getCurrentSession() {

@@ -213,9 +213,6 @@
 	<rule ref="rulesets/java/codesize.xml/ExcessiveMethodLength">
 		<priority>3</priority>
 	</rule>
-	<rule ref="rulesets/java/optimizations.xml/AvoidInstantiatingObjectsInLoops">
-		<priority>4</priority>
-	</rule>
 	<rule ref="rulesets/java/design.xml/AvoidProtectedFieldInFinalClass">
 		<priority>3</priority>
 	</rule>
