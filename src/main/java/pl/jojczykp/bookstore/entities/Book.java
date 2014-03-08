@@ -75,7 +75,7 @@ public class Book {
 
 	@Override
 	public String toString() {
-		return "Book{id=" + id + ", version=" + version + ", title='" + title + "'}";
+		return getClass().getSimpleName() + "{id=" + id + ", version=" + version + ", title='" + title + "'}";
 	}
 
 }

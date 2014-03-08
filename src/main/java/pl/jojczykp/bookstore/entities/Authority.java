@@ -61,7 +61,7 @@ public class Authority {
 
 	@Override
 	public String toString() {
-		return "Authority{id=" + id + ", role='" + role + "'}";
+		return getClass().getSimpleName() + "{id=" + id + ", role='" + role + "'}";
 	}
 
 }

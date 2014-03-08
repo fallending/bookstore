@@ -7,7 +7,8 @@ import org.junit.Test;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.hamcrest.CoreMatchers.containsString;
+import static java.lang.String.format;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.sameInstance;
@@ -109,14 +110,10 @@ public class UserTest {
 
 		String toStringResult = testee.toString();
 
-		assertThat(toStringResult, containsString("id=" + ID));
-		assertThat(toStringResult, containsString("name='" + NAME + "'"));
-		assertThat(toStringResult, containsString("password='" + PASSWORD + "'"));
-		assertThat(toStringResult, containsString("notExpired='false'"));
-		assertThat(toStringResult, containsString("notLocked='false'"));
-		assertThat(toStringResult, containsString("credentialsNotExpired='false'"));
-		assertThat(toStringResult, containsString("enabled='false'"));
-		assertThat(toStringResult, containsString("authorities=[]"));
+		assertThat(toStringResult, equalTo(
+				format("%s{id=%d, name='%s', password='%s', notExpired='false', notLocked='false', " +
+								"credentialsNotExpired='false', enabled='false', authorities=[]}",
+						testee.getClass().getSimpleName(), ID, NAME, PASSWORD)));
 	}
 
 }

@@ -3,7 +3,8 @@ package pl.jojczykp.bookstore.entities;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.containsString;
+import static java.lang.String.format;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static pl.jojczykp.bookstore.testutils.builders.BookBuilder.aBook;
@@ -63,9 +64,9 @@ public class BookTest {
 
 		String toStringResult = testee.toString();
 
-		assertThat(toStringResult, containsString("id=" + ID));
-		assertThat(toStringResult, containsString("version=" + VERSION));
-		assertThat(toStringResult, containsString("title='" + TITLE + "'"));
+		assertThat(toStringResult, equalTo(
+				format("%s{id=%d, version=%d, title='%s'}",
+						testee.getClass().getSimpleName(), ID, VERSION, TITLE)));
 	}
 
 }

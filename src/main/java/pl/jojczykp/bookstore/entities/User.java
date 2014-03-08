@@ -144,7 +144,8 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User{id=" + id
+		return getClass().getSimpleName()
+				+ "{id=" + id
 				+ ", name='" + name
 				+ "', password='" + password
 				+ "', notExpired='" + notExpired

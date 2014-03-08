@@ -4,7 +4,8 @@ import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.containsString;
+import static java.lang.String.format;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -54,8 +55,8 @@ public class AuthorityTest {
 
 		String toStringResult = testee.toString();
 
-		assertThat(toStringResult, containsString("id=" + ID));
-		assertThat(toStringResult, containsString("role='" + ROLE + "'"));
+		assertThat(toStringResult, equalTo(
+				format("%s{id=%d, role='%s'}", testee.getClass().getSimpleName(), ID, ROLE)));
 	}
 
 }
