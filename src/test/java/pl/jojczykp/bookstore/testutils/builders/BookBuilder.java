@@ -1,6 +1,6 @@
 package pl.jojczykp.bookstore.testutils.builders;
 
-import pl.jojczykp.bookstore.domain.Book;
+import pl.jojczykp.bookstore.entities.Book;
 
 public abstract class BookBuilder {
 

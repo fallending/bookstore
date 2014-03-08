@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-import pl.jojczykp.bookstore.command.BooksCommand;
+import pl.jojczykp.bookstore.commands.BooksCommand;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;

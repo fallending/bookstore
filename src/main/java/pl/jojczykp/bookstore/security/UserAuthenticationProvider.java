@@ -6,9 +6,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import pl.jojczykp.bookstore.domain.Authority;
-import pl.jojczykp.bookstore.domain.User;
-import pl.jojczykp.bookstore.repository.SecurityRepository;
+import pl.jojczykp.bookstore.entities.Authority;
+import pl.jojczykp.bookstore.entities.User;
+import pl.jojczykp.bookstore.repositories.SecurityRepository;
 
 import java.util.HashSet;
 import java.util.Set;

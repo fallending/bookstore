@@ -1,6 +1,6 @@
 package pl.jojczykp.bookstore.testutils.builders;
 
-import pl.jojczykp.bookstore.domain.Authority;
+import pl.jojczykp.bookstore.entities.Authority;
 
 public abstract class AuthorityBuilder {
 

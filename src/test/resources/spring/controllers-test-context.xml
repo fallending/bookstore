@@ -27,9 +27,9 @@
 
 	<mockito:mock id="booksCommandFactory" class="pl.jojczykp.bookstore.utils.BooksCommandFactory" />
 
-	<mockito:mock id="bookAssembler" class="pl.jojczykp.bookstore.assembler.BookAssembler"/>
+	<mockito:mock id="bookAssembler" class="pl.jojczykp.bookstore.assemblers.BookAssembler"/>
 
-	<mockito:mock id="booksRepository" class="pl.jojczykp.bookstore.repository.BooksRepository"/>
+	<mockito:mock id="booksRepository" class="pl.jojczykp.bookstore.repositories.BooksRepository"/>
 
 	<mockito:mock id="booksCreateValidator" class="pl.jojczykp.bookstore.validators.BooksCreateValidator" />
 	<mockito:mock id="booksUpdateValidator" class="pl.jojczykp.bookstore.validators.BooksUpdateValidator" />

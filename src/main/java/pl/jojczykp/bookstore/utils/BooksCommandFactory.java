@@ -2,7 +2,7 @@ package pl.jojczykp.bookstore.utils;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import pl.jojczykp.bookstore.command.BooksCommand;
+import pl.jojczykp.bookstore.commands.BooksCommand;
 
 @Service
 public class BooksCommandFactory {

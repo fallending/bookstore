@@ -1,7 +1,7 @@
 package pl.jojczykp.bookstore.testutils.builders;
 
-import pl.jojczykp.bookstore.domain.Authority;
-import pl.jojczykp.bookstore.domain.User;
+import pl.jojczykp.bookstore.entities.Authority;
+import pl.jojczykp.bookstore.entities.User;
 
 import java.util.HashSet;
 import java.util.Set;
