@@ -17,6 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
+import static pl.jojczykp.bookstore.controllers.ExceptionThrowingTestController.THROW_EXCEPTION_CONTROLLER_URL;
 import static pl.jojczykp.bookstore.testutils.matchers.HasBeanProperty.hasBeanProperty;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -34,7 +35,7 @@ public class ControllerExceptionHandlerUnitTest {
 
 	@Test
 	public void shouldHandleExceptionFromController() throws Exception {
-		mockMvc.perform(get("/throw/some_exception"))
+		mockMvc.perform(get(THROW_EXCEPTION_CONTROLLER_URL))
 				.andExpect(status().isOk())
 				.andExpect(view().name("exception"))
 				.andExpect(model().attribute("exceptionCommand",

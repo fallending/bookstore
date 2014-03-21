@@ -13,7 +13,7 @@ import pl.jojczykp.bookstore.repositories.SecurityRepository;
 import java.util.HashSet;
 import java.util.Set;
 
-public class UserAuthenticationProvider implements UserDetailsService {
+public class CustomDbAuthenticationProvider implements UserDetailsService {
 
 	@Autowired private SecurityRepository securityRepository;
 

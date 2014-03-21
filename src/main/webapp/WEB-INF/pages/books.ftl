@@ -1,3 +1,5 @@
+<#import "macros/common.ftl" as common>
+<#import "macros/messages.ftl" as messages>
 <#import "/spring.ftl" as spring>
 
 <#assign pageNumber = booksCommand.pager.pageNumber>
@@ -10,6 +12,8 @@
 	<head>
 		<meta http-equiv="content-type" content="application/xhtml+xml; charset=utf-8" />
 		<title>Bookstore</title>
+		<link rel="stylesheet" type="text/css" href="/css/public/common.css"/>
+		<link rel="stylesheet" type="text/css" href="/css/public/messages.css"/>
 		<link rel="stylesheet" type="text/css" href="/css/books.css"/>
 		<script type="text/javascript">
 			ORIGINAL_PARAMS = {
@@ -23,8 +27,8 @@
 	</head>
 	<body>
 		<div class="all">
-			<@sectionUserStatus/>
-			<@sectionTitle/>
+			<@common.sectionUserBar/>
+			<@common.sectionTitle/>
 			<div class="sectionMain">
 				<@sectionMessages/>
 				<#if (pagesCount > 0) >
@@ -39,35 +43,10 @@
 	</body>
 </html>
 
-<#macro sectionUserStatus>
-	<a href="/j_spring_security_logout" >Logout</a>
-</#macro>
-
-<#macro sectionTitle>
-	<h1 class="sectionTitle">
-		Bookstore
-	</h1>
-</#macro>
-
 <#macro sectionMessages>
-	<@sectionSingleKindMessages booksCommand.messages.infos 'sectionMessagesInfo' 'info'/>
-	<@sectionSingleKindMessages booksCommand.messages.warns 'sectionMessagesWarn' 'warn'/>
-	<@sectionSingleKindMessages booksCommand.messages.errors 'sectionMessagesError' 'error'/>
-</#macro>
-
-<#macro sectionSingleKindMessages collection class image>
-	<#if (collection?size > 0) >
-		<div class="${class}">
-			<table><tr>
-				<td align="center" valign="center" width="50"><img src="/img/${image}.png"/></td>
-				<td><ul>
-					<#list collection as message>
-						<li>${message}</li>
-					</#list>
-				</ul></td>
-			</tr></table>
-		</div>
-	</#if>
+	<@messages.sectionSingleKindMessages booksCommand.messages.infos 'sectionMessagesInfo' 'info'/>
+	<@messages.sectionSingleKindMessages booksCommand.messages.warns 'sectionMessagesWarn' 'warn'/>
+	<@messages.sectionSingleKindMessages booksCommand.messages.errors 'sectionMessagesError' 'error'/>
 </#macro>
 
 <#macro sectionPager>
@@ -155,7 +134,7 @@
 </#macro>
 
 <#macro sectionDataTable>
-	<div class="sectionDataTable">
+	<div class="sectionTable">
 		<table>
 			<tr>
 				<th class="deleteCheckboxHeader"></th>
@@ -179,7 +158,7 @@
 			</#list>
 		</table>
 	</div>
-	<div class="sectionDataTableButtons">
+	<div class="sectionBottomButtons">
 		<input type="button" value="delete selected" class="deleteButton" onClick="sendDelete()"/>
 	</div>
 </#macro>

@@ -16,7 +16,5 @@ body {
 	color: darkred;
 	border-radius: 10px;
 	box-shadow: 6px 6px 3px #999999;
-	border-style: solid;
-	border-color: darkred;
-	border-width: 1px;
+	border: 1px solid darkred;
 }

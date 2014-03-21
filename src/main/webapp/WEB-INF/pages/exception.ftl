@@ -2,7 +2,7 @@
 <html>
 <head>
 	<title>Bookstore - Exception</title>
-	<link rel="stylesheet" type="text/css" href="/css/exception.css"/>
+	<link rel="stylesheet" type="text/css" href="/css/public/exception.css"/>
 </head>
 <body>
 	<h1 class="sectionTitle">
@@ -10,10 +10,13 @@
 	</h1>
 	<div class="sectionMain">
 		<table><tr>
-			<td align="center" valign="center" width="50"><img src="/img/error.png"/></td>
+			<td align="center" valign="center" width="50"><img src="/img/public/error.png"/></td>
 			<td>
 				<#if exceptionCommand??>
 					<p>${exceptionCommand.message!"(no exception message present)"}</p>
+					<!--
+						${exceptionCommand.stackTraceAsString}
+					-->
 				<#else>
 					<p>(no exception object to be presented)</p>
 				</#if>
@@ -21,9 +24,6 @@
 					<form>
 						<input type="button" value="Back to Previous Page" onClick="history.go(-1)"/>
 					</form>
-					<!--
-						${exceptionCommand.stackTraceAsString}
-					-->
 			</td>
 		</tr></table>
 	</div>

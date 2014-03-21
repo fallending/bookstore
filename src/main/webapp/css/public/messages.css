@@ -1,0 +1,32 @@
+.sectionMessagesInfo {
+	width: 480px;
+	margin: 10px;
+	padding: 0;
+	background: rgb(220,255,230);
+	color: green;
+	border-radius: 10px;
+	box-shadow: 6px 6px 3px #999999;
+	border: 1px solid green;
+}
+
+.sectionMessagesWarn {
+	width: 480px;
+	margin: 10px;
+	padding: 0;
+	background: rgb(255,255,185);
+	color: darkgoldenrod;
+	border-radius: 10px;
+	box-shadow: 6px 6px 3px #999999;
+	border: 1px solid darkgoldenrod;
+}
+
+.sectionMessagesError {
+	width: 480px;
+	margin: 10px;
+	padding: 0;
+	background: rgb(255,233,237);
+	color: darkred;
+	border-radius: 10px;
+	box-shadow: 6px 6px 3px #999999;
+	border: 1px solid darkred;
+}

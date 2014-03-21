@@ -29,7 +29,7 @@ import static pl.jojczykp.bookstore.testutils.builders.AuthorityBuilder.anAuthor
 import static pl.jojczykp.bookstore.testutils.builders.UserBuilder.anUser;
 
 @RunWith(MockitoJUnitRunner.class)
-public class UserAuthenticationProviderUnitTest {
+public class CustomDbAuthenticationProviderUnitTest {
 
 	private static final User USER = anUser().withId(1)
 			.withName("a_user_name").withPassword("password_1")
@@ -40,7 +40,7 @@ public class UserAuthenticationProviderUnitTest {
 	@Captor private ArgumentCaptor<String> usernameCaptor;
 	@Mock private SecurityRepository securityRepository;
 
-	@InjectMocks private UserAuthenticationProvider testee;
+	@InjectMocks private CustomDbAuthenticationProvider testee;
 
 	@Test
 	public void shouldLoadUserByUsername() {

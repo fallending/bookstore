@@ -1,0 +1,60 @@
+body {
+	margin: 0;
+	padding: 0;
+	background-color: #EFEFEF;
+	color: #111111;
+}
+
+.all {
+	margin-left: auto;
+	margin-right: auto;
+	width: 680px;
+	padding: 0;
+}
+
+.sectionUserBar {
+	width: 640px;
+	margin: 0 10px 5px 10px;
+	padding: 0 10px 5px 10px;
+	background: rgb(250,250,250);
+	border-bottom-left-radius: 10px;
+	border-bottom-right-radius: 10px;
+	box-shadow: 6px 6px 3px #999999;
+	border-color: graytext;
+	border-style: solid;
+	border-top-width: 0;
+	border-right-width: 1px;
+	border-bottom-width: 1px;
+	border-left-width: 1px;
+	text-align: right;
+}
+
+.sectionUserBar a:link { text-decoration:none }
+.sectionUserBar a:visited { text-decoration:none }
+.sectionUserBar a:hover { text-decoration:none }
+.sectionUserBar a:active { text-decoration:none }
+
+.sectionTitle {
+	margin: 10px;
+	padding: 10px;
+}
+
+.sectionMain {
+	width: 640px;
+	margin: 10px;
+	padding: 10px;
+	background: rgb(250,250,250);
+	border-radius: 10px;
+	box-shadow: 6px 6px 3px #999999;
+	border: 1px solid graytext;
+}
+
+.sectionTable {
+	margin: 10px;
+	padding: 10px;
+}
+
+.sectionBottomButtons {
+	margin: 0 10px 10px 10px;
+	padding: 10px;
+}
