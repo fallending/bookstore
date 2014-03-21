@@ -31,6 +31,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -46,7 +47,7 @@ import static pl.jojczykp.bookstore.utils.PageSorterDirection.DESC;
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration("classpath:spring/controllers-test-context.xml")
-public class BooksControllerPagerUnitTest {
+public class BooksControllerPagerComponentTest {
 
 	private static final String BOOKS_COMMAND = "booksCommand";
 
@@ -71,8 +72,10 @@ public class BooksControllerPagerUnitTest {
 
 	@Before
 	public void setUp() {
-		given(booksRepository.totalCount()).willReturn(PAGES_COUNT * PAGE_SIZE - 2);
-		mvcMock = webAppContextSetup(wac).build();
+		mvcMock = webAppContextSetup(wac)
+				.alwaysDo(print())
+				.build();
+		givenRepositoryMockConfigured();
 		reset(booksSetPageSizeValidator);
 	}
 
@@ -128,6 +131,10 @@ public class BooksControllerPagerUnitTest {
 		assertThatScrolledToPage(pageNumber);
 		thenExpectNoFlashMessages(mvcMockPerformResult);
 		thenExpectHttpRedirectWith(command);
+	}
+
+	private void givenRepositoryMockConfigured() {
+		given(booksRepository.totalCount()).willReturn(PAGES_COUNT * PAGE_SIZE - 2);
 	}
 
 	private void whenUrlActionPerformedWithCommand(String action, BooksCommand bookCommand) throws Exception {

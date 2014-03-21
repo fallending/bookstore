@@ -38,6 +38,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -49,7 +50,7 @@ import static pl.jojczykp.bookstore.testutils.controllers.MessagesControllerTest
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration("classpath:spring/controllers-test-context.xml")
-public class BooksControllerUpdateUnitTest {
+public class BooksControllerUpdateComponentTest {
 
 	private static final String VALIDATOR_ERROR_MESSAGE = "An error message from validator.";
 
@@ -69,7 +70,9 @@ public class BooksControllerUpdateUnitTest {
 
 	@Before
 	public void setUp() {
-		mvcMock = webAppContextSetup(wac).build();
+		mvcMock = webAppContextSetup(wac)
+				.alwaysDo(print())
+				.build();
 		MockitoAnnotations.initMocks(this);
 		reset(booksUpdateValidator);
 		reset(bookAssembler);

@@ -27,6 +27,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -37,7 +38,7 @@ import static pl.jojczykp.bookstore.testutils.controllers.MessagesControllerTest
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration("classpath:spring/controllers-test-context.xml")
-public class BooksControllerDeleteUnitTest {
+public class BooksControllerDeleteComponentTest {
 
 	private static final int EXISTING_ID_1 = 3;
 	private static final int EXISTING_ID_2 = 7;
@@ -52,7 +53,9 @@ public class BooksControllerDeleteUnitTest {
 
 	@Before
 	public void setUp() {
-		mvcMock = webAppContextSetup(wac).build();
+		mvcMock = webAppContextSetup(wac)
+				.alwaysDo(print())
+				.build();
 		MockitoAnnotations.initMocks(this);
 		givenExceptionOnDeletingNotExistingId();
 	}

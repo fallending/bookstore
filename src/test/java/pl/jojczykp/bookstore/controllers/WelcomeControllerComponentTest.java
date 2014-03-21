@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
@@ -18,19 +19,21 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration("classpath:spring/controllers-test-context.xml")
-public class WelcomeControllerUnitTest {
+public class WelcomeControllerComponentTest {
 
-	private MockMvc mockMvc;
+	private MockMvc mvcMock;
 	@Autowired private WebApplicationContext wac;
 
 	@Before
 	public void setup() {
-		mockMvc = webAppContextSetup(wac).build();
+		mvcMock = webAppContextSetup(wac)
+				.alwaysDo(print())
+				.build();
 	}
 
 	@Test
 	public void shouldRedirectToWelcomeViewWithDefaultAttributesSet() throws Exception {
-		mockMvc.perform(get("/"))
+		mvcMock.perform(get("/"))
 				.andExpect(status().isFound())
 				.andExpect(redirectedUrl("/books/read"));
 	}

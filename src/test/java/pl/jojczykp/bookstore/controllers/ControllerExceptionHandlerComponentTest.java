@@ -13,6 +13,7 @@ import org.springframework.web.context.WebApplicationContext;
 import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.not;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -23,19 +24,21 @@ import static pl.jojczykp.bookstore.testutils.matchers.HasBeanProperty.hasBeanPr
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration("classpath:spring/controllers-test-context.xml")
-public class ControllerExceptionHandlerUnitTest {
+public class ControllerExceptionHandlerComponentTest {
 
-	private MockMvc mockMvc;
+	private MockMvc mvcMock;
 	@Autowired private WebApplicationContext wac;
 
 	@Before
 	public void setup() {
-		mockMvc = webAppContextSetup(wac).build();
+		mvcMock = webAppContextSetup(wac)
+				.alwaysDo(print())
+				.build();
 	}
 
 	@Test
 	public void shouldHandleExceptionFromController() throws Exception {
-		mockMvc.perform(get(THROW_EXCEPTION_CONTROLLER_URL))
+		mvcMock.perform(get(THROW_EXCEPTION_CONTROLLER_URL))
 				.andExpect(status().isOk())
 				.andExpect(view().name("exception"))
 				.andExpect(model().attribute("exceptionCommand",

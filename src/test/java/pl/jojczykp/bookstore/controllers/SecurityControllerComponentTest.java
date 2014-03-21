@@ -63,7 +63,7 @@ import static pl.jojczykp.bookstore.controllers.SomeSecuredTestController.SOME_S
 		"classpath:spring/applicationContext/security-context.xml",
 		"classpath:spring/dispatcherServletContext/resources-context.xml",
 		"classpath:spring/dispatcherServletContext/views-context.xml"})
-public class SecurityControllerUnitTest {
+public class SecurityControllerComponentTest {
 
 	private static final String URL_LOGIN_PAGE = "/security/loginPage";
 	private static final String URL_LOGIN = "/security/login";
