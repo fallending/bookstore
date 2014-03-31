@@ -20,4 +20,5 @@ public class ExceptionCommand {
 	public void setStackTraceAsString(String stackTraceAsString) {
 		this.stackTraceAsString = stackTraceAsString;
 	}
+
 }

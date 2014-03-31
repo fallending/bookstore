@@ -42,6 +42,7 @@ public class BooksControllerDeleteComponentTest {
 
 	private static final int EXISTING_ID_1 = 3;
 	private static final int EXISTING_ID_2 = 7;
+	private static final int EXISTING_ID_3 = 9;
 	private static final int NOT_EXISTING_ID = 98;
 
 	private MockMvc mvcMock;
@@ -62,11 +63,12 @@ public class BooksControllerDeleteComponentTest {
 
 	@Test
 	public void shouldDeleteExistingBooks() throws Exception {
-		final BooksCommand command = aCommandToRemoveByIds(EXISTING_ID_1, EXISTING_ID_2);
+		final BooksCommand command = aCommandToRemoveByIds(EXISTING_ID_1, EXISTING_ID_2, EXISTING_ID_3);
+		uncheckFirstBookIn(command);
 
 		whenControllerDeletePerformedWithCommand(command);
 
-		thenExpectDeleteInvokedOnRepository(EXISTING_ID_1, EXISTING_ID_2);
+		thenExpectDeleteInvokedOnRepository(EXISTING_ID_2, EXISTING_ID_3);
 		thenExpectInfoOnlyFlashMessages(mvcMockPerformResult, "Object deleted.", "Object deleted.");
 		thenExpectHttpRedirectWith(command);
 	}
@@ -102,6 +104,10 @@ public class BooksControllerDeleteComponentTest {
 		bookCommand.setId(id);
 
 		return bookCommand;
+	}
+
+	private void uncheckFirstBookIn(BooksCommand command) {
+		command.getBooks().get(0).setChecked(false);
 	}
 
 	private void whenControllerDeletePerformedWithCommand(BooksCommand command) throws Exception {

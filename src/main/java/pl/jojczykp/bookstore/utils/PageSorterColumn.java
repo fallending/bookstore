@@ -7,7 +7,7 @@ public enum PageSorterColumn {
 	private String nameForQuery;
 	private boolean ignoreCase;
 
-	PageSorterColumn(String nameForQuery, boolean ignoreCase) {
+	private PageSorterColumn(String nameForQuery, boolean ignoreCase) {
 		this.nameForQuery = nameForQuery;
 		this.ignoreCase = ignoreCase;
 	}
