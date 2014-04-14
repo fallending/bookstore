@@ -49,7 +49,7 @@ public class AuthorityUnitTest {
 	}
 
 	@Test
-	public void shouldHaveToStringWithDetailsForDiagnostic() {
+	public void shouldHaveToStringWithDetails() {
 		testee.setId(ID);
 		testee.setRole(ROLE);
 

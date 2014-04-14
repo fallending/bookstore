@@ -45,7 +45,7 @@ public class PageSorterUnitTest {
 	}
 
 	@Test
-	public void shouldHaveToStringWithDetailsForDiagnostic() {
+	public void shouldHaveToStringWithDetails() {
 		final PageSorterColumn givenColumn = BOOK_TITLE;
 		final PageSorterDirection givenDirection = ASC;
 		testee.setColumn(givenColumn);

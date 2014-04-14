@@ -103,7 +103,7 @@ public class UserUnitTest {
 	}
 
 	@Test
-	public void shouldHaveToStringWithDetailsForDiagnostic() {
+	public void shouldHaveToStringWithDetails() {
 		testee.setId(ID);
 		testee.setName(NAME);
 		testee.setPassword(PASSWORD);

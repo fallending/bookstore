@@ -12,4 +12,9 @@ public final class SuppressUnchecked {
 		return (List<T>) list;
 	}
 
+	@SuppressWarnings("unchecked")
+	public static List<String> suppressUnchecked(Object object) {
+		return (List<String>) object;
+	}
+
 }

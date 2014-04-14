@@ -59,7 +59,7 @@ public class BookUnitTest {
 	}
 
 	@Test
-	public void shouldHaveToStringWithDetailsForDiagnostic() {
+	public void shouldHaveToStringWithDetails() {
 		Book testee = aBook(ID, VERSION, TITLE);
 
 		String toStringResult = testee.toString();

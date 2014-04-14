@@ -14,12 +14,21 @@ import static org.hamcrest.Matchers.sameInstance;
 public class SuppressUncheckedUnitTest {
 
 	@Test
-	public void shouldSuppressUncheckedReturnSameInstance() {
+	public void shouldListSuppressUncheckedReturnSameInstance() {
 		List list = new ArrayList();
 
 		List<?> result = SuppressUnchecked.suppressUnchecked(list);
 
 		assertThat(result, is(sameInstance(list)));
+	}
+
+	@Test
+	public void shouldObjectSuppressUncheckedReturnSameInstance() {
+		Object listAsObject = new ArrayList<>();
+
+		List<String> result = SuppressUnchecked.suppressUnchecked(listAsObject);
+
+		assertThat(result, is(sameInstance(listAsObject)));
 	}
 
 	@Test
