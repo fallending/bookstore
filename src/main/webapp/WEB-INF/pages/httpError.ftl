@@ -12,8 +12,10 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 -->
+
+<#import "macros/common.ftl" as common>
 
 <!DOCTYPE html>
 <html>
@@ -22,21 +24,22 @@
 	<link rel="stylesheet" type="text/css" href="/css/public/exception.css"/>
 </head>
 <body>
-<h1 class="sectionTitle">
-	HTTP Error ${httpErrorCommand.id}.
-</h1>
-<div class="sectionMain">
-	<table><tr>
-		<td align="center" valign="center" width="50"><img src="/img/public/error.png"/></td>
-		<td>
-			'${httpErrorCommand.description}' when accessing url:
-			<a href="${httpErrorCommand.originalUrl}">${httpErrorCommand.originalUrl}</a>
-			<p></p>
-			<form>
-				<input type="button" value="Back to Previous Page" onClick="history.go(-1)"/>
-			</form>
-		</td>
-	</tr></table>
-</div>
+	<h1 class="sectionTitle">
+		HTTP Error ${httpErrorCommand.id}.
+	</h1>
+	<div class="sectionMain">
+		<table><tr>
+			<td align="center" valign="center" width="50"><img src="/img/public/error.png"/></td>
+			<td>
+				'${httpErrorCommand.description}' when accessing url:
+				<a href="${httpErrorCommand.originalUrl}">${httpErrorCommand.originalUrl}</a>
+				<p></p>
+				<form>
+					<input type="button" value="Back to Previous Page" onClick="history.go(-1)"/>
+				</form>
+			</td>
+		</tr></table>
+	</div>
+	<@common.sectionFooter/>
 </body>
 </html>

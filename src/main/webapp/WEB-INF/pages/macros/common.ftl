@@ -12,7 +12,7 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 -->
 
 <#macro sectionUserBar>
@@ -30,3 +30,8 @@
 <#macro sectionTitle>
 	<h1 class="sectionTitle">Bookstore</h1>
 </#macro>
+
+<#macro sectionFooter>
+	<div class="sectionFooter">Copyright (C) 2013-2014 Pawel Jojczyk, GNU GPL v3.0</div>
+</#macro>
+

@@ -11,7 +11,7 @@
 -- GNU General Public License for more details.
 --
 -- You should have received a copy of the GNU General Public License
--- along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-- along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 INSERT INTO BOOKS (ID, VERSION, TITLE) VALUES (01, 0, 'Book 01');
 INSERT INTO BOOKS (ID, VERSION, TITLE) VALUES (02, 0, 'Book 03');

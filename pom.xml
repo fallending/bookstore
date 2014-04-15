@@ -13,7 +13,7 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -25,6 +25,34 @@
 	<packaging>war</packaging>
 	<version>1.0-SNAPSHOT</version>
 	<name>bookstore</name>
+	<url>https://github.com/jojczykp/bookstore</url>
+
+	<issueManagement>
+		<url>https://github.com/jojczykp/bookstore/issues</url>
+		<system>GitHub Issues</system>
+	</issueManagement>
+
+	<licenses>
+		<license>
+			<name>GNU General Public License (GPL) version 3</name>
+			<url>http://www.gnu.org/licenses/gpl-3.0.htmlgpl-3.0.html</url>
+		</license>
+	</licenses>
+
+	<scm>
+		<url>https://github.com/jojczykp/bookstore</url>
+		<connection>scm:git:git://github.com/jojczykp/bookstore.git</connection>
+		<developerConnection>scm:git:git@github.com:jojczykp/bookstore.git</developerConnection>
+	</scm>
+
+	<developers>
+		<developer>
+			<email>pawel.jojczyk@gmail.com</email>
+			<name>Paweł Jojczyk</name>
+			<url>https://github.com/jojczykp</url>
+			<id>jojczykp</id>
+		</developer>
+	</developers>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -342,7 +370,9 @@
 						</goals>
 						<configuration>
 							<dataFile>${project.build.directory}/jacoco.exec</dataFile>
-							<outputDirectory>${project.reporting.outputDirectory}/site/jacoco</outputDirectory>
+							<outputDirectory>
+								${project.reporting.outputDirectory}/site/jacoco
+							</outputDirectory>
 						</configuration>
 					</execution>
 				</executions>
@@ -357,6 +387,14 @@
 					<includes>
 						<include>**/*Test.java</include>
 					</includes>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<webXml>src/main/webapp/WEB-INF/web.xml</webXml>
 				</configuration>
 			</plugin>
 		</plugins>

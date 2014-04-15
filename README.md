@@ -9,10 +9,10 @@ Technologies
  * Java
  * Maven
  * Spring MVC, Spring Security
- * Hiberante, SQL
- * FreeMarker
+ * SQL, Hiberante (optimistic locking)
  * JMX
  * Log4j
+ * FreeMarker
  * HTML, JavaScript, CSS
 
  Created with IntelliJ.
@@ -38,4 +38,4 @@ Copyright
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
