@@ -9,7 +9,7 @@ Technologies
  * Java
  * Maven
  * Spring MVC, Spring Security, Spring AOP
- * SQL, Hiberante (optimistic locking)
+ * SQL, Hibernate (optimistic locking)
  * JMX
  * Log4j
  * FreeMarker
