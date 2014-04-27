@@ -21,19 +21,11 @@ package pl.jojczykp.bookstore.jmx;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jmx.support.MBeanServerConnectionFactoryBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import pl.jojczykp.bookstore.entities.Book;
-
-import javax.management.MBeanServerConnection;
-import javax.management.MalformedObjectNameException;
-import javax.management.ObjectName;
-import java.io.IOException;
+import pl.jojczykp.bookstore.testutils.jmx.JmxClient;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -46,32 +38,22 @@ import static org.hamcrest.Matchers.is;
 public class ConfigMBeanComponentTest {
 
 	private static final String JMX_SERVICE_URL_PATTERN =
-			"service:jmx:rmi://localhost/jndi/rmi://localhost:%d/bookstoreJmxConnector";
+			"service:jmx:rmi://localhost/jndi/rmi://localhost:%d/%s";
 	private static final String JMX_OBJECT_NAME = "custom.application.mbeans:name=ConfigMBean";
 
-	private MBeanServerConnection mBeanServerConnection;
-	private ObjectName objectName;
-
 	@Value("${jmx.port}") private int jmxPort;
-
-	@Captor private ArgumentCaptor<Book> bookCaptor;
+	@Value("${jmx.connector.name}") private String jmxConnectorName;
+	private JmxClient jmxClient;
 
 	@Before
-	public void givenJmxConnection() throws Exception {
+	public void givenJmxConnection() {
 		MockitoAnnotations.initMocks(this);
-		connect();
-		createObjectName();
+		establishJmxConnection();
 	}
 
-	private void connect() throws IOException {
-		MBeanServerConnectionFactoryBean bean = new MBeanServerConnectionFactoryBean();
-		bean.setServiceUrl(String.format(JMX_SERVICE_URL_PATTERN, jmxPort));
-		bean.afterPropertiesSet();
-		mBeanServerConnection = bean.getObject();
-	}
-
-	private void createObjectName() throws MalformedObjectNameException {
-		objectName = new ObjectName(JMX_OBJECT_NAME);
+	private void establishJmxConnection() {
+		String jmxServiceUrl = String.format(JMX_SERVICE_URL_PATTERN, jmxPort, jmxConnectorName);
+		jmxClient = new JmxClient(jmxServiceUrl, JMX_OBJECT_NAME);
 	}
 
 	@Test
@@ -91,41 +73,15 @@ public class ConfigMBeanComponentTest {
 	}
 
 	private void enableRequestMappingLogging() {
-		jmxInvoke("enableRequestMappingLogging");
+		jmxClient.invoke("enableRequestMappingLogging");
 	}
 
 	private Object disableRequestMappingLogging() {
-		return jmxInvoke("disableRequestMappingLogging");
+		return jmxClient.invoke("disableRequestMappingLogging");
 	}
 
 	private boolean isRequestMappingLoggingEnabled() {
-		return (boolean) jmxInvoke("isRequestMappingLoggingEnabled");
-	}
-
-	private Object jmxInvoke(String name, Object... params) {
-		String[] signature = signatureFor(params);
-		try {
-			return mBeanServerConnection.invoke(objectName, name, params, signature);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	private String[] signatureFor(Object[] params) {
-		String[] signature = new String[params.length];
-		for (int i = 0; i < params.length; i++) {
-			signature[i] = toClassString(params[i]);
-		}
-
-		return signature;
-	}
-
-	private String toClassString(Object param) {
-		if (param.getClass() == Integer.class) {
-			return int.class.toString();
-		} else {
-			return String.class.getName();
-		}
+		return (boolean) jmxClient.invoke("isRequestMappingLoggingEnabled");
 	}
 
 }
