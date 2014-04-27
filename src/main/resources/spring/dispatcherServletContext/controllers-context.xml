@@ -27,8 +27,6 @@
 			http://www.springframework.org/schema/mvc
 			http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
-	<context:property-placeholder location="classpath:spring/config.properties" />
-
 	<context:annotation-config/>
 
 	<context:component-scan base-package="pl.jojczykp.bookstore" use-default-filters="false">
