@@ -76,7 +76,7 @@ import static pl.jojczykp.bookstore.controllers.SomeSecuredTestController.SOME_S
 @WebAppConfiguration
 @ContextConfiguration({
 		"classpath:spring/controllers-test-context.xml",
-		"classpath:spring/authentication-provider-test-context.xml",
+		"classpath:spring/authentication-provider-mock-context.xml",
 		"classpath:spring/applicationContext/security-context.xml",
 		"classpath:spring/dispatcherServletContext/resources-context.xml",
 		"classpath:spring/dispatcherServletContext/views-context.xml"})

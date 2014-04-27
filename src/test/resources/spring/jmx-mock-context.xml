@@ -16,14 +16,14 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:mockito="http://www.mockito.org/spring/mockito"
-       xsi:schemaLocation="
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:mockito="http://www.mockito.org/spring/mockito"
+	   xsi:schemaLocation="
 			http://www.springframework.org/schema/beans
 			http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 			http://www.mockito.org/spring/mockito
 			http://www.mockito.org/spring/mockito.xsd">
 
-	<mockito:mock id="booksRepository" class="pl.jojczykp.bookstore.repositories.BooksRepository"/>
+	<mockito:mock id="configMBean" class="pl.jojczykp.bookstore.jmx.ConfigMBean"/>
 
 </beans>

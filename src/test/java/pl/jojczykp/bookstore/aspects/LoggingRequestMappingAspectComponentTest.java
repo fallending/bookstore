@@ -39,6 +39,7 @@ import static org.apache.log4j.Logger.getLogger;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
@@ -52,12 +53,14 @@ import static pl.jojczykp.bookstore.aspects.ToBeWrappedWithAspectTestController.
 import static pl.jojczykp.bookstore.aspects.ToBeWrappedWithAspectTestController.VIEW_NAME_FROM_WRAPPED_CONTROLLER;
 
 import org.springframework.test.context.web.WebAppConfiguration;
+import pl.jojczykp.bookstore.jmx.ConfigMBean;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration({
 		"classpath:spring/controllers-test-context.xml",
-		"classpath:spring/dispatcherServletContext/aspect-web-context.xml"})
+		"classpath:spring/jmx-mock-context.xml",
+		"classpath:spring/dispatcherServletContext/aspect-context.xml"})
 public class LoggingRequestMappingAspectComponentTest {
 
 	@Autowired private WebApplicationContext wac;
@@ -65,6 +68,8 @@ public class LoggingRequestMappingAspectComponentTest {
 	private ResultActions mvcMockPerformResult;
 
 	@Autowired private LoggingRequestMappingAspect testee;
+
+	@Autowired private ConfigMBean configMBean;
 	@Captor private ArgumentCaptor<LoggingEvent> loggingEvents;
 	@Mock private Appender appenderMock;
 
@@ -84,11 +89,6 @@ public class LoggingRequestMappingAspectComponentTest {
 	@After
 	public void removeMockedLoggingAppender() {
 		getLogger(LoggingRequestMappingAspect.class).removeAppender(appenderMock);
-	}
-
-	@Test
-	public void shouldAspectLoggingBeEnabledByDefault() {
-		assertThat(testee.isEnabled(), is(true));
 	}
 
 	@Test
@@ -114,11 +114,11 @@ public class LoggingRequestMappingAspectComponentTest {
 	}
 
 	private void givenLoggingByAspectEnabled() {
-		testee.enable();
+		given(configMBean.isRequestMappingLoggingEnabled()).willReturn(true);
 	}
 
 	private void givenLoggingByAspectDisabled() {
-		testee.disable();
+		given(configMBean.isRequestMappingLoggingEnabled()).willReturn(false);
 	}
 
 	private void whenRequestedGetUrl(String url) throws Exception {

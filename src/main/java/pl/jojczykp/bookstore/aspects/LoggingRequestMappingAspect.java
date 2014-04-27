@@ -21,8 +21,8 @@ import org.apache.log4j.Logger;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
+import pl.jojczykp.bookstore.jmx.ConfigMBean;
 
 import static org.apache.log4j.Logger.getLogger;
 
@@ -31,12 +31,9 @@ public class LoggingRequestMappingAspect {
 
 	private final Logger logger = getLogger(LoggingRequestMappingAspect.class);
 
-	@Value("${controller.logging.aspect.enabled}") private boolean enabled;
+	@Autowired private ConfigMBean configMBean;
 
-	@Pointcut("execution(@org.springframework.web.bind.annotation.RequestMapping * *.*(..))")
-	public void requestMappingAnnotatedMethod() {}
-
-	@Around("requestMappingAnnotatedMethod()")
+	@Around("execution(@org.springframework.web.bind.annotation.RequestMapping * *.*(..))")
 	//CHECKSTYLE.OFF: IllegalThrowsCheck - Rethrowing original Throwable from wrapped method if any
 	public Object logRequestMappingMethod(ProceedingJoinPoint pjp) throws Throwable {
 	//CHECKSTYLE.ON: IllegalThrowsCheck
@@ -47,27 +44,15 @@ public class LoggingRequestMappingAspect {
 	}
 
 	private void logBeforeIfEnabled(ProceedingJoinPoint pjp) {
-		if (enabled) {
+		if (configMBean.isRequestMappingLoggingEnabled()) {
 			logger.info("Invoking " + pjp.toShortString());
 		}
 	}
 
 	private void logAfterIfEnabled(ProceedingJoinPoint pjp) {
-		if (enabled) {
+		if (configMBean.isRequestMappingLoggingEnabled()) {
 			logger.info("Done " + pjp.toShortString());
 		}
-	}
-
-	public void enable() {
-		enabled = true;
-	}
-
-	public void disable() {
-		enabled = false;
-	}
-
-	public boolean isEnabled() {
-		return enabled;
 	}
 
 }

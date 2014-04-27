@@ -15,7 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
  */
 
-package pl.jojczykp.bookstore.aspects;
+package pl.jojczykp.bookstore.jmx;
+
 
 import org.junit.Before;
 import org.junit.Test;
@@ -23,33 +24,27 @@ import org.junit.Test;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class LoggingRequestMappingAspectUnitTest {
+public class ConfigMBeanUnitTest {
 
-	private LoggingRequestMappingAspect testee;
+	private ConfigMBean testee;
 
 	@Before
 	public void setupTestee() {
-		testee = new LoggingRequestMappingAspect();
+		testee = new ConfigMBean();
 	}
 
 	@Test
 	public void shouldEnable() {
-		testee.enable();
+		testee.enableRequestMappingLogging();
 
-		assertThat(testee.isEnabled(), is(true));
+		assertThat(testee.isRequestMappingLoggingEnabled(), is(true));
 	}
 
 	@Test
 	public void shouldDisable() {
-		testee.disable();
+		testee.disableRequestMappingLogging();
 
-		assertThat(testee.isEnabled(), is(false));
-	}
-
-	@Test
-	public void shouldHavePointcutDefinedByMethod() {
-		/* For coverage only */
-		testee.requestMappingAnnotatedMethod();
+		assertThat(testee.isRequestMappingLoggingEnabled(), is(false));
 	}
 
 }
