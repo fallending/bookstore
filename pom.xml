@@ -244,7 +244,7 @@
 					<xmlOutput>true</xmlOutput>
 					<threshold>Exp</threshold>
 					<effort>Max</effort>
-					<includeFilterFile>configs/findbugs.xml</includeFilterFile>
+					<includeFilterFile>sonar/findbugs.xml</includeFilterFile>
 				</configuration>
 				<executions>
 					<execution>
@@ -265,7 +265,7 @@
 					<targetJdk>1.7</targetJdk>
 					<verbose>true</verbose>
 					<rulesets>
-						<ruleset>configs/pmd.xml</ruleset>
+						<ruleset>sonar/pmd.xml</ruleset>
 					</rulesets>
 				</configuration>
 				<executions>
@@ -285,7 +285,7 @@
 				<version>2.10</version>
 				<configuration>
 					<consoleOutput>true</consoleOutput>
-					<configLocation>configs/checkstyle.xml</configLocation>
+					<configLocation>sonar/checkstyle.xml</configLocation>
 					<propertyExpansion>basedir=${project.basedir}</propertyExpansion>
 					<violationSeverity>info</violationSeverity>
 					<includeTestSourceDirectory>true</includeTestSourceDirectory>
