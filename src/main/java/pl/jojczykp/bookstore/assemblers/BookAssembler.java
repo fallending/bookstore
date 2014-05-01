@@ -19,6 +19,7 @@ package pl.jojczykp.bookstore.assemblers;
 
 import org.springframework.stereotype.Service;
 import pl.jojczykp.bookstore.commands.BookCommand;
+import pl.jojczykp.bookstore.commands.UpdateBookCommand;
 import pl.jojczykp.bookstore.entities.Book;
 
 import java.util.ArrayList;
@@ -47,6 +48,15 @@ public class BookAssembler {
 	}
 
 	public Book toDomain(BookCommand command) {
+		Book domain = new Book();
+		domain.setId(command.getId());
+		domain.setVersion(command.getVersion());
+		domain.setTitle(command.getTitle());
+
+		return domain;
+	}
+
+	public Book toDomain(UpdateBookCommand command) {
 		Book domain = new Book();
 		domain.setId(command.getId());
 		domain.setVersion(command.getVersion());

@@ -37,7 +37,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.context.WebApplicationContext;
 import pl.jojczykp.bookstore.assemblers.BookAssembler;
 import pl.jojczykp.bookstore.commands.BookCommand;
-import pl.jojczykp.bookstore.commands.BooksCommand;
+import pl.jojczykp.bookstore.commands.UpdateBookCommand;
 import pl.jojczykp.bookstore.entities.Book;
 import pl.jojczykp.bookstore.repositories.BooksRepository;
 import pl.jojczykp.bookstore.validators.BooksUpdateValidator;
@@ -63,6 +63,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 import static pl.jojczykp.bookstore.testutils.controllers.MessagesControllerTestUtils.thenExpectErrorOnlyFlashMessages;
 import static pl.jojczykp.bookstore.testutils.controllers.MessagesControllerTestUtils.thenExpectInfoOnlyFlashMessages;
 import static pl.jojczykp.bookstore.testutils.controllers.MessagesControllerTestUtils.thenExpectWarnOnlyFlashMessages;
+import static pl.jojczykp.bookstore.testutils.matchers.HasBeanProperty.hasBeanProperty;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -78,7 +79,7 @@ public class BooksControllerUpdateComponentTest {
 	@Autowired private BooksRepository booksRepository;
 	@Autowired private WebApplicationContext wac;
 
-	@Captor private ArgumentCaptor<BooksCommand> booksCommandCaptor;
+	@Captor private ArgumentCaptor<UpdateBookCommand> updateBookCommandCaptor;
 	@Captor private ArgumentCaptor<BookCommand> bookCommandCaptor;
 	@Captor private ArgumentCaptor<Book> updatedBookCaptor;
 
@@ -94,17 +95,17 @@ public class BooksControllerUpdateComponentTest {
 		reset(booksUpdateValidator);
 		reset(bookAssembler);
 		reset(booksRepository);
-		given(bookAssembler.toDomain(any(BookCommand.class))).willReturn(book);
+		given(bookAssembler.toDomain(any(UpdateBookCommand.class))).willReturn(book);
 	}
 
 	@Test
 	public void shouldUpdateBook() throws Exception {
-		final BooksCommand command = new BooksCommand();
+		final UpdateBookCommand command = new UpdateBookCommand();
 
 		whenControllerUpdatePerformedWithCommand(command);
 
 		thenExpectValidationInvokedFor(command);
-		thenExpectAssemblingCommandToDomainInvokedFor(command.getUpdatedBook());
+		thenExpectAssemblingCommandToDomainInvokedFor(command);
 		thenExpectUpdateInvokedOnRepository();
 		thenExpectInfoOnlyFlashMessages(mvcMockPerformResult, "Object updated.");
 		thenExpectHttpRedirectWith(command);
@@ -112,13 +113,13 @@ public class BooksControllerUpdateComponentTest {
 
 	@Test
 	public void shouldFailConcurrentlyUpdatingUpdatedBook() throws Exception {
-		final BooksCommand command = new BooksCommand();
+		final UpdateBookCommand command = new UpdateBookCommand();
 		givenObjectConcurrentlyUpdated();
 
 		whenControllerUpdatePerformedWithCommand(command);
 
 		thenExpectValidationInvokedFor(command);
-		thenExpectAssemblingCommandToDomainInvokedFor(command.getUpdatedBook());
+		thenExpectAssemblingCommandToDomainInvokedFor(command);
 		thenExpectUpdateInvokedOnRepository();
 		thenExpectWarnOnlyFlashMessages(mvcMockPerformResult,
 				"Object updated or deleted by another user. Please try again with actual data.");
@@ -127,7 +128,7 @@ public class BooksControllerUpdateComponentTest {
 
 	@Test
 	public void shouldFailOnCommandValidationError() throws Exception {
-		final BooksCommand command = new BooksCommand();
+		final UpdateBookCommand command = new UpdateBookCommand();
 		givenNegativeValidation();
 
 		whenControllerUpdatePerformedWithCommand(command);
@@ -153,26 +154,26 @@ public class BooksControllerUpdateComponentTest {
 			@Override
 			public Void answer(InvocationOnMock invocation) {
 				Errors errors = (Errors) invocation.getArguments()[1];
-				errors.rejectValue("updatedBook.title", "updatedBook.title.empty", VALIDATOR_ERROR_MESSAGE);
+				errors.rejectValue("title", "title.empty", VALIDATOR_ERROR_MESSAGE);
 				return null;
 			}
 		};
 	}
 
-	private void whenControllerUpdatePerformedWithCommand(BooksCommand command) throws Exception {
+	private void whenControllerUpdatePerformedWithCommand(UpdateBookCommand command) throws Exception {
 		mvcMockPerformResult = mvcMock.perform(post("/books/update")
-				.flashAttr("booksCommand", command));
+				.flashAttr("updateBookCommand", command));
 	}
 
-	private void thenExpectValidationInvokedFor(BooksCommand booksCommand) {
-		verify(booksUpdateValidator).validate(booksCommandCaptor.capture(), any(Errors.class));
-		assertThat(booksCommandCaptor.getValue(), is(sameInstance(booksCommand)));
+	private void thenExpectValidationInvokedFor(UpdateBookCommand updateBookCommand) {
+		verify(booksUpdateValidator).validate(updateBookCommandCaptor.capture(), any(Errors.class));
+		assertThat(updateBookCommandCaptor.getValue(), is(sameInstance(updateBookCommand)));
 		verifyNoMoreInteractions(booksUpdateValidator);
 	}
 
-	private void thenExpectAssemblingCommandToDomainInvokedFor(BookCommand bookCommand) {
-		verify(bookAssembler).toDomain(bookCommandCaptor.capture());
-		assertThat(bookCommandCaptor.getValue(), is(sameInstance(bookCommand)));
+	private void thenExpectAssemblingCommandToDomainInvokedFor(UpdateBookCommand updateBookCommand) {
+		verify(bookAssembler).toDomain(updateBookCommandCaptor.capture());
+		assertThat(updateBookCommandCaptor.getValue(), is(sameInstance(updateBookCommand)));
 		verifyNoMoreInteractions(bookAssembler);
 	}
 
@@ -190,11 +191,12 @@ public class BooksControllerUpdateComponentTest {
 		verifyZeroInteractions(booksRepository);
 	}
 
-	private void thenExpectHttpRedirectWith(BooksCommand command) throws Exception {
+	private void thenExpectHttpRedirectWith(UpdateBookCommand command) throws Exception {
 		mvcMockPerformResult
 				.andExpect(status().isFound())
 				.andExpect(redirectedUrl("/books/read"))
-				.andExpect(flash().attribute("booksCommand", sameInstance(command)));
+				.andExpect(flash().attribute("booksCommand",
+						hasBeanProperty("pager", sameInstance(command.getPager()))));
 	}
 
 }

@@ -20,6 +20,7 @@ package pl.jojczykp.bookstore.assemblers;
 import org.junit.Before;
 import org.junit.Test;
 import pl.jojczykp.bookstore.commands.BookCommand;
+import pl.jojczykp.bookstore.commands.UpdateBookCommand;
 import pl.jojczykp.bookstore.entities.Book;
 
 import java.util.List;
@@ -47,7 +48,7 @@ public class BookAssemblerUnitTest {
 	}
 
 	@Test
-	public void shouldAssemblyCommandObjectsListFromDomainObjectsList() {
+	public void shouldAssemblyBookCommandObjectsListFromDomainObjectsList() {
 		List<Book> domains = aDomainObjectsList();
 
 		List<BookCommand> commands = testee.toCommands(domains);
@@ -65,15 +66,15 @@ public class BookAssemblerUnitTest {
 	}
 
 	@Test
-	public void shouldAssemblySingleDomainObjectFromCommandObject() {
-		BookCommand command = aCommandObject();
+	public void shouldAssemblySingleBookDomainObjectFromBookCommandObject() {
+		BookCommand command = aBookCommandObject();
 
 		Book domain = testee.toDomain(command);
 
 		assertThatHaveEqualData(domain, command);
 	}
 
-	private BookCommand aCommandObject() {
+	private BookCommand aBookCommandObject() {
 		BookCommand command = new BookCommand();
 		command.setId(ID1);
 		command.setVersion(VERSION1);
@@ -83,6 +84,30 @@ public class BookAssemblerUnitTest {
 	}
 
 	private void assertThatHaveEqualData(Book domain, BookCommand command) {
+		assertThat(domain.getId(), equalTo(command.getId()));
+		assertThat(domain.getVersion(), equalTo(command.getVersion()));
+		assertThat(domain.getTitle(), equalTo(command.getTitle()));
+	}
+
+	@Test
+	public void shouldAssemblySingleBookDomainObjectFromUpdateBookCommandObject() {
+		UpdateBookCommand command = anUpdateBookCommandObject();
+
+		Book domain = testee.toDomain(command);
+
+		assertThatHaveEqualData(domain, command);
+	}
+
+	private UpdateBookCommand anUpdateBookCommandObject() {
+		UpdateBookCommand command = new UpdateBookCommand();
+		command.setId(ID1);
+		command.setVersion(VERSION1);
+		command.setTitle(TITLE1);
+
+		return command;
+	}
+
+	private void assertThatHaveEqualData(Book domain, UpdateBookCommand command) {
 		assertThat(domain.getId(), equalTo(command.getId()));
 		assertThat(domain.getVersion(), equalTo(command.getVersion()));
 		assertThat(domain.getTitle(), equalTo(command.getTitle()));

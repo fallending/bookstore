@@ -26,9 +26,9 @@ function sendUpdate(id, index) {
 	var version = document.getElementById('books' + index + '.version').value;
 	var title = document.getElementById('books' + index + '.title').value;
 	sendPost('update', {
-		'updatedBook.id' : id,
-		'updatedBook.version' : version,
-		'updatedBook.title' : title
+		'id' : id,
+		'version' : version,
+		'title' : title
 	})
 }
 

@@ -22,8 +22,8 @@ import org.junit.Test;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
-import pl.jojczykp.bookstore.commands.BookCommand;
 import pl.jojczykp.bookstore.commands.BooksCommand;
+import pl.jojczykp.bookstore.commands.UpdateBookCommand;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -59,7 +59,7 @@ public class BooksUpdateValidatorUnitTest {
 	@Test
 	public void shouldPassWhenValidData() {
 		final String notEmptyTitle = "not empty new title";
-		final BooksCommand command = anUpdateBooksCommandWith(notEmptyTitle);
+		final UpdateBookCommand command = anUpdateBookCommandWith(notEmptyTitle);
 		final Errors errors = new BeanPropertyBindingResult(command, "someObjectName");
 
 		testee.validate(command, errors);
@@ -70,15 +70,15 @@ public class BooksUpdateValidatorUnitTest {
 	@Test
 	public void shouldFindErrorsWhenInvalidData() {
 		final String emptyTitle = "";
-		final BooksCommand command = anUpdateBooksCommandWith(emptyTitle);
+		final UpdateBookCommand command = anUpdateBookCommandWith(emptyTitle);
 		final Errors errors = new BeanPropertyBindingResult(command, "someObjectName");
 
 		testee.validate(command, errors);
 
 		assertThat(errors.hasErrors(), is(true));
 		assertThat(errors.getErrorCount(), is(equalTo(1)));
-		assertThatFieldErrorHas(errors.getFieldError("updatedBook.title"),
-				"updatedBook.title.empty", "Updating with empty title is not allowed.");
+		assertThatFieldErrorHas(errors.getFieldError("title"),
+				"title.empty", "Updating with empty title is not allowed.");
 	}
 
 	private void assertThatFieldErrorHas(FieldError fieldError, String fieldCode, String defaultMessage) {
@@ -86,12 +86,10 @@ public class BooksUpdateValidatorUnitTest {
 		assertThat(fieldError.getDefaultMessage(), is(equalTo(defaultMessage)));
 	}
 
-	private BooksCommand anUpdateBooksCommandWith(String title) {
-		BooksCommand booksCommand = new BooksCommand();
-		BookCommand updatedBook = new BookCommand();
-		booksCommand.setUpdatedBook(updatedBook);
-		updatedBook.setTitle(title);
+	private UpdateBookCommand anUpdateBookCommandWith(String title) {
+		UpdateBookCommand updateBookCommand = new UpdateBookCommand();
+		updateBookCommand.setTitle(title);
 
-		return booksCommand;
+		return updateBookCommand;
 	}
 }

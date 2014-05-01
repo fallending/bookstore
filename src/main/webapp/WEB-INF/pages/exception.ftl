@@ -21,6 +21,7 @@
 <html>
 <head>
 	<title>Bookstore - Exception</title>
+	<link rel="stylesheet" type="text/css" href="/css/public/common.css"/>
 	<link rel="stylesheet" type="text/css" href="/css/public/exception.css"/>
 </head>
 <body>

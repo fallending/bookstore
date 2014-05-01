@@ -15,26 +15,45 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
  */
 
-package pl.jojczykp.bookstore.validators;
+package pl.jojczykp.bookstore.commands;
 
-import org.springframework.stereotype.Service;
-import org.springframework.validation.Errors;
-import org.springframework.validation.Validator;
-import pl.jojczykp.bookstore.commands.BooksCommand;
+public class UpdateBookCommand {
 
-import static org.springframework.validation.ValidationUtils.rejectIfEmptyOrWhitespace;
+	private PagerCommand pager;
+	private int id;
+	private int version;
+	private String title;
 
-@Service
-public class BooksUpdateValidator implements Validator {
-
-	@Override
-	public boolean supports(Class<?> clazz) {
-		return (BooksCommand.class.equals(clazz));
+	public PagerCommand getPager() {
+		return pager;
 	}
 
-	@Override
-	public void validate(Object object, Errors errors) {
-		rejectIfEmptyOrWhitespace(errors,
-				"title", "title.empty", "Updating with empty title is not allowed.");
+	public void setPager(PagerCommand pager) {
+		this.pager = pager;
 	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public int getVersion() {
+		return version;
+	}
+
+	public void setVersion(int version) {
+		this.version = version;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
 }
