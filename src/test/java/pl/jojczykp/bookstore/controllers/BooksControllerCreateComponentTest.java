@@ -35,8 +35,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.validation.Errors;
 import org.springframework.web.context.WebApplicationContext;
 import pl.jojczykp.bookstore.assemblers.BookAssembler;
-import pl.jojczykp.bookstore.commands.BookCommand;
-import pl.jojczykp.bookstore.commands.BooksCommand;
+import pl.jojczykp.bookstore.commands.CreateBookCommand;
 import pl.jojczykp.bookstore.entities.Book;
 import pl.jojczykp.bookstore.repositories.BooksRepository;
 import pl.jojczykp.bookstore.validators.BooksCreateValidator;
@@ -60,6 +59,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 import static pl.jojczykp.bookstore.testutils.controllers.MessagesControllerTestUtils.thenExpectErrorOnlyFlashMessages;
 import static pl.jojczykp.bookstore.testutils.controllers.MessagesControllerTestUtils.thenExpectInfoOnlyFlashMessages;
+import static pl.jojczykp.bookstore.testutils.matchers.HasBeanProperty.hasBeanProperty;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -75,9 +75,8 @@ public class BooksControllerCreateComponentTest {
 	@Autowired private BooksRepository booksRepository;
 	@Autowired private WebApplicationContext wac;
 
-	@Captor private ArgumentCaptor<BooksCommand> booksCommandCaptor;
-	@Captor private ArgumentCaptor<BookCommand> bookCommandCaptor;
-	@Captor private ArgumentCaptor<Book> newBookCaptor;
+	@Captor private ArgumentCaptor<CreateBookCommand> createBookCommandCaptor;
+	@Captor private ArgumentCaptor<Book> createdBookCaptor;
 
 	@Mock private Book book;
 
@@ -90,17 +89,17 @@ public class BooksControllerCreateComponentTest {
 		reset(booksCreateValidator);
 		reset(bookAssembler);
 		reset(booksRepository);
-		given(bookAssembler.toDomain(any(BookCommand.class))).willReturn(book);
+		given(bookAssembler.toDomain(any(CreateBookCommand.class))).willReturn(book);
 	}
 
 	@Test
 	public void shouldCreateBook() throws Exception {
-		final BooksCommand command = new BooksCommand();
+		final CreateBookCommand command = new CreateBookCommand();
 
 		whenControllerCreatePerformedWithCommand(command);
 
 		thenExpectValidationInvokedFor(command);
-		thenExpectAssemblingCommandToDomainInvokedFor(command.getNewBook());
+		thenExpectAssemblingCommandToDomainInvokedFor(command);
 		thenExpectCreateInvokedOnRepository();
 		thenExpectInfoOnlyFlashMessages(mvcMockPerformResult, "Object created.");
 		thenExpectHttpRedirectWith(command);
@@ -108,7 +107,7 @@ public class BooksControllerCreateComponentTest {
 
 	@Test
 	public void shouldFailOnCommandValidationError() throws Exception {
-		final BooksCommand command = new BooksCommand();
+		final CreateBookCommand command = new CreateBookCommand();
 		givenNegativeValidation();
 
 		whenControllerCreatePerformedWithCommand(command);
@@ -130,26 +129,26 @@ public class BooksControllerCreateComponentTest {
 			@Override
 			public Void answer(InvocationOnMock invocation) {
 				Errors errors = (Errors) invocation.getArguments()[1];
-				errors.rejectValue("updatedBook.title", "updatedBook.title.empty", VALIDATOR_ERROR_MESSAGE);
+				errors.rejectValue("title", "title.empty", VALIDATOR_ERROR_MESSAGE);
 				return null;
 			}
 		};
 	}
 
-	private void whenControllerCreatePerformedWithCommand(BooksCommand command) throws Exception {
+	private void whenControllerCreatePerformedWithCommand(CreateBookCommand command) throws Exception {
 		mvcMockPerformResult = mvcMock.perform(post("/books/create")
-				.flashAttr("booksCommand", command));
+				.flashAttr("createBookCommand", command));
 	}
 
-	private void thenExpectValidationInvokedFor(BooksCommand booksCommand) {
-		verify(booksCreateValidator).validate(booksCommandCaptor.capture(), any(Errors.class));
-		assertThat(booksCommandCaptor.getValue(), is(sameInstance(booksCommand)));
+	private void thenExpectValidationInvokedFor(CreateBookCommand createBooksCommand) {
+		verify(booksCreateValidator).validate(createBookCommandCaptor.capture(), any(Errors.class));
+		assertThat(createBookCommandCaptor.getValue(), is(sameInstance(createBooksCommand)));
 		verifyNoMoreInteractions(booksCreateValidator);
 	}
 
-	private void thenExpectAssemblingCommandToDomainInvokedFor(BookCommand bookCommand) {
-		verify(bookAssembler).toDomain(bookCommandCaptor.capture());
-		assertThat(bookCommandCaptor.getValue(), is(sameInstance(bookCommand)));
+	private void thenExpectAssemblingCommandToDomainInvokedFor(CreateBookCommand createBookCommand) {
+		verify(bookAssembler).toDomain(createBookCommandCaptor.capture());
+		assertThat(createBookCommandCaptor.getValue(), is(sameInstance(createBookCommand)));
 		verifyNoMoreInteractions(bookAssembler);
 	}
 
@@ -158,8 +157,8 @@ public class BooksControllerCreateComponentTest {
 	}
 
 	private void thenExpectCreateInvokedOnRepository() {
-		verify(booksRepository).create(newBookCaptor.capture());
-		assertThat(newBookCaptor.getValue(), is(sameInstance(book)));
+		verify(booksRepository).create(createdBookCaptor.capture());
+		assertThat(createdBookCaptor.getValue(), is(sameInstance(book)));
 		verifyNoMoreInteractions(booksRepository);
 	}
 
@@ -167,11 +166,12 @@ public class BooksControllerCreateComponentTest {
 		verifyZeroInteractions(booksRepository);
 	}
 
-	private void thenExpectHttpRedirectWith(BooksCommand command) throws Exception {
+	private void thenExpectHttpRedirectWith(CreateBookCommand command) throws Exception {
 		mvcMockPerformResult
 				.andExpect(status().isFound())
 				.andExpect(redirectedUrl("/books/read"))
-				.andExpect(flash().attribute("booksCommand", sameInstance(command)));
+				.andExpect(flash().attribute("booksCommand",
+						hasBeanProperty("pager", sameInstance(command.getPager()))));
 	}
 
 }

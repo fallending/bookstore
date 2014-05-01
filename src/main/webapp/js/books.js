@@ -18,7 +18,7 @@
 function sendCreate() {
 	var title = document.getElementById('newBook.title').value;
 	sendPost('create', {
-		'newBook.title' : title
+		'title' : title
 	})
 }
 

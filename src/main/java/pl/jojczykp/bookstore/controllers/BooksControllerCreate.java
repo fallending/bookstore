@@ -27,11 +27,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 import pl.jojczykp.bookstore.assemblers.BookAssembler;
 import pl.jojczykp.bookstore.commands.BooksCommand;
+import pl.jojczykp.bookstore.commands.CreateBookCommand;
 import pl.jojczykp.bookstore.repositories.BooksRepository;
 import pl.jojczykp.bookstore.validators.BooksCreateValidator;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static pl.jojczykp.bookstore.controllers.BooksConsts.BOOKS_COMMAND;
+import static pl.jojczykp.bookstore.controllers.BooksConsts.CREATE_BOOK_COMMAND;
 import static pl.jojczykp.bookstore.controllers.BooksConsts.URL_ACTION_CREATE;
 import static pl.jojczykp.bookstore.controllers.BooksConsts.URL_ACTION_READ;
 
@@ -44,29 +46,41 @@ public class BooksControllerCreate {
 
 	@RequestMapping(value = URL_ACTION_CREATE, method = POST)
 	public RedirectView create(
-			@ModelAttribute(BOOKS_COMMAND) BooksCommand booksCommand,
+			@ModelAttribute(CREATE_BOOK_COMMAND) CreateBookCommand createBookCommand,
 			RedirectAttributes redirectAttributes,
 			BindingResult bindingResult)
 	{
-		booksCreateValidator.validate(booksCommand, bindingResult);
+		booksCreateValidator.validate(createBookCommand, bindingResult);
+
+		BooksCommand booksCommand;
 		if (bindingResult.hasErrors()) {
-			processWhenCommandInvalid(booksCommand, bindingResult);
+			booksCommand = processWhenCommandInvalid(createBookCommand, bindingResult);
 		} else {
-			processWhenCommandValid(booksCommand);
+			booksCommand = processWhenCommandValid(createBookCommand);
 		}
 
 		return redirectToRead(booksCommand, redirectAttributes);
 	}
 
-	private void processWhenCommandInvalid(BooksCommand booksCommand, BindingResult bindingResult) {
-		for(ObjectError error: bindingResult.getAllErrors()) {
+	private BooksCommand processWhenCommandInvalid(CreateBookCommand createBookCommand, BindingResult bindingResult) {
+		BooksCommand booksCommand = new BooksCommand();
+		booksCommand.setPager(createBookCommand.getPager());
+
+		for (ObjectError error: bindingResult.getAllErrors()) {
 			booksCommand.getMessages().addErrors(error.getDefaultMessage());
 		}
+
+		return booksCommand;
 	}
 
-	private void processWhenCommandValid(BooksCommand booksCommand) {
-		booksRepository.create(bookAssembler.toDomain(booksCommand.getNewBook()));
+	private BooksCommand processWhenCommandValid(CreateBookCommand createBookCommand) {
+		BooksCommand booksCommand = new BooksCommand();
+		booksCommand.setPager(createBookCommand.getPager());
+
+		booksRepository.create(bookAssembler.toDomain(createBookCommand));
 		booksCommand.getMessages().addInfos("Object created.");
+
+		return booksCommand;
 	}
 
 	private RedirectView redirectToRead(BooksCommand booksCommand, RedirectAttributes redirectAttributes) {

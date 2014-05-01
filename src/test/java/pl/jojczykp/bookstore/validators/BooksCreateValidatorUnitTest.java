@@ -22,8 +22,8 @@ import org.junit.Test;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
-import pl.jojczykp.bookstore.commands.BookCommand;
 import pl.jojczykp.bookstore.commands.BooksCommand;
+import pl.jojczykp.bookstore.commands.CreateBookCommand;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -59,7 +59,7 @@ public class BooksCreateValidatorUnitTest {
 	@Test
 	public void shouldPassWhenValidData() {
 		final String notEmptyTitle = "not empty new title";
-		final BooksCommand command = aCreateBooksCommandWith(notEmptyTitle);
+		final CreateBookCommand command = aCreateBooksCommandWith(notEmptyTitle);
 		final Errors errors = new BeanPropertyBindingResult(command, "someObjectName");
 
 		testee.validate(command, errors);
@@ -70,15 +70,15 @@ public class BooksCreateValidatorUnitTest {
 	@Test
 	public void shouldFindErrorsWhenInvalidData() {
 		final String emptyTitle = "";
-		final BooksCommand command = aCreateBooksCommandWith(emptyTitle);
+		final CreateBookCommand command = aCreateBooksCommandWith(emptyTitle);
 		final Errors errors = new BeanPropertyBindingResult(command, "someObjectName");
 
 		testee.validate(command, errors);
 
 		assertThat(errors.hasErrors(), is(true));
 		assertThat(errors.getErrorCount(), is(equalTo(1)));
-		assertThatFieldErrorHas(errors.getFieldError("newBook.title"),
-				"newBook.title.empty", "Creating with empty title is not allowed.");
+		assertThatFieldErrorHas(errors.getFieldError("title"),
+				"title.empty", "Creating with empty title is not allowed.");
 	}
 
 	private void assertThatFieldErrorHas(FieldError fieldError, String fieldCode, String defaultMessage) {
@@ -86,12 +86,10 @@ public class BooksCreateValidatorUnitTest {
 		assertThat(fieldError.getDefaultMessage(), is(equalTo(defaultMessage)));
 	}
 
-	private BooksCommand aCreateBooksCommandWith(String title) {
-		BooksCommand booksCommand = new BooksCommand();
-		BookCommand newBook = new BookCommand();
-		booksCommand.setNewBook(newBook);
-		newBook.setTitle(title);
+	private CreateBookCommand aCreateBooksCommandWith(String title) {
+		CreateBookCommand createBookCommand = new CreateBookCommand();
+		createBookCommand.setTitle(title);
 
-		return booksCommand;
+		return createBookCommand;
 	}
 }

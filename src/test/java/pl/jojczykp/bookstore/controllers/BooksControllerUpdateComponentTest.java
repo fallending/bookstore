@@ -36,7 +36,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.validation.Errors;
 import org.springframework.web.context.WebApplicationContext;
 import pl.jojczykp.bookstore.assemblers.BookAssembler;
-import pl.jojczykp.bookstore.commands.BookCommand;
 import pl.jojczykp.bookstore.commands.UpdateBookCommand;
 import pl.jojczykp.bookstore.entities.Book;
 import pl.jojczykp.bookstore.repositories.BooksRepository;
@@ -80,7 +79,6 @@ public class BooksControllerUpdateComponentTest {
 	@Autowired private WebApplicationContext wac;
 
 	@Captor private ArgumentCaptor<UpdateBookCommand> updateBookCommandCaptor;
-	@Captor private ArgumentCaptor<BookCommand> bookCommandCaptor;
 	@Captor private ArgumentCaptor<Book> updatedBookCaptor;
 
 	@Mock private StaleObjectStateException staleObjectStateException;

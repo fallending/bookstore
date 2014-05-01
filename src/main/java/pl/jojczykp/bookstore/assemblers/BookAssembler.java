@@ -19,6 +19,7 @@ package pl.jojczykp.bookstore.assemblers;
 
 import org.springframework.stereotype.Service;
 import pl.jojczykp.bookstore.commands.BookCommand;
+import pl.jojczykp.bookstore.commands.CreateBookCommand;
 import pl.jojczykp.bookstore.commands.UpdateBookCommand;
 import pl.jojczykp.bookstore.entities.Book;
 
@@ -27,6 +28,9 @@ import java.util.List;
 
 @Service
 public class BookAssembler {
+
+	private static final int ID_TO_BE_SET_AUTOMATICALLY = 0;
+	private static final int VERSION_TO_BE_SET_AUTOMATICALLY = 0;
 
 	public List<BookCommand> toCommands(List<Book> domains) {
 		List<BookCommand> commands = new ArrayList<>(domains.size());
@@ -56,6 +60,15 @@ public class BookAssembler {
 		return domain;
 	}
 
+	public Book toDomain(CreateBookCommand command) {
+		Book domain = new Book();
+		domain.setId(ID_TO_BE_SET_AUTOMATICALLY);
+		domain.setVersion(VERSION_TO_BE_SET_AUTOMATICALLY);
+		domain.setTitle(command.getTitle());
+
+		return domain;
+	}
+
 	public Book toDomain(UpdateBookCommand command) {
 		Book domain = new Book();
 		domain.setId(command.getId());
@@ -64,4 +77,5 @@ public class BookAssembler {
 
 		return domain;
 	}
+
 }

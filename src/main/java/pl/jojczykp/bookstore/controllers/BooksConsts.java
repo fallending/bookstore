@@ -29,6 +29,7 @@ public abstract class BooksConsts {
 	static final String URL_ACTION_SET_PAGE_SIZE = "/books/setPageSize";
 
 	static final String BOOKS_COMMAND = "booksCommand";
+	static final String CREATE_BOOK_COMMAND = "createBookCommand";
 	static final String UPDATE_BOOK_COMMAND = "updateBookCommand";
 
 	static final String BOOKS_VIEW = "books";

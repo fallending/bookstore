@@ -20,17 +20,22 @@ package pl.jojczykp.bookstore.assemblers;
 import org.junit.Before;
 import org.junit.Test;
 import pl.jojczykp.bookstore.commands.BookCommand;
+import pl.jojczykp.bookstore.commands.CreateBookCommand;
 import pl.jojczykp.bookstore.commands.UpdateBookCommand;
 import pl.jojczykp.bookstore.entities.Book;
 
 import java.util.List;
 
 import static java.util.Arrays.asList;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 import static pl.jojczykp.bookstore.testutils.builders.BookBuilder.aBook;
 
 public class BookAssemblerUnitTest {
+
+	private static final int ID_TO_BE_SET_AUTOMATICALLY = 0;
+	private static final int VERSION_TO_BE_SET_AUTOMATICALLY = 0;
 
 	private static final int ID1 = 34;
 	private static final int VERSION1 = 45;
@@ -87,6 +92,24 @@ public class BookAssemblerUnitTest {
 		assertThat(domain.getId(), equalTo(command.getId()));
 		assertThat(domain.getVersion(), equalTo(command.getVersion()));
 		assertThat(domain.getTitle(), equalTo(command.getTitle()));
+	}
+
+	@Test
+	public void shouldAssemblySingleBookDomainObjectFromCreateBookCommandObject() {
+		CreateBookCommand command = aCreateBookCommandObject();
+
+		Book domain = testee.toDomain(command);
+
+		assertThat(domain.getId(), is(ID_TO_BE_SET_AUTOMATICALLY));
+		assertThat(domain.getVersion(), is(VERSION_TO_BE_SET_AUTOMATICALLY));
+		assertThat(domain.getTitle(), is(equalTo(command.getTitle())));
+	}
+
+	private CreateBookCommand aCreateBookCommandObject() {
+		CreateBookCommand command = new CreateBookCommand();
+		command.setTitle(TITLE1);
+
+		return command;
 	}
 
 	@Test

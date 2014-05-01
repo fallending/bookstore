@@ -15,26 +15,40 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
  */
 
-package pl.jojczykp.bookstore.validators;
+package pl.jojczykp.bookstore.commands;
 
-import org.springframework.stereotype.Service;
-import org.springframework.validation.Errors;
-import org.springframework.validation.Validator;
-import pl.jojczykp.bookstore.commands.BooksCommand;
+import org.junit.Before;
+import org.junit.Test;
 
-import static org.springframework.validation.ValidationUtils.rejectIfEmptyOrWhitespace;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.junit.Assert.assertThat;
 
-@Service
-public class BooksCreateValidator implements Validator {
+public class CreateBookCommandUnitTest {
 
-	@Override
-	public boolean supports(Class<?> clazz) {
-		return (BooksCommand.class.equals(clazz));
+	private CreateBookCommand testee;
+
+	@Before
+	public void setupInstance() {
+		testee = new CreateBookCommand();
 	}
 
-	@Override
-	public void validate(Object object, Errors errors) {
-		rejectIfEmptyOrWhitespace(errors,
-				"title", "title.empty", "Creating with empty title is not allowed.");
+	@Test
+	public void shouldSetPager() {
+		final PagerCommand pager = new PagerCommand();
+
+		testee.setPager(pager);
+
+		assertThat(testee.getPager(), sameInstance(pager));
 	}
+
+	@Test
+	public void shouldSetTitle() {
+		final String title = "some title";
+
+		testee.setTitle(title);
+
+		assertThat(testee.getTitle(), equalTo(title));
+	}
+
 }
