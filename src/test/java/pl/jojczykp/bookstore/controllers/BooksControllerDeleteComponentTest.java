@@ -31,8 +31,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.context.WebApplicationContext;
-import pl.jojczykp.bookstore.commands.BookCommand;
-import pl.jojczykp.bookstore.commands.BooksCommand;
+import pl.jojczykp.bookstore.commands.DeleteBooksCommand;
 import pl.jojczykp.bookstore.repositories.BooksRepository;
 
 import static org.hamcrest.Matchers.hasItems;
@@ -51,6 +50,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 import static pl.jojczykp.bookstore.testutils.controllers.MessagesControllerTestUtils.thenExpectInfoOnlyFlashMessages;
 import static pl.jojczykp.bookstore.testutils.controllers.MessagesControllerTestUtils.thenExpectWarnOnlyFlashMessages;
+import static pl.jojczykp.bookstore.testutils.matchers.HasBeanProperty.hasBeanProperty;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -80,19 +80,18 @@ public class BooksControllerDeleteComponentTest {
 
 	@Test
 	public void shouldDeleteExistingBooks() throws Exception {
-		final BooksCommand command = aCommandToRemoveByIds(EXISTING_ID_1, EXISTING_ID_2, EXISTING_ID_3);
-		uncheckFirstBookIn(command);
+		final DeleteBooksCommand command = aCommandToRemoveByIds(EXISTING_ID_1, EXISTING_ID_2, EXISTING_ID_3);
 
 		whenControllerDeletePerformedWithCommand(command);
 
-		thenExpectDeleteInvokedOnRepository(EXISTING_ID_2, EXISTING_ID_3);
-		thenExpectInfoOnlyFlashMessages(mvcMockPerformResult, "Object deleted.", "Object deleted.");
+		thenExpectDeleteInvokedOnRepository(EXISTING_ID_1, EXISTING_ID_2, EXISTING_ID_3);
+		thenExpectInfoOnlyFlashMessages(mvcMockPerformResult, "Object deleted.", "Object deleted.", "Object deleted.");
 		thenExpectHttpRedirectWith(command);
 	}
 
 	@Test
 	public void shouldFailOnDeletingNotExistingBook() throws Exception {
-		final BooksCommand command = aCommandToRemoveByIds(NOT_EXISTING_ID);
+		final DeleteBooksCommand command = aCommandToRemoveByIds(NOT_EXISTING_ID);
 
 		whenControllerDeletePerformedWithCommand(command);
 
@@ -106,30 +105,18 @@ public class BooksControllerDeleteComponentTest {
 		doThrow(ObjectNotFoundException.class).when(booksRepository).delete(NOT_EXISTING_ID);
 	}
 
-	private BooksCommand aCommandToRemoveByIds(int... ids) {
-		BooksCommand command = new BooksCommand();
+	private DeleteBooksCommand aCommandToRemoveByIds(int... ids) {
+		DeleteBooksCommand command = new DeleteBooksCommand();
 		for (int id : ids) {
-			command.getBooks().add(aCommandToDeleteBookWithId(id));
+			command.getIds().add(id);
 		}
 
 		return command;
 	}
 
-	private BookCommand aCommandToDeleteBookWithId(int id) {
-		BookCommand bookCommand = new BookCommand();
-		bookCommand.setChecked(true);
-		bookCommand.setId(id);
-
-		return bookCommand;
-	}
-
-	private void uncheckFirstBookIn(BooksCommand command) {
-		command.getBooks().get(0).setChecked(false);
-	}
-
-	private void whenControllerDeletePerformedWithCommand(BooksCommand command) throws Exception {
+	private void whenControllerDeletePerformedWithCommand(DeleteBooksCommand command) throws Exception {
 		mvcMockPerformResult = mvcMock.perform(post("/books/delete")
-				.flashAttr("booksCommand", command));
+				.flashAttr("deleteBooksCommand", command));
 	}
 
 	private void thenExpectDeleteInvokedOnRepository(Integer... ids) {
@@ -138,11 +125,12 @@ public class BooksControllerDeleteComponentTest {
 		verifyNoMoreInteractions(booksRepository);
 	}
 
-	private void thenExpectHttpRedirectWith(BooksCommand command) throws Exception {
+	private void thenExpectHttpRedirectWith(DeleteBooksCommand command) throws Exception {
 		mvcMockPerformResult
 				.andExpect(status().isFound())
 				.andExpect(redirectedUrl("/books/read"))
-				.andExpect(flash().attribute("booksCommand", sameInstance(command)));
+				.andExpect(flash().attribute("booksCommand",
+						hasBeanProperty("pager", sameInstance(command.getPager()))));
 	}
 
 }

@@ -24,12 +24,14 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
-import pl.jojczykp.bookstore.commands.BookCommand;
 import pl.jojczykp.bookstore.commands.BooksCommand;
+import pl.jojczykp.bookstore.commands.DeleteBooksCommand;
+import pl.jojczykp.bookstore.commands.MessagesCommand;
 import pl.jojczykp.bookstore.repositories.BooksRepository;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static pl.jojczykp.bookstore.controllers.BooksConsts.BOOKS_COMMAND;
+import static pl.jojczykp.bookstore.controllers.BooksConsts.DELETE_BOOKS_COMMAND;
 import static pl.jojczykp.bookstore.controllers.BooksConsts.URL_ACTION_DELETE;
 import static pl.jojczykp.bookstore.controllers.BooksConsts.URL_ACTION_READ;
 
@@ -40,24 +42,25 @@ public class BooksControllerDelete {
 
 	@RequestMapping(value = URL_ACTION_DELETE, method = POST)
 	public RedirectView delete(
-			@ModelAttribute(BOOKS_COMMAND) BooksCommand booksCommand,
+			@ModelAttribute(DELETE_BOOKS_COMMAND) DeleteBooksCommand deleteBooksCommand,
 			RedirectAttributes redirectAttributes)
 	{
-		for (BookCommand bookCommand : booksCommand.getBooks()) {
-			if (bookCommand.isChecked()) {
-				deleteBookFromRepository(bookCommand.getId(), booksCommand);
-			}
+		BooksCommand booksCommand = new BooksCommand();
+		booksCommand.setPager(deleteBooksCommand.getPager());
+
+		for (Integer id : deleteBooksCommand.getIds()) {
+			deleteBookFromRepository(id, booksCommand.getMessages());
 		}
 
 		return redirectToRead(booksCommand, redirectAttributes);
 	}
 
-	private void deleteBookFromRepository(int bookId, BooksCommand messagesContainer) {
+	private void deleteBookFromRepository(int bookId, MessagesCommand messagesContainer) {
 		try {
 			booksRepository.delete(bookId);
-			messagesContainer.getMessages().addInfos("Object deleted.");
+			messagesContainer.addInfos("Object deleted.");
 		} catch (ObjectNotFoundException ex) {
-			messagesContainer.getMessages().addWarns("Object already deleted.");
+			messagesContainer.addWarns("Object already deleted.");
 		}
 	}
 

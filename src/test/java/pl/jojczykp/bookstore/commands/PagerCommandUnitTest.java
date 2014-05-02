@@ -22,6 +22,7 @@ import org.junit.Test;
 import pl.jojczykp.bookstore.utils.PageSorter;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertThat;
@@ -37,11 +38,11 @@ public class PagerCommandUnitTest {
 
 	@Test
 	public void shouldBeSetUpByDefaultConstructor() {
-		assertThat(testee.getPageNumber(), equalTo(0));
-		assertThat(testee.getPageSize(), equalTo(0));
-		assertThat(testee.getPagesCount(), equalTo(0));
-		assertThat(testee.getTotalCount(), equalTo(0));
-		assertThat(testee.getSorter(), notNullValue());
+		assertThat(testee.getPageNumber(), is(0));
+		assertThat(testee.getPageSize(), is(0));
+		assertThat(testee.getPagesCount(), is(0));
+		assertThat(testee.getTotalCount(), is(0));
+		assertThat(testee.getSorter(), is(notNullValue()));
 	}
 
 	@Test

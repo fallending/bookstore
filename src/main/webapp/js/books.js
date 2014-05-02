@@ -35,10 +35,11 @@ function sendUpdate(id, index) {
 function sendDelete() {
 	var params = {};
 	var checkboxes = document.getElementsByClassName('deleteCheckbox');
-	for (var index = 0; index < checkboxes.length; index++) {
-		if (checkboxes[index].checked) {
-			params[('books[' + index + '].id')] = checkboxes[index].getAttribute('bookId')
-			params[('books[' + index + '].checked')] = 'on';
+	var idIndex = 0;
+	for (var checkboxIndex = 0; checkboxIndex < checkboxes.length; checkboxIndex++) {
+		if (checkboxes[checkboxIndex].checked) {
+			params['ids[' + idIndex + ']'] = checkboxes[checkboxIndex].getAttribute('bookId');
+			idIndex = idIndex + 1;
 		}
 	}
 	sendPost('delete', params)

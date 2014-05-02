@@ -31,6 +31,7 @@ public abstract class BooksConsts {
 	static final String BOOKS_COMMAND = "booksCommand";
 	static final String CREATE_BOOK_COMMAND = "createBookCommand";
 	static final String UPDATE_BOOK_COMMAND = "updateBookCommand";
+	static final String DELETE_BOOKS_COMMAND = "deleteBooksCommand";
 
 	static final String BOOKS_VIEW = "books";
 

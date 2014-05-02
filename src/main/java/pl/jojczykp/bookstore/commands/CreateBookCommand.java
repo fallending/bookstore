@@ -22,6 +22,11 @@ public class CreateBookCommand {
 	private PagerCommand pager;
 	private String title;
 
+	public CreateBookCommand() {
+		pager = new PagerCommand();
+		title = "";
+	}
+
 	public PagerCommand getPager() {
 		return pager;
 	}

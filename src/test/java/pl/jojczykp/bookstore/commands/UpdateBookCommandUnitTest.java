@@ -21,7 +21,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 public class UpdateBookCommandUnitTest {
@@ -31,6 +33,14 @@ public class UpdateBookCommandUnitTest {
 	@Before
 	public void setupInstance() {
 		testee = new UpdateBookCommand();
+	}
+
+	@Test
+	public void shouldBeSetUpByDefaultConstructor() {
+		assertThat(testee.getPager(), is(notNullValue()));
+		assertThat(testee.getId(), is(0));
+		assertThat(testee.getVersion(), is(0));
+		assertThat(testee.getTitle(), is(equalTo("")));
 	}
 
 	@Test

@@ -17,18 +17,17 @@
 
 package pl.jojczykp.bookstore.commands;
 
-public class UpdateBookCommand {
+import java.util.ArrayList;
+import java.util.List;
+
+public class DeleteBooksCommand {
 
 	private PagerCommand pager;
-	private int id;
-	private int version;
-	private String title;
+	private List<Integer> ids;
 
-	public UpdateBookCommand() {
+	public DeleteBooksCommand() {
 		pager = new PagerCommand();
-		id = 0;
-		version = 0;
-		title = "";
+		ids = new ArrayList<>();
 	}
 
 	public PagerCommand getPager() {
@@ -39,28 +38,12 @@ public class UpdateBookCommand {
 		this.pager = pager;
 	}
 
-	public int getId() {
-		return id;
+	public List<Integer> getIds() {
+		return ids;
 	}
 
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public int getVersion() {
-		return version;
-	}
-
-	public void setVersion(int version) {
-		this.version = version;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
+	public void setIds(List<Integer> ids) {
+		this.ids = ids;
 	}
 
 }

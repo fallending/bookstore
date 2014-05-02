@@ -20,26 +20,28 @@ package pl.jojczykp.bookstore.commands;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.equalTo;
+import java.util.List;
+
+import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.isEmptyString;
 import static org.junit.Assert.assertThat;
 
-public class CreateBookCommandUnitTest {
+public class DeleteBooksCommandUnitTest {
 
-	private CreateBookCommand testee;
+	private DeleteBooksCommand testee;
 
 	@Before
 	public void setupInstance() {
-		testee = new CreateBookCommand();
+		testee = new DeleteBooksCommand();
 	}
 
 	@Test
 	public void shouldBeSetUpByDefaultConstructor() {
 		assertThat(testee.getPager(), is(notNullValue()));
-		assertThat(testee.getTitle(), is(isEmptyString()));
+		assertThat(testee.getIds(), is(empty()));
 	}
 
 	@Test
@@ -52,12 +54,12 @@ public class CreateBookCommandUnitTest {
 	}
 
 	@Test
-	public void shouldSetTitle() {
-		final String title = "some title";
+	public void shouldSetIds() {
+		final List<Integer> ids = asList(1, 2, 3, 4, 5);
 
-		testee.setTitle(title);
+		testee.setIds(ids);
 
-		assertThat(testee.getTitle(), equalTo(title));
+		assertThat(testee.getIds(), is(sameInstance(ids)));
 	}
 
 }
