@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
  */
 
-package pl.jojczykp.bookstore.controllers;
+package pl.jojczykp.bookstore.controllers.errors;
 
 import org.junit.Before;
 import org.junit.Test;

@@ -15,14 +15,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
  */
 
-package pl.jojczykp.bookstore.controllers;
+package pl.jojczykp.bookstore.controllers.security;
 
-public abstract class SecurityConsts {
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-	static final String URL_PAGE_LOGIN = "/security/loginPage";
-	static final String URL_PAGE_LOGOUT = "/security/logoutPage";
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
-	static final String LOGIN_VIEW = "loginPage";
+@Controller
+public class SomeSecuredTestController {
 
-	static final String LOGOUT_ATTRIBUTE = "loggedOut";
+	public static final String SOME_SECURED_TEST_CONTROLLER_URL = "/some/secured/test/controller/url";
+
+	@RequestMapping(value = SOME_SECURED_TEST_CONTROLLER_URL + "/{viewToRender}", method = GET)
+	public String someControllerAction(@PathVariable String viewToRender) {
+		return viewToRender;
+	}
+
 }

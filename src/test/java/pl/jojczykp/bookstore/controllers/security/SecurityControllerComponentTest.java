@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
  */
 
-package pl.jojczykp.bookstore.controllers;
+package pl.jojczykp.bookstore.controllers.security;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -70,7 +70,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
-import static pl.jojczykp.bookstore.controllers.SomeSecuredTestController.SOME_SECURED_TEST_CONTROLLER_URL;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -121,7 +120,7 @@ public class SecurityControllerComponentTest {
 	public void shouldRedirectToLogInPageWhenNotLoggedIn() throws Exception {
 		givenUserNotLoggedIn();
 
-		whenPerformedGetForUrl(SOME_SECURED_TEST_CONTROLLER_URL);
+		whenPerformedGetForUrl(SomeSecuredTestController.SOME_SECURED_TEST_CONTROLLER_URL);
 
 		thenRedirectedTo("http://localhost" + URL_LOGIN_PAGE);
 		thenAuthenticationProviderNotUsed();
@@ -188,14 +187,14 @@ public class SecurityControllerComponentTest {
 	@Test
 	public void shouldUserControllersBeAccessibleForUser() throws Exception {
 		shouldUrlBeAccessibleForUserInRoles(
-				SOME_SECURED_TEST_CONTROLLER_URL, VIEW_EXCEPTION_PAGE,
+				SomeSecuredTestController.SOME_SECURED_TEST_CONTROLLER_URL, VIEW_EXCEPTION_PAGE,
 				"ROLE_USER");
 	}
 
 	@Test
 	public void shouldUserControllersBeAccessibleForAdmin() throws Exception {
 		shouldUrlBeAccessibleForUserInRoles(
-				SOME_SECURED_TEST_CONTROLLER_URL, VIEW_EXCEPTION_PAGE,
+				SomeSecuredTestController.SOME_SECURED_TEST_CONTROLLER_URL, VIEW_EXCEPTION_PAGE,
 				"ROLE_ADMIN");
 	}
 

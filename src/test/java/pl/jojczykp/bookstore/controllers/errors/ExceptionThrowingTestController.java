@@ -15,31 +15,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
  */
 
-package pl.jojczykp.bookstore.controllers;
+package pl.jojczykp.bookstore.controllers.errors;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static pl.jojczykp.bookstore.controllers.SecurityConsts.LOGIN_VIEW;
-import static pl.jojczykp.bookstore.controllers.SecurityConsts.LOGOUT_ATTRIBUTE;
-import static pl.jojczykp.bookstore.controllers.SecurityConsts.URL_PAGE_LOGIN;
-import static pl.jojczykp.bookstore.controllers.SecurityConsts.URL_PAGE_LOGOUT;
 
 @Controller
-public class SecurityController {
+public class ExceptionThrowingTestController {
 
-	@RequestMapping(value = URL_PAGE_LOGIN, method = GET)
-	public ModelAndView loginPage() {
-		return new ModelAndView(LOGIN_VIEW);
-	}
+	public static final String THROW_EXCEPTION_CONTROLLER_URL = "/throw/some_exception";
 
-	@RequestMapping(value = URL_PAGE_LOGOUT, method = GET)
-	public ModelAndView logoutPage() {
-		ModelMap modelMap = new ModelMap().addAttribute(LOGOUT_ATTRIBUTE, true);
-		return new ModelAndView(LOGIN_VIEW, modelMap);
+	@RequestMapping(value = THROW_EXCEPTION_CONTROLLER_URL, method = GET)
+	public ModelAndView throwException() {
+		throw new RuntimeException("a controllers exception");
 	}
 
 }

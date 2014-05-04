@@ -15,22 +15,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
  */
 
-package pl.jojczykp.bookstore.controllers;
+package pl.jojczykp.bookstore.controllers.security;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static pl.jojczykp.bookstore.consts.SecurityConsts.LOGIN_VIEW;
+import static pl.jojczykp.bookstore.consts.SecurityConsts.LOGOUT_ATTRIBUTE;
+import static pl.jojczykp.bookstore.consts.SecurityConsts.URL_PAGE_LOGIN;
+import static pl.jojczykp.bookstore.consts.SecurityConsts.URL_PAGE_LOGOUT;
 
 @Controller
-public class SomeSecuredTestController {
+public class SecurityController {
 
-	public static final String SOME_SECURED_TEST_CONTROLLER_URL = "/some/secured/test/controller/url";
+	@RequestMapping(value = URL_PAGE_LOGIN, method = GET)
+	public ModelAndView loginPage() {
+		return new ModelAndView(LOGIN_VIEW);
+	}
 
-	@RequestMapping(value = SOME_SECURED_TEST_CONTROLLER_URL + "/{viewToRender}", method = GET)
-	public String someControllerAction(@PathVariable String viewToRender) {
-		return viewToRender;
+	@RequestMapping(value = URL_PAGE_LOGOUT, method = GET)
+	public ModelAndView logoutPage() {
+		ModelMap modelMap = new ModelMap().addAttribute(LOGOUT_ATTRIBUTE, true);
+		return new ModelAndView(LOGIN_VIEW, modelMap);
 	}
 
 }

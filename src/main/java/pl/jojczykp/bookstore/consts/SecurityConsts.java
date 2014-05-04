@@ -15,22 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
  */
 
-package pl.jojczykp.bookstore.controllers;
+package pl.jojczykp.bookstore.consts;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
+public abstract class SecurityConsts {
 
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
+	public static final String URL_PAGE_LOGIN = "/security/loginPage";
+	public static final String URL_PAGE_LOGOUT = "/security/logoutPage";
 
-@Controller
-public class ExceptionThrowingTestController {
+	public static final String LOGIN_VIEW = "loginPage";
 
-	public static final String THROW_EXCEPTION_CONTROLLER_URL = "/throw/some_exception";
-
-	@RequestMapping(value = THROW_EXCEPTION_CONTROLLER_URL, method = GET)
-	public ModelAndView throwException() {
-		throw new RuntimeException("a controllers exception");
-	}
-
+	public static final String LOGOUT_ATTRIBUTE = "loggedOut";
 }

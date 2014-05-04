@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
  */
 
-package pl.jojczykp.bookstore.controllers;
+package pl.jojczykp.bookstore.controllers.errors;
 
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -23,7 +23,7 @@ import org.springframework.web.servlet.ModelAndView;
 import pl.jojczykp.bookstore.commands.ExceptionCommand;
 
 import static org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace;
-import static pl.jojczykp.bookstore.controllers.BooksConsts.EXCEPTION_VIEW;
+import static pl.jojczykp.bookstore.consts.BooksConsts.EXCEPTION_VIEW;
 
 @ControllerAdvice
 public class ControllerExceptionHandler {

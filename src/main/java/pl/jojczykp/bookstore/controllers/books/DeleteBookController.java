@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
  */
 
-package pl.jojczykp.bookstore.controllers;
+package pl.jojczykp.bookstore.controllers.books;
 
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,10 +30,10 @@ import pl.jojczykp.bookstore.commands.MessagesCommand;
 import pl.jojczykp.bookstore.repositories.BooksRepository;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
-import static pl.jojczykp.bookstore.controllers.BooksConsts.DISPLAY_BOOKS_COMMAND;
-import static pl.jojczykp.bookstore.controllers.BooksConsts.DELETE_BOOKS_COMMAND;
-import static pl.jojczykp.bookstore.controllers.BooksConsts.URL_ACTION_DELETE;
-import static pl.jojczykp.bookstore.controllers.BooksConsts.URL_ACTION_LIST;
+import static pl.jojczykp.bookstore.consts.BooksConsts.DISPLAY_BOOKS_COMMAND;
+import static pl.jojczykp.bookstore.consts.BooksConsts.DELETE_BOOKS_COMMAND;
+import static pl.jojczykp.bookstore.consts.BooksConsts.URL_ACTION_DELETE;
+import static pl.jojczykp.bookstore.consts.BooksConsts.URL_ACTION_LIST;
 
 @Controller
 public class DeleteBookController {
