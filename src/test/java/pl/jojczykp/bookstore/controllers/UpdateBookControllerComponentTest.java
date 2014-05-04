@@ -17,6 +17,7 @@
 
 package pl.jojczykp.bookstore.controllers;
 
+import org.hibernate.StaleObjectStateException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,11 +35,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.validation.Errors;
 import org.springframework.web.context.WebApplicationContext;
-import pl.jojczykp.bookstore.assemblers.CreateBookAssembler;
-import pl.jojczykp.bookstore.commands.CreateBookCommand;
+import pl.jojczykp.bookstore.assemblers.UpdateBookAssembler;
+import pl.jojczykp.bookstore.commands.UpdateBookCommand;
 import pl.jojczykp.bookstore.entities.Book;
 import pl.jojczykp.bookstore.repositories.BooksRepository;
-import pl.jojczykp.bookstore.validators.BooksCreateValidator;
+import pl.jojczykp.bookstore.validators.BooksUpdateValidator;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
@@ -47,6 +48,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -59,25 +61,27 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 import static pl.jojczykp.bookstore.testutils.controllers.MessagesControllerTestUtils.thenExpectErrorOnlyFlashMessages;
 import static pl.jojczykp.bookstore.testutils.controllers.MessagesControllerTestUtils.thenExpectInfoOnlyFlashMessages;
+import static pl.jojczykp.bookstore.testutils.controllers.MessagesControllerTestUtils.thenExpectWarnOnlyFlashMessages;
 import static pl.jojczykp.bookstore.testutils.matchers.HasBeanProperty.hasBeanProperty;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration("classpath:spring/controllers-test-context.xml")
-public class BooksControllerCreateComponentTest {
+public class UpdateBookControllerComponentTest {
 
 	private static final String VALIDATOR_ERROR_MESSAGE = "An error message from validator.";
 
 	private MockMvc mvcMock;
 	private ResultActions mvcMockPerformResult;
-	@Autowired private BooksCreateValidator booksCreateValidator;
-	@Autowired private CreateBookAssembler createBookAssembler;
+	@Autowired private BooksUpdateValidator booksUpdateValidator;
+	@Autowired private UpdateBookAssembler updateBookAssembler;
 	@Autowired private BooksRepository booksRepository;
 	@Autowired private WebApplicationContext wac;
 
-	@Captor private ArgumentCaptor<CreateBookCommand> createBookCommandCaptor;
-	@Captor private ArgumentCaptor<Book> createdBookCaptor;
+	@Captor private ArgumentCaptor<UpdateBookCommand> updateBookCommandCaptor;
+	@Captor private ArgumentCaptor<Book> updatedBookCaptor;
 
+	@Mock private StaleObjectStateException staleObjectStateException;
 	@Mock private Book book;
 
 	@Before
@@ -86,42 +90,61 @@ public class BooksControllerCreateComponentTest {
 				.alwaysDo(print())
 				.build();
 		MockitoAnnotations.initMocks(this);
-		reset(booksCreateValidator);
-		reset(createBookAssembler);
+		reset(booksUpdateValidator);
+		reset(updateBookAssembler);
 		reset(booksRepository);
-		given(createBookAssembler.toDomain(any(CreateBookCommand.class))).willReturn(book);
+		given(updateBookAssembler.toDomain(any(UpdateBookCommand.class))).willReturn(book);
 	}
 
 	@Test
-	public void shouldCreateBook() throws Exception {
-		final CreateBookCommand command = new CreateBookCommand();
+	public void shouldUpdateBook() throws Exception {
+		final UpdateBookCommand command = new UpdateBookCommand();
 
-		whenControllerCreatePerformedWithCommand(command);
+		whenControllerUpdatePerformedWithCommand(command);
 
 		thenExpectValidationInvokedFor(command);
 		thenExpectAssemblingCommandToDomainInvokedFor(command);
-		thenExpectCreateInvokedOnRepository();
-		thenExpectInfoOnlyFlashMessages(mvcMockPerformResult, "Object created.");
+		thenExpectUpdateInvokedOnRepository();
+		thenExpectInfoOnlyFlashMessages(mvcMockPerformResult, "Object updated.");
+		thenExpectHttpRedirectWith(command);
+	}
+
+	@Test
+	public void shouldFailConcurrentlyUpdatingUpdatedBook() throws Exception {
+		final UpdateBookCommand command = new UpdateBookCommand();
+		givenObjectConcurrentlyUpdated();
+
+		whenControllerUpdatePerformedWithCommand(command);
+
+		thenExpectValidationInvokedFor(command);
+		thenExpectAssemblingCommandToDomainInvokedFor(command);
+		thenExpectUpdateInvokedOnRepository();
+		thenExpectWarnOnlyFlashMessages(mvcMockPerformResult,
+				"Object updated or deleted by another user. Please try again with actual data.");
 		thenExpectHttpRedirectWith(command);
 	}
 
 	@Test
 	public void shouldFailOnCommandValidationError() throws Exception {
-		final CreateBookCommand command = new CreateBookCommand();
+		final UpdateBookCommand command = new UpdateBookCommand();
 		givenNegativeValidation();
 
-		whenControllerCreatePerformedWithCommand(command);
+		whenControllerUpdatePerformedWithCommand(command);
 
 		thenExpectValidationInvokedFor(command);
 		thenExpectAssemblingCommandToDomainNotInvoked();
-		thenExpectCreateNotInvokedOnRepository();
+		thenExpectUpdateNotInvokedOnRepository();
 		thenExpectErrorOnlyFlashMessages(mvcMockPerformResult, VALIDATOR_ERROR_MESSAGE);
 		thenExpectHttpRedirectWith(command);
 	}
 
+	private void givenObjectConcurrentlyUpdated() {
+		doThrow(staleObjectStateException).when(booksRepository).update(any(Book.class));
+	}
+
 	private void givenNegativeValidation() {
 		doAnswer(validationError())
-				.when(booksCreateValidator).validate(anyObject(), any(Errors.class));
+				.when(booksUpdateValidator).validate(anyObject(), any(Errors.class));
 	}
 
 	private Answer<Void> validationError() {
@@ -135,38 +158,38 @@ public class BooksControllerCreateComponentTest {
 		};
 	}
 
-	private void whenControllerCreatePerformedWithCommand(CreateBookCommand command) throws Exception {
-		mvcMockPerformResult = mvcMock.perform(post("/books/create")
-				.flashAttr("createBookCommand", command));
+	private void whenControllerUpdatePerformedWithCommand(UpdateBookCommand command) throws Exception {
+		mvcMockPerformResult = mvcMock.perform(post("/books/update")
+				.flashAttr("updateBookCommand", command));
 	}
 
-	private void thenExpectValidationInvokedFor(CreateBookCommand createBooksCommand) {
-		verify(booksCreateValidator).validate(createBookCommandCaptor.capture(), any(Errors.class));
-		assertThat(createBookCommandCaptor.getValue(), is(sameInstance(createBooksCommand)));
-		verifyNoMoreInteractions(booksCreateValidator);
+	private void thenExpectValidationInvokedFor(UpdateBookCommand updateBookCommand) {
+		verify(booksUpdateValidator).validate(updateBookCommandCaptor.capture(), any(Errors.class));
+		assertThat(updateBookCommandCaptor.getValue(), is(sameInstance(updateBookCommand)));
+		verifyNoMoreInteractions(booksUpdateValidator);
 	}
 
-	private void thenExpectAssemblingCommandToDomainInvokedFor(CreateBookCommand createBookCommand) {
-		verify(createBookAssembler).toDomain(createBookCommandCaptor.capture());
-		assertThat(createBookCommandCaptor.getValue(), is(sameInstance(createBookCommand)));
-		verifyNoMoreInteractions(createBookAssembler);
+	private void thenExpectAssemblingCommandToDomainInvokedFor(UpdateBookCommand updateBookCommand) {
+		verify(updateBookAssembler).toDomain(updateBookCommandCaptor.capture());
+		assertThat(updateBookCommandCaptor.getValue(), is(sameInstance(updateBookCommand)));
+		verifyNoMoreInteractions(updateBookAssembler);
 	}
 
 	private void thenExpectAssemblingCommandToDomainNotInvoked() {
-		verifyZeroInteractions(createBookAssembler);
+		verifyZeroInteractions(updateBookAssembler);
 	}
 
-	private void thenExpectCreateInvokedOnRepository() {
-		verify(booksRepository).create(createdBookCaptor.capture());
-		assertThat(createdBookCaptor.getValue(), is(sameInstance(book)));
+	private void thenExpectUpdateInvokedOnRepository() {
+		verify(booksRepository).update(updatedBookCaptor.capture());
+		assertThat(updatedBookCaptor.getValue(), is(sameInstance(book)));
 		verifyNoMoreInteractions(booksRepository);
 	}
 
-	private void thenExpectCreateNotInvokedOnRepository() {
+	private void thenExpectUpdateNotInvokedOnRepository() {
 		verifyZeroInteractions(booksRepository);
 	}
 
-	private void thenExpectHttpRedirectWith(CreateBookCommand command) throws Exception {
+	private void thenExpectHttpRedirectWith(UpdateBookCommand command) throws Exception {
 		mvcMockPerformResult
 				.andExpect(status().isFound())
 				.andExpect(redirectedUrl("/books/display"))

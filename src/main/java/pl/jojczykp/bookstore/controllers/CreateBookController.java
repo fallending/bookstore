@@ -38,7 +38,7 @@ import static pl.jojczykp.bookstore.controllers.BooksConsts.URL_ACTION_CREATE;
 import static pl.jojczykp.bookstore.controllers.BooksConsts.URL_ACTION_LIST;
 
 @Controller
-public class BooksControllerCreate {
+public class CreateBookController {
 
 	@Autowired private BooksCreateValidator booksCreateValidator;
 	@Autowired private BooksRepository booksRepository;

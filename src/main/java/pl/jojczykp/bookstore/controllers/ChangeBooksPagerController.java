@@ -39,7 +39,7 @@ import static pl.jojczykp.bookstore.controllers.BooksConsts.URL_ACTION_SET_PAGE_
 import static pl.jojczykp.bookstore.controllers.BooksConsts.URL_ACTION_SORT;
 
 @Controller
-public class BooksControllerPager {
+public class ChangeBooksPagerController {
 
 	@Autowired private BooksSetPageSizeValidator booksSetPageSizeValidator;
 

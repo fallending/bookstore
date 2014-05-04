@@ -55,7 +55,7 @@ import static pl.jojczykp.bookstore.testutils.matchers.HasBeanProperty.hasBeanPr
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration("classpath:spring/controllers-test-context.xml")
-public class BooksControllerDeleteComponentTest {
+public class DeleteBookControllerComponentTest {
 
 	private static final int EXISTING_ID_1 = 3;
 	private static final int EXISTING_ID_2 = 7;

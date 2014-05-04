@@ -39,7 +39,7 @@ import static pl.jojczykp.bookstore.controllers.BooksConsts.BOOKS_VIEW;
 import static pl.jojczykp.bookstore.controllers.BooksConsts.URL_ACTION_LIST;
 
 @Controller
-public class BooksControllerRead {
+public class DisplayBooksController {
 
 	@Autowired private BooksCommandFactory booksCommandFactory;
 	@Autowired private PagerLimiter pagerLimiter;
@@ -52,7 +52,7 @@ public class BooksControllerRead {
 	}
 
 	@RequestMapping(value = URL_ACTION_LIST, method = GET)
-	public ModelAndView read(
+	public ModelAndView display(
 			@ModelAttribute(DISPLAY_BOOKS_COMMAND) DisplayBooksCommand displayBooksCommand)
 	{
 		PagerCommand limitedPager = pagerLimiter.createLimited(

@@ -39,7 +39,7 @@ import static pl.jojczykp.bookstore.controllers.BooksConsts.URL_ACTION_LIST;
 import static pl.jojczykp.bookstore.controllers.BooksConsts.URL_ACTION_UPDATE;
 
 @Controller
-public class BooksControllerUpdate {
+public class UpdateBookController {
 
 	@Autowired private BooksUpdateValidator booksUpdateValidator;
 	@Autowired private BooksRepository booksRepository;

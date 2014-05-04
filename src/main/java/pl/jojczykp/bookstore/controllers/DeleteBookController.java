@@ -36,7 +36,7 @@ import static pl.jojczykp.bookstore.controllers.BooksConsts.URL_ACTION_DELETE;
 import static pl.jojczykp.bookstore.controllers.BooksConsts.URL_ACTION_LIST;
 
 @Controller
-public class BooksControllerDelete {
+public class DeleteBookController {
 
 	@Autowired private BooksRepository booksRepository;
 
