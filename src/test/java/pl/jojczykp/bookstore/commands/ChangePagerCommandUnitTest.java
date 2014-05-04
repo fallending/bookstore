@@ -15,26 +15,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
  */
 
-package pl.jojczykp.bookstore.validators;
+package pl.jojczykp.bookstore.commands;
 
-import org.springframework.stereotype.Service;
-import org.springframework.validation.Errors;
-import org.springframework.validation.Validator;
-import pl.jojczykp.bookstore.commands.UpdateBookCommand;
+import org.junit.Before;
+import org.junit.Test;
 
-import static org.springframework.validation.ValidationUtils.rejectIfEmptyOrWhitespace;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
-@Service
-public class BooksUpdateValidator implements Validator {
+public class ChangePagerCommandUnitTest {
 
-	@Override
-	public boolean supports(Class<?> clazz) {
-		return (UpdateBookCommand.class.equals(clazz));
+	private ChangePagerCommand testee;
+
+	@Before
+	public void setupInstance() {
+		testee = new ChangePagerCommand();
 	}
 
-	@Override
-	public void validate(Object object, Errors errors) {
-		rejectIfEmptyOrWhitespace(errors,
-				"title", "title.empty", "Updating with empty title is not allowed.");
+	@Test
+	public void shouldBeSetUpByDefaultConstructor() {
+		assertThat(testee.getPager(), is(notNullValue()));
 	}
+
+	@Test
+	public void shouldSetPager() {
+		final PagerCommand pager = new PagerCommand();
+
+		testee.setPager(pager);
+
+		assertThat(testee.getPager(), sameInstance(pager));
+	}
+
 }

@@ -27,10 +27,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 import pl.jojczykp.bookstore.commands.BooksCommand;
+import pl.jojczykp.bookstore.commands.ChangePagerCommand;
 import pl.jojczykp.bookstore.validators.BooksSetPageSizeValidator;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static pl.jojczykp.bookstore.controllers.BooksConsts.BOOKS_COMMAND;
+import static pl.jojczykp.bookstore.controllers.BooksConsts.CHANGE_PAGER_COMMAND;
 import static pl.jojczykp.bookstore.controllers.BooksConsts.URL_ACTION_GO_TO_PAGE;
 import static pl.jojczykp.bookstore.controllers.BooksConsts.URL_ACTION_READ;
 import static pl.jojczykp.bookstore.controllers.BooksConsts.URL_ACTION_SET_PAGE_SIZE;
@@ -45,44 +47,63 @@ public class BooksControllerPager {
 
 	@RequestMapping(value = URL_ACTION_SORT, method = POST)
 	public RedirectView sort(
-			@ModelAttribute(BOOKS_COMMAND) BooksCommand booksCommand,
+			@ModelAttribute(CHANGE_PAGER_COMMAND) ChangePagerCommand changePagerCommand,
 			RedirectAttributes redirectAttributes)
 	{
+		BooksCommand booksCommand = new BooksCommand();
+		booksCommand.setPager(changePagerCommand.getPager());
+
 		return redirectToRead(booksCommand, redirectAttributes);
 	}
 
 	@RequestMapping(value = URL_ACTION_SET_PAGE_SIZE, method = POST)
 	public RedirectView setPageSize(
-			@ModelAttribute(BOOKS_COMMAND) BooksCommand booksCommand,
+			@ModelAttribute(CHANGE_PAGER_COMMAND) ChangePagerCommand changePagerCommand,
 			RedirectAttributes redirectAttributes,
 			BindingResult bindingResult)
 	{
-		booksSetPageSizeValidator.validate(booksCommand, bindingResult);
+		booksSetPageSizeValidator.validate(changePagerCommand, bindingResult);
+
+		BooksCommand booksCommand;
 		if (bindingResult.hasErrors()) {
-			processWhenCommandInvalid(booksCommand, bindingResult);
+			booksCommand = processWhenSetPageSizeCommandInvalid(changePagerCommand, bindingResult);
 		} else {
-			processWhenCommandValid(booksCommand);
+			booksCommand = processWhenSetPageSizeCommandValid(changePagerCommand);
 		}
 
 		return redirectToRead(booksCommand, redirectAttributes);
 	}
 
-	private void processWhenCommandInvalid(BooksCommand booksCommand, BindingResult bindingResult) {
+	private BooksCommand processWhenSetPageSizeCommandInvalid(
+							ChangePagerCommand changePagerCommand, BindingResult bindingResult) {
+		BooksCommand booksCommand = new BooksCommand();
+		booksCommand.setPager(changePagerCommand.getPager());
+
 		booksCommand.getPager().setPageSize(defaultPageSize);
 		for(ObjectError error: bindingResult.getAllErrors()) {
 			booksCommand.getMessages().addErrors(error.getDefaultMessage());
 		}
+
+		return booksCommand;
 	}
 
-	private void processWhenCommandValid(BooksCommand booksCommand) {
+	private BooksCommand processWhenSetPageSizeCommandValid(ChangePagerCommand changePagerCommand) {
+		BooksCommand booksCommand = new BooksCommand();
+		booksCommand.setPager(changePagerCommand.getPager());
+
 		booksCommand.getMessages().addInfos("Page size changed.");
+
+		return booksCommand;
 	}
 
 	@RequestMapping(value = URL_ACTION_GO_TO_PAGE, method = POST)
 	public RedirectView goToPage(
-			@ModelAttribute(BOOKS_COMMAND) BooksCommand booksCommand,
+			@ModelAttribute(CHANGE_PAGER_COMMAND) ChangePagerCommand changePagerCommand,
 			RedirectAttributes redirectAttributes)
 	{
+		BooksCommand booksCommand = new BooksCommand();
+		booksCommand.setPager(changePagerCommand.getPager());
+
 		return redirectToRead(booksCommand, redirectAttributes);
 	}
 

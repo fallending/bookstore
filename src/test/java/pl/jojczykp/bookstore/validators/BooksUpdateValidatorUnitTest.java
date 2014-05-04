@@ -22,7 +22,6 @@ import org.junit.Test;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
-import pl.jojczykp.bookstore.commands.BooksCommand;
 import pl.jojczykp.bookstore.commands.UpdateBookCommand;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -39,8 +38,8 @@ public class BooksUpdateValidatorUnitTest {
 	}
 
 	@Test
-	public void shouldSupportBooksCommand() {
-		final Class<?> clazz = BooksCommand.class;
+	public void shouldSupportCorrectCommandClass() {
+		final Class<?> clazz = UpdateBookCommand.class;
 
 		boolean supports = testee.supports(clazz);
 

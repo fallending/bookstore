@@ -20,19 +20,19 @@ package pl.jojczykp.bookstore.validators;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
-import pl.jojczykp.bookstore.commands.BooksCommand;
+import pl.jojczykp.bookstore.commands.ChangePagerCommand;
 
 @Service
 public class BooksSetPageSizeValidator implements Validator {
 
 	@Override
 	public boolean supports(Class<?> clazz) {
-		return (BooksCommand.class.equals(clazz));
+		return (ChangePagerCommand.class.equals(clazz));
 	}
 
 	@Override
 	public void validate(Object object, Errors errors) {
-		BooksCommand command = (BooksCommand) object;
+		ChangePagerCommand command = (ChangePagerCommand) object;
 		int pageSize = command.getPager().getPageSize();
 
 		if (pageSize <= 0) {

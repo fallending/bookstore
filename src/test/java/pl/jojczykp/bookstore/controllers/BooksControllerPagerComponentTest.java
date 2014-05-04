@@ -31,7 +31,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.validation.Errors;
 import org.springframework.web.context.WebApplicationContext;
-import pl.jojczykp.bookstore.commands.BooksCommand;
+import pl.jojczykp.bookstore.commands.ChangePagerCommand;
 import pl.jojczykp.bookstore.repositories.BooksRepository;
 import pl.jojczykp.bookstore.utils.PageSorterColumn;
 import pl.jojczykp.bookstore.utils.PageSorterDirection;
@@ -100,7 +100,7 @@ public class BooksControllerPagerComponentTest {
 	public void shouldSort() throws Exception {
 		final PageSorterColumn sortColumn = BOOK_TITLE;
 		final PageSorterDirection sortDirection = DESC;
-		final BooksCommand command = aSortBooksCommand(sortColumn, sortDirection);
+		final ChangePagerCommand command = aChangeSortCommand(sortColumn, sortDirection);
 
 		whenUrlActionPerformedWithCommand(URL_ACTION_SORT, command);
 
@@ -113,7 +113,7 @@ public class BooksControllerPagerComponentTest {
 	@Test
 	public void shouldSetPageSize() throws Exception {
 		final int pageSize = 9;
-		final BooksCommand command = aPageSizeBooksCommand(pageSize);
+		final ChangePagerCommand command = aChangePageSizeCommand(pageSize);
 
 		whenUrlActionPerformedWithCommand(URL_ACTION_SET_PAGE_SIZE, command);
 
@@ -126,7 +126,7 @@ public class BooksControllerPagerComponentTest {
 	@Test
 	public void shouldSetPageSizeFailOnNotPositiveValue() throws Exception {
 		final int pageSize = -1;
-		final BooksCommand command = aPageSizeBooksCommand(pageSize);
+		final ChangePagerCommand command = aChangePageSizeCommand(pageSize);
 		givenNegativeValidation();
 
 		whenUrlActionPerformedWithCommand(URL_ACTION_SET_PAGE_SIZE, command);
@@ -140,7 +140,7 @@ public class BooksControllerPagerComponentTest {
 	@Test
 	public void shouldGoToPage() throws Exception {
 		final int pageNumber = 3;
-		final BooksCommand command = aPageNumberBooksCommand(pageNumber);
+		final ChangePagerCommand command = aPageNumberPagerCommand(pageNumber);
 
 		whenUrlActionPerformedWithCommand(URL_ACTION_GO_TO_PAGE, command);
 
@@ -154,26 +154,27 @@ public class BooksControllerPagerComponentTest {
 		given(booksRepository.totalCount()).willReturn(PAGES_COUNT * PAGE_SIZE - 2);
 	}
 
-	private void whenUrlActionPerformedWithCommand(String action, BooksCommand bookCommand) throws Exception {
+	private void whenUrlActionPerformedWithCommand(
+											String action, ChangePagerCommand changePagerCommand) throws Exception {
 		mvcMockPerformResult = mvcMock.perform(post(action)
-				.flashAttr(BOOKS_COMMAND, bookCommand));
+				.flashAttr("changePagerCommand", changePagerCommand));
 	}
 
-	private BooksCommand aPageNumberBooksCommand(int pageNumber) {
-		return aBooksCommand(pageNumber, PAGE_SIZE, PAGES_COUNT, SORT_COLUMN, SORT_DIRECTION);
+	private ChangePagerCommand aPageNumberPagerCommand(int pageNumber) {
+		return aChangePagerCommand(pageNumber, PAGE_SIZE, PAGES_COUNT, SORT_COLUMN, SORT_DIRECTION);
 	}
 
-	private BooksCommand aSortBooksCommand(PageSorterColumn sortColumn, PageSorterDirection sortDirection) {
-		return aBooksCommand(PAGE_NUMBER, PAGE_SIZE, PAGES_COUNT, sortColumn, sortDirection);
+	private ChangePagerCommand aChangeSortCommand(PageSorterColumn sortColumn, PageSorterDirection sortDirection) {
+		return aChangePagerCommand(PAGE_NUMBER, PAGE_SIZE, PAGES_COUNT, sortColumn, sortDirection);
 	}
 
-	private BooksCommand aPageSizeBooksCommand(int pageSize) {
-		return aBooksCommand(PAGE_NUMBER, pageSize, PAGES_COUNT, SORT_COLUMN, SORT_DIRECTION);
+	private ChangePagerCommand aChangePageSizeCommand(int pageSize) {
+		return aChangePagerCommand(PAGE_NUMBER, pageSize, PAGES_COUNT, SORT_COLUMN, SORT_DIRECTION);
 	}
 
-	private BooksCommand aBooksCommand(int pageNumber, int pageSize, int pagesCount,
-									   PageSorterColumn sortColumn, PageSorterDirection sortDirection) {
-		BooksCommand command = new BooksCommand();
+	private ChangePagerCommand aChangePagerCommand(int pageNumber, int pageSize, int pagesCount,
+												   PageSorterColumn sortColumn, PageSorterDirection sortDirection) {
+		ChangePagerCommand command = new ChangePagerCommand();
 		command.getPager().setPageNumber(pageNumber);
 		command.getPager().setPageSize(pageSize);
 		command.getPager().setPagesCount(pagesCount);
@@ -235,11 +236,12 @@ public class BooksControllerPagerComponentTest {
 						hasBeanProperty("pager.sorter.direction", equalTo(sortDirection))));
 	}
 
-	private void thenExpectHttpRedirectWith(BooksCommand command) throws Exception {
+	private void thenExpectHttpRedirectWith(ChangePagerCommand command) throws Exception {
 		mvcMockPerformResult
 				.andExpect(status().isFound())
 				.andExpect(redirectedUrl("/books/read"))
-				.andExpect(flash().attribute("booksCommand", sameInstance(command)));
+				.andExpect(flash().attribute("booksCommand",
+						hasBeanProperty("pager", sameInstance(command.getPager()))));
 	}
 
 }
