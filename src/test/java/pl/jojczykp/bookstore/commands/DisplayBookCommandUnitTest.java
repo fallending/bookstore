@@ -21,7 +21,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 public class DisplayBookCommandUnitTest {
@@ -31,15 +30,6 @@ public class DisplayBookCommandUnitTest {
 	@Before
 	public void setupInstance() {
 		testee = new DisplayBookCommand();
-	}
-
-	@Test
-	public void shouldSetChecked() {
-		final boolean checked = true;
-
-		testee.setChecked(checked);
-
-		assertThat(testee.isChecked(), is(checked));
 	}
 
 	@Test

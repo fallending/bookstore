@@ -164,7 +164,7 @@
 			<#list displayBooksCommand.books as book>
 				<tr>
 					<td>
-						<@spring.formCheckbox path="displayBooksCommand.books[" + book_index + "].checked" attributes="class='deleteCheckbox' bookId='${displayBooksCommand.books[book_index].id}'"/>
+						<input type="checkbox" class="deleteCheckbox" bookId="${displayBooksCommand.books[book_index].id}"/>
 					</td>
 					<td>#${book.id}</td>
 					<td>
@@ -198,7 +198,7 @@
 <#macro sectionCreate>
 	<div class="sectionCreate">
 		<h3>Create new book:</h3>
-		Title: <input id="newBook.title" type="text " "class='createInput'"/>
+		Title: <input id="newBook.title" type="text " class="createInput"/>
 		<input type="button" value="create" class="createButton" onClick="sendCreate()"/>
 	</div>
 </#macro>

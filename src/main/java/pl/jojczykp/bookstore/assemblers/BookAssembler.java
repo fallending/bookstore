@@ -43,7 +43,6 @@ public class BookAssembler {
 
 	private DisplayBookCommand toCommand(Book domain) {
 		DisplayBookCommand command = new DisplayBookCommand();
-		command.setChecked(false);
 		command.setId(domain.getId());
 		command.setVersion(domain.getVersion());
 		command.setTitle(domain.getTitle());

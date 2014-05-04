@@ -21,7 +21,6 @@ public class DisplayBookCommand {
 
 	private int id;
 	private int version;
-	private boolean checked;
 	private String title;
 
 	public int getId() {
@@ -38,14 +37,6 @@ public class DisplayBookCommand {
 
 	public void setVersion(int version) {
 		this.version = version;
-	}
-
-	public boolean isChecked() {
-		return checked;
-	}
-
-	public void setChecked(boolean checked) {
-		this.checked = checked;
 	}
 
 	public String getTitle() {
