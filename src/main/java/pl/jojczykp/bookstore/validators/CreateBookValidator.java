@@ -25,7 +25,7 @@ import pl.jojczykp.bookstore.commands.books.CreateBookCommand;
 import static org.springframework.validation.ValidationUtils.rejectIfEmptyOrWhitespace;
 
 @Service
-public class BooksCreateValidator implements Validator {
+public class CreateBookValidator implements Validator {
 
 	@Override
 	public boolean supports(Class<?> clazz) {

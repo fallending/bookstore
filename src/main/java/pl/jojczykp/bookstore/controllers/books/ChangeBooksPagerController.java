@@ -28,7 +28,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 import pl.jojczykp.bookstore.commands.books.ChangePagerCommand;
 import pl.jojczykp.bookstore.commands.books.DisplayBooksCommand;
-import pl.jojczykp.bookstore.validators.BooksSetPageSizeValidator;
+import pl.jojczykp.bookstore.validators.ChangePagerValidator;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static pl.jojczykp.bookstore.consts.BooksConsts.DISPLAY_BOOKS_COMMAND;
@@ -41,7 +41,7 @@ import static pl.jojczykp.bookstore.consts.BooksConsts.URL_ACTION_SORT;
 @Controller
 public class ChangeBooksPagerController {
 
-	@Autowired private BooksSetPageSizeValidator booksSetPageSizeValidator;
+	@Autowired private ChangePagerValidator changePagerValidator;
 
 	@Value("${view.books.defaultPageSize}") private int defaultPageSize;
 
@@ -62,7 +62,7 @@ public class ChangeBooksPagerController {
 			RedirectAttributes redirectAttributes,
 			BindingResult bindingResult)
 	{
-		booksSetPageSizeValidator.validate(changePagerCommand, bindingResult);
+		changePagerValidator.validate(changePagerCommand, bindingResult);
 
 		DisplayBooksCommand displayBooksCommand;
 		if (bindingResult.hasErrors()) {

@@ -35,7 +35,7 @@ import pl.jojczykp.bookstore.commands.books.ChangePagerCommand;
 import pl.jojczykp.bookstore.repositories.BooksRepository;
 import pl.jojczykp.bookstore.utils.PageSorterColumn;
 import pl.jojczykp.bookstore.utils.PageSorterDirection;
-import pl.jojczykp.bookstore.validators.BooksSetPageSizeValidator;
+import pl.jojczykp.bookstore.validators.ChangePagerValidator;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.sameInstance;
@@ -82,7 +82,7 @@ public class ChangeBooksPagerControllerComponentTest {
 	private MockMvc mvcMock;
 	private ResultActions mvcMockPerformResult;
 	@Autowired private BooksRepository booksRepository;
-	@Autowired private BooksSetPageSizeValidator booksSetPageSizeValidator;
+	@Autowired private ChangePagerValidator changePagerValidator;
 	@Autowired private WebApplicationContext wac;
 
 	@Value("${view.books.defaultPageSize}") private int defaultPageSize;
@@ -93,7 +93,7 @@ public class ChangeBooksPagerControllerComponentTest {
 				.alwaysDo(print())
 				.build();
 		givenRepositoryMockConfigured();
-		reset(booksSetPageSizeValidator);
+		reset(changePagerValidator);
 	}
 
 	@Test
@@ -186,7 +186,7 @@ public class ChangeBooksPagerControllerComponentTest {
 
 	private void givenNegativeValidation() {
 		doAnswer(validationError())
-				.when(booksSetPageSizeValidator).validate(anyObject(), any(Errors.class));
+				.when(changePagerValidator).validate(anyObject(), any(Errors.class));
 	}
 
 	private Answer<Void> validationError() {
@@ -201,12 +201,12 @@ public class ChangeBooksPagerControllerComponentTest {
 	}
 
 	private void thenExpectValidationInvoked() {
-		verify(booksSetPageSizeValidator).validate(anyObject(), any(Errors.class));
-		verifyNoMoreInteractions(booksSetPageSizeValidator);
+		verify(changePagerValidator).validate(anyObject(), any(Errors.class));
+		verifyNoMoreInteractions(changePagerValidator);
 	}
 
 	private void thenExpectValidationNotInvoked() {
-		verifyZeroInteractions(booksSetPageSizeValidator);
+		verifyZeroInteractions(changePagerValidator);
 	}
 
 	private void assertThatScrolledToPage(int pageNumber) throws Exception {

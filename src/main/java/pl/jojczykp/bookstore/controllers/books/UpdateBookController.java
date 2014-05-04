@@ -30,7 +30,7 @@ import pl.jojczykp.bookstore.assemblers.UpdateBookAssembler;
 import pl.jojczykp.bookstore.commands.books.DisplayBooksCommand;
 import pl.jojczykp.bookstore.commands.books.UpdateBookCommand;
 import pl.jojczykp.bookstore.repositories.BooksRepository;
-import pl.jojczykp.bookstore.validators.BooksUpdateValidator;
+import pl.jojczykp.bookstore.validators.UpdateBookValidator;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static pl.jojczykp.bookstore.consts.BooksConsts.DISPLAY_BOOKS_COMMAND;
@@ -41,7 +41,7 @@ import static pl.jojczykp.bookstore.consts.BooksConsts.URL_ACTION_UPDATE;
 @Controller
 public class UpdateBookController {
 
-	@Autowired private BooksUpdateValidator booksUpdateValidator;
+	@Autowired private UpdateBookValidator updateBookValidator;
 	@Autowired private BooksRepository booksRepository;
 	@Autowired private UpdateBookAssembler updateBookAssembler;
 
@@ -51,7 +51,7 @@ public class UpdateBookController {
 			RedirectAttributes redirectAttributes,
 			BindingResult bindingResult)
 	{
-		booksUpdateValidator.validate(updateBookCommand, bindingResult);
+		updateBookValidator.validate(updateBookCommand, bindingResult);
 
 		DisplayBooksCommand displayBooksCommand;
 		if (bindingResult.hasErrors()) {

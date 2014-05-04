@@ -39,7 +39,7 @@ import pl.jojczykp.bookstore.assemblers.UpdateBookAssembler;
 import pl.jojczykp.bookstore.commands.books.UpdateBookCommand;
 import pl.jojczykp.bookstore.entities.Book;
 import pl.jojczykp.bookstore.repositories.BooksRepository;
-import pl.jojczykp.bookstore.validators.BooksUpdateValidator;
+import pl.jojczykp.bookstore.validators.UpdateBookValidator;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
@@ -73,7 +73,7 @@ public class UpdateBookControllerComponentTest {
 
 	private MockMvc mvcMock;
 	private ResultActions mvcMockPerformResult;
-	@Autowired private BooksUpdateValidator booksUpdateValidator;
+	@Autowired private UpdateBookValidator updateBookValidator;
 	@Autowired private UpdateBookAssembler updateBookAssembler;
 	@Autowired private BooksRepository booksRepository;
 	@Autowired private WebApplicationContext wac;
@@ -90,7 +90,7 @@ public class UpdateBookControllerComponentTest {
 				.alwaysDo(print())
 				.build();
 		MockitoAnnotations.initMocks(this);
-		reset(booksUpdateValidator);
+		reset(updateBookValidator);
 		reset(updateBookAssembler);
 		reset(booksRepository);
 		given(updateBookAssembler.toDomain(any(UpdateBookCommand.class))).willReturn(book);
@@ -144,7 +144,7 @@ public class UpdateBookControllerComponentTest {
 
 	private void givenNegativeValidation() {
 		doAnswer(validationError())
-				.when(booksUpdateValidator).validate(anyObject(), any(Errors.class));
+				.when(updateBookValidator).validate(anyObject(), any(Errors.class));
 	}
 
 	private Answer<Void> validationError() {
@@ -164,9 +164,9 @@ public class UpdateBookControllerComponentTest {
 	}
 
 	private void thenExpectValidationInvokedFor(UpdateBookCommand updateBookCommand) {
-		verify(booksUpdateValidator).validate(updateBookCommandCaptor.capture(), any(Errors.class));
+		verify(updateBookValidator).validate(updateBookCommandCaptor.capture(), any(Errors.class));
 		assertThat(updateBookCommandCaptor.getValue(), is(sameInstance(updateBookCommand)));
-		verifyNoMoreInteractions(booksUpdateValidator);
+		verifyNoMoreInteractions(updateBookValidator);
 	}
 
 	private void thenExpectAssemblingCommandToDomainInvokedFor(UpdateBookCommand updateBookCommand) {

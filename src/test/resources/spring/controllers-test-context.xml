@@ -49,8 +49,8 @@
 
 	<mockito:mock id="booksRepository" class="pl.jojczykp.bookstore.repositories.BooksRepository"/>
 
-	<mockito:mock id="booksCreateValidator" class="pl.jojczykp.bookstore.validators.BooksCreateValidator" />
-	<mockito:mock id="booksUpdateValidator" class="pl.jojczykp.bookstore.validators.BooksUpdateValidator" />
-	<mockito:mock id="booksSetPageSizeValidator" class="pl.jojczykp.bookstore.validators.BooksSetPageSizeValidator" />
+	<mockito:mock id="booksCreateValidator" class="pl.jojczykp.bookstore.validators.CreateBookValidator" />
+	<mockito:mock id="booksUpdateValidator" class="pl.jojczykp.bookstore.validators.UpdateBookValidator" />
+	<mockito:mock id="booksSetPageSizeValidator" class="pl.jojczykp.bookstore.validators.ChangePagerValidator" />
 
 </beans>

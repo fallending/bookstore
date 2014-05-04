@@ -29,7 +29,7 @@ import pl.jojczykp.bookstore.assemblers.CreateBookAssembler;
 import pl.jojczykp.bookstore.commands.books.DisplayBooksCommand;
 import pl.jojczykp.bookstore.commands.books.CreateBookCommand;
 import pl.jojczykp.bookstore.repositories.BooksRepository;
-import pl.jojczykp.bookstore.validators.BooksCreateValidator;
+import pl.jojczykp.bookstore.validators.CreateBookValidator;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static pl.jojczykp.bookstore.consts.BooksConsts.DISPLAY_BOOKS_COMMAND;
@@ -40,7 +40,7 @@ import static pl.jojczykp.bookstore.consts.BooksConsts.URL_ACTION_LIST;
 @Controller
 public class CreateBookController {
 
-	@Autowired private BooksCreateValidator booksCreateValidator;
+	@Autowired private CreateBookValidator createBookValidator;
 	@Autowired private BooksRepository booksRepository;
 	@Autowired private CreateBookAssembler createBookAssembler;
 
@@ -50,7 +50,7 @@ public class CreateBookController {
 			RedirectAttributes redirectAttributes,
 			BindingResult bindingResult)
 	{
-		booksCreateValidator.validate(createBookCommand, bindingResult);
+		createBookValidator.validate(createBookCommand, bindingResult);
 
 		DisplayBooksCommand displayBooksCommand;
 		if (bindingResult.hasErrors()) {

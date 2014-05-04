@@ -22,24 +22,24 @@ import org.junit.Test;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
-import pl.jojczykp.bookstore.commands.books.ChangePagerCommand;
+import pl.jojczykp.bookstore.commands.books.UpdateBookCommand;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
-public class BooksSetPageSizeValidatorUnitTest {
+public class UpdateBookValidatorUnitTest {
 
-	private BooksSetPageSizeValidator testee;
+	private UpdateBookValidator testee;
 
 	@Before
 	public void setUpTestee() {
-		testee = new BooksSetPageSizeValidator();
+		testee = new UpdateBookValidator();
 	}
 
 	@Test
 	public void shouldSupportCorrectCommandClass() {
-		final Class<?> clazz = ChangePagerCommand.class;
+		final Class<?> clazz = UpdateBookCommand.class;
 
 		boolean supports = testee.supports(clazz);
 
@@ -57,8 +57,8 @@ public class BooksSetPageSizeValidatorUnitTest {
 
 	@Test
 	public void shouldPassWhenValidData() {
-		final int pageSize = 10;
-		final ChangePagerCommand command = aSetPageSizeCommandWith(pageSize);
+		final String notEmptyTitle = "not empty new title";
+		final UpdateBookCommand command = anUpdateBookCommandWith(notEmptyTitle);
 		final Errors errors = new BeanPropertyBindingResult(command, "someObjectName");
 
 		testee.validate(command, errors);
@@ -68,16 +68,16 @@ public class BooksSetPageSizeValidatorUnitTest {
 
 	@Test
 	public void shouldFindErrorsWhenInvalidData() {
-		final int pageSize = -2;
-		final ChangePagerCommand command = aSetPageSizeCommandWith(pageSize);
+		final String emptyTitle = "";
+		final UpdateBookCommand command = anUpdateBookCommandWith(emptyTitle);
 		final Errors errors = new BeanPropertyBindingResult(command, "someObjectName");
 
 		testee.validate(command, errors);
 
 		assertThat(errors.hasErrors(), is(true));
 		assertThat(errors.getErrorCount(), is(equalTo(1)));
-		assertThatFieldErrorHas(errors.getFieldError("pager.pageSize"),
-				"pager.pageSize.notPositive", "Negative or zero page size is not allowed. Defaults used.");
+		assertThatFieldErrorHas(errors.getFieldError("title"),
+				"title.empty", "Updating with empty title is not allowed.");
 	}
 
 	private void assertThatFieldErrorHas(FieldError fieldError, String fieldCode, String defaultMessage) {
@@ -85,10 +85,10 @@ public class BooksSetPageSizeValidatorUnitTest {
 		assertThat(fieldError.getDefaultMessage(), is(equalTo(defaultMessage)));
 	}
 
-	private ChangePagerCommand aSetPageSizeCommandWith(int pageSize) {
-		ChangePagerCommand changePagerCommand = new ChangePagerCommand();
-		changePagerCommand.getPager().setPageSize(pageSize);
+	private UpdateBookCommand anUpdateBookCommandWith(String title) {
+		UpdateBookCommand updateBookCommand = new UpdateBookCommand();
+		updateBookCommand.setTitle(title);
 
-		return changePagerCommand;
+		return updateBookCommand;
 	}
 }

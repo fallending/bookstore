@@ -38,7 +38,7 @@ import pl.jojczykp.bookstore.assemblers.CreateBookAssembler;
 import pl.jojczykp.bookstore.commands.books.CreateBookCommand;
 import pl.jojczykp.bookstore.entities.Book;
 import pl.jojczykp.bookstore.repositories.BooksRepository;
-import pl.jojczykp.bookstore.validators.BooksCreateValidator;
+import pl.jojczykp.bookstore.validators.CreateBookValidator;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
@@ -70,7 +70,7 @@ public class CreateBookControllerComponentTest {
 
 	private MockMvc mvcMock;
 	private ResultActions mvcMockPerformResult;
-	@Autowired private BooksCreateValidator booksCreateValidator;
+	@Autowired private CreateBookValidator createBookValidator;
 	@Autowired private CreateBookAssembler createBookAssembler;
 	@Autowired private BooksRepository booksRepository;
 	@Autowired private WebApplicationContext wac;
@@ -86,7 +86,7 @@ public class CreateBookControllerComponentTest {
 				.alwaysDo(print())
 				.build();
 		MockitoAnnotations.initMocks(this);
-		reset(booksCreateValidator);
+		reset(createBookValidator);
 		reset(createBookAssembler);
 		reset(booksRepository);
 		given(createBookAssembler.toDomain(any(CreateBookCommand.class))).willReturn(book);
@@ -121,7 +121,7 @@ public class CreateBookControllerComponentTest {
 
 	private void givenNegativeValidation() {
 		doAnswer(validationError())
-				.when(booksCreateValidator).validate(anyObject(), any(Errors.class));
+				.when(createBookValidator).validate(anyObject(), any(Errors.class));
 	}
 
 	private Answer<Void> validationError() {
@@ -141,9 +141,9 @@ public class CreateBookControllerComponentTest {
 	}
 
 	private void thenExpectValidationInvokedFor(CreateBookCommand createBooksCommand) {
-		verify(booksCreateValidator).validate(createBookCommandCaptor.capture(), any(Errors.class));
+		verify(createBookValidator).validate(createBookCommandCaptor.capture(), any(Errors.class));
 		assertThat(createBookCommandCaptor.getValue(), is(sameInstance(createBooksCommand)));
-		verifyNoMoreInteractions(booksCreateValidator);
+		verifyNoMoreInteractions(createBookValidator);
 	}
 
 	private void thenExpectAssemblingCommandToDomainInvokedFor(CreateBookCommand createBookCommand) {
