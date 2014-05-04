@@ -49,7 +49,6 @@ import static com.cedarsoftware.util.DeepEquals.deepEquals;
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
-import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
@@ -254,7 +253,6 @@ public class BooksControllerReadComponentTest {
 			.andExpect(view().name("books"))
 			.andExpect(model().attribute(LIST_BOOKS_COMMAND, hasProperty("books",
 					is(sameInstance(ASSEMBLER_RESULT_DATA)))))
-			.andExpect(model().attribute(LIST_BOOKS_COMMAND, hasProperty("newBook", instanceOf(BookCommand.class))))
 			.andExpect(model().attribute(LIST_BOOKS_COMMAND, hasBeanProperty("pager.pageNumber", equalTo(
 					LIMITED_PAGE_NUMBER))))
 			.andExpect(model().attribute(LIST_BOOKS_COMMAND, hasBeanProperty("pager.pageSize", equalTo(

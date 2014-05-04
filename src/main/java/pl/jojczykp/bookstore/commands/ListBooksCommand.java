@@ -24,15 +24,11 @@ public class ListBooksCommand {
 
 	private MessagesCommand messages;
 	private PagerCommand pager;
-	private BookCommand newBook;
-	private BookCommand updatedBook;
 	private List<BookCommand> books;
 
 	public ListBooksCommand() {
 		messages = new MessagesCommand();
 		pager = new PagerCommand();
-		newBook = new BookCommand();
-		updatedBook = new BookCommand();
 		books = new ArrayList<>();
 	}
 
@@ -50,22 +46,6 @@ public class ListBooksCommand {
 
 	public void setPager(PagerCommand pager) {
 		this.pager = pager;
-	}
-
-	public BookCommand getNewBook() {
-		return newBook;
-	}
-
-	public void setNewBook(BookCommand newBook) {
-		this.newBook = newBook;
-	}
-
-	public BookCommand getUpdatedBook() {
-		return updatedBook;
-	}
-
-	public void setUpdatedBook(BookCommand updatedBook) {
-		this.updatedBook = updatedBook;
 	}
 
 	public List<BookCommand> getBooks() {

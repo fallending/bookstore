@@ -41,8 +41,6 @@ public class ListBooksCommandUnitTest {
 	public void shouldBeSetUpByDefaultConstructor() {
 		assertThat(testee.getMessages(), notNullValue());
 		assertThat(testee.getPager(), notNullValue());
-		assertThat(testee.getNewBook(), notNullValue());
-		assertThat(testee.getUpdatedBook(), notNullValue());
 		assertThat(testee.getBooks(), empty());
 	}
 
@@ -62,24 +60,6 @@ public class ListBooksCommandUnitTest {
 		testee.setPager(pager);
 
 		assertThat(testee.getPager(), sameInstance(pager));
-	}
-
-	@Test
-	public void shouldSetNewBook() {
-		final BookCommand book = new BookCommand();
-
-		testee.setNewBook(book);
-
-		assertThat(testee.getNewBook(), sameInstance(book));
-	}
-
-	@Test
-	public void shouldSetUpdatedBook() {
-		final BookCommand book = new BookCommand();
-
-		testee.setUpdatedBook(book);
-
-		assertThat(testee.getUpdatedBook(), sameInstance(book));
 	}
 
 	@Test
