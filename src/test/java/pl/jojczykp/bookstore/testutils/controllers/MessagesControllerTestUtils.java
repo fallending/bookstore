@@ -32,7 +32,7 @@ public abstract class MessagesControllerTestUtils {
 
 	private static final List<String> EMPTY_STRING_LIST = ImmutableList.of();
 
-	private static final String LIST_BOOKS_COMMAND = "listBooksCommand";
+	private static final String DISPLAY_BOOKS_COMMAND = "displayBooksCommand";
 
 	public static void thenExpectInfoOnlyFlashMessages(ResultActions mvcMockPerformResult, String... expectedMsgs) {
 		thenExpectFlashMessages(mvcMockPerformResult, asList(expectedMsgs), EMPTY_STRING_LIST, EMPTY_STRING_LIST);
@@ -54,9 +54,10 @@ public abstract class MessagesControllerTestUtils {
 											List<String> infos, List<String> warns, List<String> errors) {
 		try {
 			mvcMockPerformResult
-				.andExpect(flash().attribute(LIST_BOOKS_COMMAND, hasBeanProperty("messages.infos", equalTo(infos))))
-				.andExpect(flash().attribute(LIST_BOOKS_COMMAND, hasBeanProperty("messages.warns", equalTo(warns))))
-				.andExpect(flash().attribute(LIST_BOOKS_COMMAND, hasBeanProperty("messages.errors", equalTo(errors))));
+				.andExpect(flash().attribute(DISPLAY_BOOKS_COMMAND, hasBeanProperty("messages.infos", equalTo(infos))))
+				.andExpect(flash().attribute(DISPLAY_BOOKS_COMMAND, hasBeanProperty("messages.warns", equalTo(warns))))
+				.andExpect(flash().attribute(DISPLAY_BOOKS_COMMAND, hasBeanProperty("messages.errors",
+																									equalTo(errors))));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -66,9 +67,10 @@ public abstract class MessagesControllerTestUtils {
 											List<String> infos, List<String> warns, List<String> errors) {
 		try {
 			mvcMockPerformResult
-				.andExpect(model().attribute(LIST_BOOKS_COMMAND, hasBeanProperty("messages.infos", equalTo(infos))))
-				.andExpect(model().attribute(LIST_BOOKS_COMMAND, hasBeanProperty("messages.warns", equalTo(warns))))
-				.andExpect(model().attribute(LIST_BOOKS_COMMAND, hasBeanProperty("messages.errors", equalTo(errors))));
+				.andExpect(model().attribute(DISPLAY_BOOKS_COMMAND, hasBeanProperty("messages.infos", equalTo(infos))))
+				.andExpect(model().attribute(DISPLAY_BOOKS_COMMAND, hasBeanProperty("messages.warns", equalTo(warns))))
+				.andExpect(model().attribute(DISPLAY_BOOKS_COMMAND, hasBeanProperty("messages.errors",
+																									equalTo(errors))));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

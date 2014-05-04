@@ -19,7 +19,7 @@ package pl.jojczykp.bookstore.assemblers;
 
 import org.junit.Before;
 import org.junit.Test;
-import pl.jojczykp.bookstore.commands.BookCommand;
+import pl.jojczykp.bookstore.commands.DisplayBookCommand;
 import pl.jojczykp.bookstore.commands.CreateBookCommand;
 import pl.jojczykp.bookstore.commands.UpdateBookCommand;
 import pl.jojczykp.bookstore.entities.Book;
@@ -56,7 +56,7 @@ public class BookAssemblerUnitTest {
 	public void shouldAssemblyBookCommandObjectsListFromDomainObjectsList() {
 		List<Book> domains = aDomainObjectsList();
 
-		List<BookCommand> commands = testee.toCommands(domains);
+		List<DisplayBookCommand> commands = testee.toCommands(domains);
 
 		assertThat(commands.size(), equalTo(domains.size()));
 		for (int i = 0; i < domains.size(); i++) {
@@ -72,15 +72,15 @@ public class BookAssemblerUnitTest {
 
 	@Test
 	public void shouldAssemblySingleBookDomainObjectFromBookCommandObject() {
-		BookCommand command = aBookCommandObject();
+		DisplayBookCommand command = aBookCommandObject();
 
 		Book domain = testee.toDomain(command);
 
 		assertThatHaveEqualData(domain, command);
 	}
 
-	private BookCommand aBookCommandObject() {
-		BookCommand command = new BookCommand();
+	private DisplayBookCommand aBookCommandObject() {
+		DisplayBookCommand command = new DisplayBookCommand();
 		command.setId(ID1);
 		command.setVersion(VERSION1);
 		command.setTitle(TITLE1);
@@ -88,7 +88,7 @@ public class BookAssemblerUnitTest {
 		return command;
 	}
 
-	private void assertThatHaveEqualData(Book domain, BookCommand command) {
+	private void assertThatHaveEqualData(Book domain, DisplayBookCommand command) {
 		assertThat(domain.getId(), equalTo(command.getId()));
 		assertThat(domain.getVersion(), equalTo(command.getVersion()));
 		assertThat(domain.getTitle(), equalTo(command.getTitle()));

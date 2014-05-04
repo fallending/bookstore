@@ -20,46 +20,53 @@ package pl.jojczykp.bookstore.commands;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.List;
-
-import static java.util.Arrays.asList;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.sameInstance;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
-public class DeleteListBooksCommandUnitTest {
+public class DisplayBookCommandUnitTest {
 
-	private DeleteBooksCommand testee;
+	private DisplayBookCommand testee;
 
 	@Before
 	public void setupInstance() {
-		testee = new DeleteBooksCommand();
+		testee = new DisplayBookCommand();
 	}
 
 	@Test
-	public void shouldBeSetUpByDefaultConstructor() {
-		assertThat(testee.getPager(), is(notNullValue()));
-		assertThat(testee.getIds(), is(empty()));
+	public void shouldSetChecked() {
+		final boolean checked = true;
+
+		testee.setChecked(checked);
+
+		assertThat(testee.isChecked(), is(checked));
 	}
 
 	@Test
-	public void shouldSetPager() {
-		final PagerCommand pager = new PagerCommand();
+	public void shouldSetId() {
+		final int id = 2;
 
-		testee.setPager(pager);
+		testee.setId(id);
 
-		assertThat(testee.getPager(), sameInstance(pager));
+		assertThat(testee.getId(), equalTo(id));
 	}
 
 	@Test
-	public void shouldSetIds() {
-		final List<Integer> ids = asList(1, 2, 3, 4, 5);
+	public void shouldSetVersion() {
+		final int version = 54;
 
-		testee.setIds(ids);
+		testee.setVersion(version);
 
-		assertThat(testee.getIds(), is(sameInstance(ids)));
+		assertThat(testee.getVersion(), equalTo(version));
+	}
+
+	@Test
+	public void shouldSetTitle() {
+		final String title = "some title";
+
+		testee.setTitle(title);
+
+		assertThat(testee.getTitle(), equalTo(title));
 	}
 
 }

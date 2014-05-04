@@ -20,13 +20,13 @@ package pl.jojczykp.bookstore.commands;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListBooksCommand {
+public class DisplayBooksCommand {
 
 	private MessagesCommand messages;
 	private PagerCommand pager;
-	private List<BookCommand> books;
+	private List<DisplayBookCommand> books;
 
-	public ListBooksCommand() {
+	public DisplayBooksCommand() {
 		messages = new MessagesCommand();
 		pager = new PagerCommand();
 		books = new ArrayList<>();
@@ -48,11 +48,11 @@ public class ListBooksCommand {
 		this.pager = pager;
 	}
 
-	public List<BookCommand> getBooks() {
+	public List<DisplayBookCommand> getBooks() {
 		return books;
 	}
 
-	public void setBooks(List<BookCommand> books) {
+	public void setBooks(List<DisplayBookCommand> books) {
 		this.books = books;
 	}
 

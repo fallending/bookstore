@@ -24,7 +24,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-import pl.jojczykp.bookstore.commands.ListBooksCommand;
+import pl.jojczykp.bookstore.commands.DisplayBooksCommand;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -32,7 +32,7 @@ import static org.junit.Assert.assertThat;
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration("classpath:spring/books-command-factory-test-context.xml")
-public class ListBooksCommandFactoryUnitTest {
+public class DisplayBooksCommandFactoryUnitTest {
 
 	@Value("${view.books.defaultPageNumber}") private int defaultPageNumber;
 	@Value("${view.books.defaultPageSize}") private int defaultPageSize;
@@ -43,28 +43,28 @@ public class ListBooksCommandFactoryUnitTest {
 
 	@Test
 	public void shouldCreateDefaultCommandWithDefaultPageNumber() {
-		ListBooksCommand command = testee.create();
+		DisplayBooksCommand command = testee.create();
 
 		assertThat(command.getPager().getPageNumber(), is(defaultPageNumber));
 	}
 
 	@Test
 	public void shouldCreateDefaultCommandWithDefaultPageSize() {
-		ListBooksCommand command = testee.create();
+		DisplayBooksCommand command = testee.create();
 
 		assertThat(command.getPager().getPageSize(), is(defaultPageSize));
 	}
 
 	@Test
 	public void shouldCreateDefaultCommandWithDefaultSortColumn() {
-		ListBooksCommand command = testee.create();
+		DisplayBooksCommand command = testee.create();
 
 		assertThat(command.getPager().getSorter().getColumn(), is(defaultSortColumn));
 	}
 
 	@Test
 	public void shouldCreateDefaultCommandWithDefaultSortDirection() {
-		ListBooksCommand command = testee.create();
+		DisplayBooksCommand command = testee.create();
 
 		assertThat(command.getPager().getSorter().getDirection(), is(defaultSortDirection));
 	}

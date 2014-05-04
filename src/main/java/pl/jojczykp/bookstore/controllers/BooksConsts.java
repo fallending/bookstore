@@ -20,7 +20,7 @@ package pl.jojczykp.bookstore.controllers;
 public abstract class BooksConsts {
 
 	static final String URL_ACTION_CREATE = "/books/create";
-	static final String URL_ACTION_LIST = "/books/list";
+	static final String URL_ACTION_LIST = "/books/display";
 	static final String URL_ACTION_UPDATE = "/books/update";
 	static final String URL_ACTION_DELETE = "/books/delete";
 
@@ -29,7 +29,7 @@ public abstract class BooksConsts {
 	static final String URL_ACTION_SET_PAGE_SIZE = "/books/setPageSize";
 
 	static final String CREATE_BOOK_COMMAND = "createBookCommand";
-	static final String LIST_BOOKS_COMMAND = "listBooksCommand";
+	static final String DISPLAY_BOOKS_COMMAND = "displayBooksCommand";
 	static final String UPDATE_BOOK_COMMAND = "updateBookCommand";
 	static final String DELETE_BOOKS_COMMAND = "deleteBooksCommand";
 	static final String CHANGE_PAGER_COMMAND = "changePagerCommand";

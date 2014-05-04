@@ -20,27 +20,37 @@ package pl.jojczykp.bookstore.commands;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.equalTo;
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.sameInstance;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.empty;
 import static org.junit.Assert.assertThat;
 
-public class UpdateBookCommandUnitTest {
+public class DisplayBooksCommandUnitTest {
 
-	private UpdateBookCommand testee;
+	private DisplayBooksCommand testee;
 
 	@Before
-	public void setupInstance() {
-		testee = new UpdateBookCommand();
+	public void createTestee() {
+		testee = new DisplayBooksCommand();
 	}
 
 	@Test
 	public void shouldBeSetUpByDefaultConstructor() {
-		assertThat(testee.getPager(), is(notNullValue()));
-		assertThat(testee.getId(), is(0));
-		assertThat(testee.getVersion(), is(0));
-		assertThat(testee.getTitle(), is(equalTo("")));
+		assertThat(testee.getMessages(), notNullValue());
+		assertThat(testee.getPager(), notNullValue());
+		assertThat(testee.getBooks(), empty());
+	}
+
+	@Test
+	public void shouldSetMessages() {
+		final MessagesCommand messages = new MessagesCommand();
+
+		testee.setMessages(messages);
+
+		assertThat(testee.getMessages(), sameInstance(messages));
 	}
 
 	@Test
@@ -53,30 +63,12 @@ public class UpdateBookCommandUnitTest {
 	}
 
 	@Test
-	public void shouldSetId() {
-		final int id = 2;
+	public void shouldSetBooks() {
+		final List<DisplayBookCommand> books = new ArrayList<>();
 
-		testee.setId(id);
+		testee.setBooks(books);
 
-		assertThat(testee.getId(), equalTo(id));
-	}
-
-	@Test
-	public void shouldSetVersion() {
-		final int version = 54;
-
-		testee.setVersion(version);
-
-		assertThat(testee.getVersion(), equalTo(version));
-	}
-
-	@Test
-	public void shouldSetTitle() {
-		final String title = "some title";
-
-		testee.setTitle(title);
-
-		assertThat(testee.getTitle(), equalTo(title));
+		assertThat(testee.getBooks(), sameInstance(books));
 	}
 
 }

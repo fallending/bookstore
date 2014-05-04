@@ -24,13 +24,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
-import pl.jojczykp.bookstore.commands.ListBooksCommand;
+import pl.jojczykp.bookstore.commands.DisplayBooksCommand;
 import pl.jojczykp.bookstore.commands.DeleteBooksCommand;
 import pl.jojczykp.bookstore.commands.MessagesCommand;
 import pl.jojczykp.bookstore.repositories.BooksRepository;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
-import static pl.jojczykp.bookstore.controllers.BooksConsts.LIST_BOOKS_COMMAND;
+import static pl.jojczykp.bookstore.controllers.BooksConsts.DISPLAY_BOOKS_COMMAND;
 import static pl.jojczykp.bookstore.controllers.BooksConsts.DELETE_BOOKS_COMMAND;
 import static pl.jojczykp.bookstore.controllers.BooksConsts.URL_ACTION_DELETE;
 import static pl.jojczykp.bookstore.controllers.BooksConsts.URL_ACTION_LIST;
@@ -45,14 +45,14 @@ public class BooksControllerDelete {
 			@ModelAttribute(DELETE_BOOKS_COMMAND) DeleteBooksCommand deleteBooksCommand,
 			RedirectAttributes redirectAttributes)
 	{
-		ListBooksCommand listBooksCommand = new ListBooksCommand();
-		listBooksCommand.setPager(deleteBooksCommand.getPager());
+		DisplayBooksCommand displayBooksCommand = new DisplayBooksCommand();
+		displayBooksCommand.setPager(deleteBooksCommand.getPager());
 
 		for (Integer id : deleteBooksCommand.getIds()) {
-			deleteBookFromRepository(id, listBooksCommand.getMessages());
+			deleteBookFromRepository(id, displayBooksCommand.getMessages());
 		}
 
-		return redirectToRead(listBooksCommand, redirectAttributes);
+		return redirectToRead(displayBooksCommand, redirectAttributes);
 	}
 
 	private void deleteBookFromRepository(int bookId, MessagesCommand messagesContainer) {
@@ -64,8 +64,9 @@ public class BooksControllerDelete {
 		}
 	}
 
-	private RedirectView redirectToRead(ListBooksCommand listBooksCommand, RedirectAttributes redirectAttributes) {
-		redirectAttributes.addFlashAttribute(LIST_BOOKS_COMMAND, listBooksCommand);
+	private RedirectView redirectToRead(
+								DisplayBooksCommand displayBooksCommand, RedirectAttributes redirectAttributes) {
+		redirectAttributes.addFlashAttribute(DISPLAY_BOOKS_COMMAND, displayBooksCommand);
 		return new RedirectView(URL_ACTION_LIST);
 	}
 

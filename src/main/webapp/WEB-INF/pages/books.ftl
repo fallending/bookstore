@@ -19,10 +19,10 @@
 <#import "macros/messages.ftl" as messages>
 <#import "/spring.ftl" as spring>
 
-<#assign pageNumber = listBooksCommand.pager.pageNumber>
-<#assign pageSize = listBooksCommand.pager.pageSize>
-<#assign pagesCount = listBooksCommand.pager.pagesCount>
-<#assign totalCount = listBooksCommand.pager.totalCount>
+<#assign pageNumber = displayBooksCommand.pager.pageNumber>
+<#assign pageSize = displayBooksCommand.pager.pageSize>
+<#assign pagesCount = displayBooksCommand.pager.pagesCount>
+<#assign totalCount = displayBooksCommand.pager.totalCount>
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/html">
@@ -34,10 +34,10 @@
 		<link rel="stylesheet" type="text/css" href="/css/books.css"/>
 		<script type="text/javascript">
 			ORIGINAL_PARAMS = {
-				'pager.pageNumber' : ${listBooksCommand.pager.pageNumber},
-				'pager.pageSize' : ${listBooksCommand.pager.pageSize},
-				'pager.sorter.column' : '${listBooksCommand.pager.sorter.column}',
-				'pager.sorter.direction' : '${listBooksCommand.pager.sorter.direction}'
+				'pager.pageNumber' : ${displayBooksCommand.pager.pageNumber},
+				'pager.pageSize' : ${displayBooksCommand.pager.pageSize},
+				'pager.sorter.column' : '${displayBooksCommand.pager.sorter.column}',
+				'pager.sorter.direction' : '${displayBooksCommand.pager.sorter.direction}'
 			}
 		</script>
 		<script type="text/javascript" src="/js/books.js"></script>
@@ -62,9 +62,9 @@
 </html>
 
 <#macro sectionMessages>
-	<@messages.sectionSingleKindMessages listBooksCommand.messages.infos 'sectionMessagesInfo' 'info'/>
-	<@messages.sectionSingleKindMessages listBooksCommand.messages.warns 'sectionMessagesWarn' 'warn'/>
-	<@messages.sectionSingleKindMessages listBooksCommand.messages.errors 'sectionMessagesError' 'error'/>
+	<@messages.sectionSingleKindMessages displayBooksCommand.messages.infos 'sectionMessagesInfo' 'info'/>
+	<@messages.sectionSingleKindMessages displayBooksCommand.messages.warns 'sectionMessagesWarn' 'warn'/>
+	<@messages.sectionSingleKindMessages displayBooksCommand.messages.errors 'sectionMessagesError' 'error'/>
 </#macro>
 
 <#macro sectionPager>
@@ -95,7 +95,7 @@
 
 <#macro formPagerSetPageSize>
 	<#assign possibleSizes = {"1":1, "2":2, "3":3, "5":5, "10":10, "15":15, "25":25, "50":50, "100":100}>
-	<@spring.formSingleSelect "listBooksCommand.pager.pageSize" possibleSizes "class='setPageSizeInput' onChange='sendSetPageSize()'" />
+	<@spring.formSingleSelect "displayBooksCommand.pager.pageSize" possibleSizes "class='setPageSizeInput' onChange='sendSetPageSize()'" />
 </#macro>
 
 <#macro formPagerNext>
@@ -161,16 +161,16 @@
 					<@sectionDataTableSorter 'BOOK_TITLE' 'Title'/>
 				</th>
 			</tr>
-			<#list listBooksCommand.books as book>
+			<#list displayBooksCommand.books as book>
 				<tr>
 					<td>
-						<@spring.formCheckbox path="listBooksCommand.books[" + book_index + "].checked" attributes="class='deleteCheckbox' bookId='${listBooksCommand.books[book_index].id}'"/>
+						<@spring.formCheckbox path="displayBooksCommand.books[" + book_index + "].checked" attributes="class='deleteCheckbox' bookId='${displayBooksCommand.books[book_index].id}'"/>
 					</td>
 					<td>#${book.id}</td>
 					<td>
-						<@spring.formHiddenInput "listBooksCommand.books[" + book_index + "].version"/>
-						<@spring.formInput "listBooksCommand.books[" + book_index + "].title" "class='updateInput'"/>
-						<input type="button" value="update" onClick="sendUpdate(${listBooksCommand.books[book_index].id}, ${book_index})"/>
+						<@spring.formHiddenInput "displayBooksCommand.books[" + book_index + "].version"/>
+						<@spring.formInput "displayBooksCommand.books[" + book_index + "].title" "class='updateInput'"/>
+						<input type="button" value="update" onClick="sendUpdate(${displayBooksCommand.books[book_index].id}, ${book_index})"/>
 					</td>
 				</tr>
 			</#list>
@@ -188,7 +188,7 @@
 </#macro>
 
 <#macro sectionDataTableSorterDirection columnName columnTitle direction marker>
-	<#if (listBooksCommand.pager.sorter.direction = '${direction}')>
+	<#if (displayBooksCommand.pager.sorter.direction = '${direction}')>
 		<input type="button" value="${marker}" class="arrowsButtons" disabled="true"/>
 	<#else>
 		<input type="button" value="${marker}" class="arrowsButtons" onClick="sendSort('${columnName}', '${direction}')"/>

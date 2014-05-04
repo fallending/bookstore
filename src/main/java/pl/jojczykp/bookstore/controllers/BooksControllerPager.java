@@ -26,12 +26,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
-import pl.jojczykp.bookstore.commands.ListBooksCommand;
+import pl.jojczykp.bookstore.commands.DisplayBooksCommand;
 import pl.jojczykp.bookstore.commands.ChangePagerCommand;
 import pl.jojczykp.bookstore.validators.BooksSetPageSizeValidator;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
-import static pl.jojczykp.bookstore.controllers.BooksConsts.LIST_BOOKS_COMMAND;
+import static pl.jojczykp.bookstore.controllers.BooksConsts.DISPLAY_BOOKS_COMMAND;
 import static pl.jojczykp.bookstore.controllers.BooksConsts.CHANGE_PAGER_COMMAND;
 import static pl.jojczykp.bookstore.controllers.BooksConsts.URL_ACTION_GO_TO_PAGE;
 import static pl.jojczykp.bookstore.controllers.BooksConsts.URL_ACTION_LIST;
@@ -50,10 +50,10 @@ public class BooksControllerPager {
 			@ModelAttribute(CHANGE_PAGER_COMMAND) ChangePagerCommand changePagerCommand,
 			RedirectAttributes redirectAttributes)
 	{
-		ListBooksCommand listBooksCommand = new ListBooksCommand();
-		listBooksCommand.setPager(changePagerCommand.getPager());
+		DisplayBooksCommand displayBooksCommand = new DisplayBooksCommand();
+		displayBooksCommand.setPager(changePagerCommand.getPager());
 
-		return redirectToRead(listBooksCommand, redirectAttributes);
+		return redirectToRead(displayBooksCommand, redirectAttributes);
 	}
 
 	@RequestMapping(value = URL_ACTION_SET_PAGE_SIZE, method = POST)
@@ -64,36 +64,36 @@ public class BooksControllerPager {
 	{
 		booksSetPageSizeValidator.validate(changePagerCommand, bindingResult);
 
-		ListBooksCommand listBooksCommand;
+		DisplayBooksCommand displayBooksCommand;
 		if (bindingResult.hasErrors()) {
-			listBooksCommand = processWhenSetPageSizeCommandInvalid(changePagerCommand, bindingResult);
+			displayBooksCommand = processWhenSetPageSizeCommandInvalid(changePagerCommand, bindingResult);
 		} else {
-			listBooksCommand = processWhenSetPageSizeCommandValid(changePagerCommand);
+			displayBooksCommand = processWhenSetPageSizeCommandValid(changePagerCommand);
 		}
 
-		return redirectToRead(listBooksCommand, redirectAttributes);
+		return redirectToRead(displayBooksCommand, redirectAttributes);
 	}
 
-	private ListBooksCommand processWhenSetPageSizeCommandInvalid(
+	private DisplayBooksCommand processWhenSetPageSizeCommandInvalid(
 							ChangePagerCommand changePagerCommand, BindingResult bindingResult) {
-		ListBooksCommand listBooksCommand = new ListBooksCommand();
-		listBooksCommand.setPager(changePagerCommand.getPager());
+		DisplayBooksCommand displayBooksCommand = new DisplayBooksCommand();
+		displayBooksCommand.setPager(changePagerCommand.getPager());
 
-		listBooksCommand.getPager().setPageSize(defaultPageSize);
+		displayBooksCommand.getPager().setPageSize(defaultPageSize);
 		for(ObjectError error: bindingResult.getAllErrors()) {
-			listBooksCommand.getMessages().addErrors(error.getDefaultMessage());
+			displayBooksCommand.getMessages().addErrors(error.getDefaultMessage());
 		}
 
-		return listBooksCommand;
+		return displayBooksCommand;
 	}
 
-	private ListBooksCommand processWhenSetPageSizeCommandValid(ChangePagerCommand changePagerCommand) {
-		ListBooksCommand listBooksCommand = new ListBooksCommand();
-		listBooksCommand.setPager(changePagerCommand.getPager());
+	private DisplayBooksCommand processWhenSetPageSizeCommandValid(ChangePagerCommand changePagerCommand) {
+		DisplayBooksCommand displayBooksCommand = new DisplayBooksCommand();
+		displayBooksCommand.setPager(changePagerCommand.getPager());
 
-		listBooksCommand.getMessages().addInfos("Page size changed.");
+		displayBooksCommand.getMessages().addInfos("Page size changed.");
 
-		return listBooksCommand;
+		return displayBooksCommand;
 	}
 
 	@RequestMapping(value = URL_ACTION_GO_TO_PAGE, method = POST)
@@ -101,14 +101,15 @@ public class BooksControllerPager {
 			@ModelAttribute(CHANGE_PAGER_COMMAND) ChangePagerCommand changePagerCommand,
 			RedirectAttributes redirectAttributes)
 	{
-		ListBooksCommand listBooksCommand = new ListBooksCommand();
-		listBooksCommand.setPager(changePagerCommand.getPager());
+		DisplayBooksCommand displayBooksCommand = new DisplayBooksCommand();
+		displayBooksCommand.setPager(changePagerCommand.getPager());
 
-		return redirectToRead(listBooksCommand, redirectAttributes);
+		return redirectToRead(displayBooksCommand, redirectAttributes);
 	}
 
-	private RedirectView redirectToRead(ListBooksCommand listBooksCommand, RedirectAttributes redirectAttributes) {
-		redirectAttributes.addFlashAttribute(LIST_BOOKS_COMMAND, listBooksCommand);
+	private RedirectView redirectToRead(
+								DisplayBooksCommand displayBooksCommand, RedirectAttributes redirectAttributes) {
+		redirectAttributes.addFlashAttribute(DISPLAY_BOOKS_COMMAND, displayBooksCommand);
 		return new RedirectView(URL_ACTION_LIST);
 	}
 

@@ -27,13 +27,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 import pl.jojczykp.bookstore.assemblers.BookAssembler;
-import pl.jojczykp.bookstore.commands.ListBooksCommand;
+import pl.jojczykp.bookstore.commands.DisplayBooksCommand;
 import pl.jojczykp.bookstore.commands.UpdateBookCommand;
 import pl.jojczykp.bookstore.repositories.BooksRepository;
 import pl.jojczykp.bookstore.validators.BooksUpdateValidator;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
-import static pl.jojczykp.bookstore.controllers.BooksConsts.LIST_BOOKS_COMMAND;
+import static pl.jojczykp.bookstore.controllers.BooksConsts.DISPLAY_BOOKS_COMMAND;
 import static pl.jojczykp.bookstore.controllers.BooksConsts.UPDATE_BOOK_COMMAND;
 import static pl.jojczykp.bookstore.controllers.BooksConsts.URL_ACTION_LIST;
 import static pl.jojczykp.bookstore.controllers.BooksConsts.URL_ACTION_UPDATE;
@@ -53,46 +53,47 @@ public class BooksControllerUpdate {
 	{
 		booksUpdateValidator.validate(updateBookCommand, bindingResult);
 
-		ListBooksCommand listBooksCommand;
+		DisplayBooksCommand displayBooksCommand;
 		if (bindingResult.hasErrors()) {
-			listBooksCommand = processWhenCommandInvalid(updateBookCommand, bindingResult);
+			displayBooksCommand = processWhenCommandInvalid(updateBookCommand, bindingResult);
 		} else {
-			listBooksCommand = processWhenCommandValid(updateBookCommand);
+			displayBooksCommand = processWhenCommandValid(updateBookCommand);
 		}
 
-		return redirectToRead(listBooksCommand, redirectAttributes);
+		return redirectToRead(displayBooksCommand, redirectAttributes);
 
 	}
 
-	private ListBooksCommand processWhenCommandInvalid(
+	private DisplayBooksCommand processWhenCommandInvalid(
 											UpdateBookCommand updateBookCommand, BindingResult bindingResult) {
-		ListBooksCommand listBooksCommand = new ListBooksCommand();
-		listBooksCommand.setPager(updateBookCommand.getPager());
+		DisplayBooksCommand displayBooksCommand = new DisplayBooksCommand();
+		displayBooksCommand.setPager(updateBookCommand.getPager());
 
 		for(ObjectError error: bindingResult.getAllErrors()) {
-			listBooksCommand.getMessages().addErrors(error.getDefaultMessage());
+			displayBooksCommand.getMessages().addErrors(error.getDefaultMessage());
 		}
 
-		return listBooksCommand;
+		return displayBooksCommand;
 	}
 
-	private ListBooksCommand processWhenCommandValid(UpdateBookCommand updateBookCommand) {
-		ListBooksCommand listBooksCommand = new ListBooksCommand();
-		listBooksCommand.setPager(updateBookCommand.getPager());
+	private DisplayBooksCommand processWhenCommandValid(UpdateBookCommand updateBookCommand) {
+		DisplayBooksCommand displayBooksCommand = new DisplayBooksCommand();
+		displayBooksCommand.setPager(updateBookCommand.getPager());
 
 		try {
 			booksRepository.update(bookAssembler.toDomain(updateBookCommand));
-			listBooksCommand.getMessages().addInfos("Object updated.");
+			displayBooksCommand.getMessages().addInfos("Object updated.");
 		} catch (StaleObjectStateException e) {
-			listBooksCommand.getMessages().addWarns(
+			displayBooksCommand.getMessages().addWarns(
 					"Object updated or deleted by another user. Please try again with actual data.");
 		}
 
-		return listBooksCommand;
+		return displayBooksCommand;
 	}
 
-	private RedirectView redirectToRead(ListBooksCommand listBooksCommand, RedirectAttributes redirectAttributes) {
-		redirectAttributes.addFlashAttribute(LIST_BOOKS_COMMAND, listBooksCommand);
+	private RedirectView redirectToRead(
+								DisplayBooksCommand displayBooksCommand, RedirectAttributes redirectAttributes) {
+		redirectAttributes.addFlashAttribute(DISPLAY_BOOKS_COMMAND, displayBooksCommand);
 		return new RedirectView(URL_ACTION_LIST);
 	}
 

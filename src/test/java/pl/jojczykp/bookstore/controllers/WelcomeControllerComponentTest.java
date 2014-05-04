@@ -52,6 +52,6 @@ public class WelcomeControllerComponentTest {
 	public void shouldRedirectToWelcomeViewWithDefaultAttributesSet() throws Exception {
 		mvcMock.perform(get("/"))
 				.andExpect(status().isFound())
-				.andExpect(redirectedUrl("/books/list"));
+				.andExpect(redirectedUrl("/books/display"));
 	}
 }

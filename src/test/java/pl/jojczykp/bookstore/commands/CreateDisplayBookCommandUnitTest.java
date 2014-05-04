@@ -21,43 +21,34 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.core.Is.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isEmptyString;
 import static org.junit.Assert.assertThat;
 
-public class BookCommandUnitTest {
+public class CreateDisplayBookCommandUnitTest {
 
-	private BookCommand testee;
+	private CreateBookCommand testee;
 
 	@Before
 	public void setupInstance() {
-		testee = new BookCommand();
+		testee = new CreateBookCommand();
 	}
 
 	@Test
-	public void shouldSetChecked() {
-		final boolean checked = true;
-
-		testee.setChecked(checked);
-
-		assertThat(testee.isChecked(), is(checked));
+	public void shouldBeSetUpByDefaultConstructor() {
+		assertThat(testee.getPager(), is(notNullValue()));
+		assertThat(testee.getTitle(), is(isEmptyString()));
 	}
 
 	@Test
-	public void shouldSetId() {
-		final int id = 2;
+	public void shouldSetPager() {
+		final PagerCommand pager = new PagerCommand();
 
-		testee.setId(id);
+		testee.setPager(pager);
 
-		assertThat(testee.getId(), equalTo(id));
-	}
-
-	@Test
-	public void shouldSetVersion() {
-		final int version = 54;
-
-		testee.setVersion(version);
-
-		assertThat(testee.getVersion(), equalTo(version));
+		assertThat(testee.getPager(), sameInstance(pager));
 	}
 
 	@Test

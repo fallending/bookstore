@@ -17,7 +17,7 @@
 
 package pl.jojczykp.bookstore.commands;
 
-public class BookCommand {
+public class DisplayBookCommand {
 
 	private int id;
 	private int version;
