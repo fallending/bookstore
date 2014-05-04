@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import pl.jojczykp.bookstore.assemblers.BookAssembler;
-import pl.jojczykp.bookstore.commands.BooksCommand;
+import pl.jojczykp.bookstore.commands.ListBooksCommand;
 import pl.jojczykp.bookstore.commands.PagerCommand;
 import pl.jojczykp.bookstore.entities.Book;
 import pl.jojczykp.bookstore.repositories.BooksRepository;
@@ -34,9 +34,9 @@ import pl.jojczykp.bookstore.utils.PagerLimiter;
 import java.util.List;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static pl.jojczykp.bookstore.controllers.BooksConsts.BOOKS_COMMAND;
+import static pl.jojczykp.bookstore.controllers.BooksConsts.LIST_BOOKS_COMMAND;
 import static pl.jojczykp.bookstore.controllers.BooksConsts.BOOKS_VIEW;
-import static pl.jojczykp.bookstore.controllers.BooksConsts.URL_ACTION_READ;
+import static pl.jojczykp.bookstore.controllers.BooksConsts.URL_ACTION_LIST;
 
 @Controller
 public class BooksControllerRead {
@@ -46,22 +46,23 @@ public class BooksControllerRead {
 	@Autowired private BooksRepository booksRepository;
 	@Autowired private BookAssembler bookAssembler;
 
-	@ModelAttribute(BOOKS_COMMAND)
-	public BooksCommand getDefaultBooksCommand() {
+	@ModelAttribute(LIST_BOOKS_COMMAND)
+	public ListBooksCommand getDefaultBooksCommand() {
 		return booksCommandFactory.create();
 	}
 
-	@RequestMapping(value = URL_ACTION_READ, method = GET)
+	@RequestMapping(value = URL_ACTION_LIST, method = GET)
 	public ModelAndView read(
-			@ModelAttribute(BOOKS_COMMAND) BooksCommand booksCommand)
+			@ModelAttribute(LIST_BOOKS_COMMAND) ListBooksCommand listBooksCommand)
 	{
-		PagerCommand limitedPager = pagerLimiter.createLimited(booksCommand.getPager(), booksRepository.totalCount());
-		booksCommand.setPager(limitedPager);
+		PagerCommand limitedPager = pagerLimiter.createLimited(
+														listBooksCommand.getPager(), booksRepository.totalCount());
+		listBooksCommand.setPager(limitedPager);
 
-		List<Book> books = read(booksCommand.getPager());
-		booksCommand.setBooks(bookAssembler.toCommands(books));
+		List<Book> books = read(listBooksCommand.getPager());
+		listBooksCommand.setBooks(bookAssembler.toCommands(books));
 
-		return new ModelAndView(BOOKS_VIEW, aModelFor(booksCommand));
+		return new ModelAndView(BOOKS_VIEW, aModelFor(listBooksCommand));
 	}
 
 	private List<Book> read(PagerCommand pager) {
@@ -76,8 +77,8 @@ public class BooksControllerRead {
 					pager.getSorter().getDirection());
 	}
 
-	private ModelMap aModelFor(BooksCommand booksCommand) {
-		return new ModelMap().addAttribute(BOOKS_COMMAND, booksCommand);
+	private ModelMap aModelFor(ListBooksCommand listBooksCommand) {
+		return new ModelMap().addAttribute(LIST_BOOKS_COMMAND, listBooksCommand);
 	}
 
 }

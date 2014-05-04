@@ -19,10 +19,10 @@
 <#import "macros/messages.ftl" as messages>
 <#import "/spring.ftl" as spring>
 
-<#assign pageNumber = booksCommand.pager.pageNumber>
-<#assign pageSize = booksCommand.pager.pageSize>
-<#assign pagesCount = booksCommand.pager.pagesCount>
-<#assign totalCount = booksCommand.pager.totalCount>
+<#assign pageNumber = listBooksCommand.pager.pageNumber>
+<#assign pageSize = listBooksCommand.pager.pageSize>
+<#assign pagesCount = listBooksCommand.pager.pagesCount>
+<#assign totalCount = listBooksCommand.pager.totalCount>
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/html">
@@ -34,10 +34,10 @@
 		<link rel="stylesheet" type="text/css" href="/css/books.css"/>
 		<script type="text/javascript">
 			ORIGINAL_PARAMS = {
-				'pager.pageNumber' : ${booksCommand.pager.pageNumber},
-				'pager.pageSize' : ${booksCommand.pager.pageSize},
-				'pager.sorter.column' : '${booksCommand.pager.sorter.column}',
-				'pager.sorter.direction' : '${booksCommand.pager.sorter.direction}'
+				'pager.pageNumber' : ${listBooksCommand.pager.pageNumber},
+				'pager.pageSize' : ${listBooksCommand.pager.pageSize},
+				'pager.sorter.column' : '${listBooksCommand.pager.sorter.column}',
+				'pager.sorter.direction' : '${listBooksCommand.pager.sorter.direction}'
 			}
 		</script>
 		<script type="text/javascript" src="/js/books.js"></script>
@@ -62,9 +62,9 @@
 </html>
 
 <#macro sectionMessages>
-	<@messages.sectionSingleKindMessages booksCommand.messages.infos 'sectionMessagesInfo' 'info'/>
-	<@messages.sectionSingleKindMessages booksCommand.messages.warns 'sectionMessagesWarn' 'warn'/>
-	<@messages.sectionSingleKindMessages booksCommand.messages.errors 'sectionMessagesError' 'error'/>
+	<@messages.sectionSingleKindMessages listBooksCommand.messages.infos 'sectionMessagesInfo' 'info'/>
+	<@messages.sectionSingleKindMessages listBooksCommand.messages.warns 'sectionMessagesWarn' 'warn'/>
+	<@messages.sectionSingleKindMessages listBooksCommand.messages.errors 'sectionMessagesError' 'error'/>
 </#macro>
 
 <#macro sectionPager>
@@ -95,7 +95,7 @@
 
 <#macro formPagerSetPageSize>
 	<#assign possibleSizes = {"1":1, "2":2, "3":3, "5":5, "10":10, "15":15, "25":25, "50":50, "100":100}>
-	<@spring.formSingleSelect "booksCommand.pager.pageSize" possibleSizes "class='setPageSizeInput' onChange='sendSetPageSize()'" />
+	<@spring.formSingleSelect "listBooksCommand.pager.pageSize" possibleSizes "class='setPageSizeInput' onChange='sendSetPageSize()'" />
 </#macro>
 
 <#macro formPagerNext>
@@ -161,16 +161,16 @@
 					<@sectionDataTableSorter 'BOOK_TITLE' 'Title'/>
 				</th>
 			</tr>
-			<#list booksCommand.books as book>
+			<#list listBooksCommand.books as book>
 				<tr>
 					<td>
-						<@spring.formCheckbox path="booksCommand.books[" + book_index + "].checked" attributes="class='deleteCheckbox' bookId='${booksCommand.books[book_index].id}'"/>
+						<@spring.formCheckbox path="listBooksCommand.books[" + book_index + "].checked" attributes="class='deleteCheckbox' bookId='${listBooksCommand.books[book_index].id}'"/>
 					</td>
 					<td>#${book.id}</td>
 					<td>
-						<@spring.formHiddenInput "booksCommand.books[" + book_index + "].version"/>
-						<@spring.formInput "booksCommand.books[" + book_index + "].title" "class='updateInput'"/>
-						<input type="button" value="update" onClick="sendUpdate(${booksCommand.books[book_index].id}, ${book_index})"/>
+						<@spring.formHiddenInput "listBooksCommand.books[" + book_index + "].version"/>
+						<@spring.formInput "listBooksCommand.books[" + book_index + "].title" "class='updateInput'"/>
+						<input type="button" value="update" onClick="sendUpdate(${listBooksCommand.books[book_index].id}, ${book_index})"/>
 					</td>
 				</tr>
 			</#list>
@@ -188,7 +188,7 @@
 </#macro>
 
 <#macro sectionDataTableSorterDirection columnName columnTitle direction marker>
-	<#if (booksCommand.pager.sorter.direction = '${direction}')>
+	<#if (listBooksCommand.pager.sorter.direction = '${direction}')>
 		<input type="button" value="${marker}" class="arrowsButtons" disabled="true"/>
 	<#else>
 		<input type="button" value="${marker}" class="arrowsButtons" onClick="sendSort('${columnName}', '${direction}')"/>
@@ -198,7 +198,7 @@
 <#macro sectionCreate>
 	<div class="sectionCreate">
 		<h3>Create new book:</h3>
-		Title: <@spring.formInput "booksCommand.newBook.title" "class='createInput'"/>
+		Title: <@spring.formInput "listBooksCommand.newBook.title" "class='createInput'"/>
 		<input type="button" value="create" class="createButton" onClick="sendCreate()"/>
 	</div>
 </#macro>

@@ -19,7 +19,7 @@ package pl.jojczykp.bookstore.utils;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import pl.jojczykp.bookstore.commands.BooksCommand;
+import pl.jojczykp.bookstore.commands.ListBooksCommand;
 
 @Service
 public class BooksCommandFactory {
@@ -29,14 +29,14 @@ public class BooksCommandFactory {
 	@Value("${view.books.defaultSortColumn}") private PageSorterColumn defaultSortColumn;
 	@Value("${view.books.defaultSortDirection}") private PageSorterDirection defaultSortDirection;
 
-	public BooksCommand create() {
-		BooksCommand booksCommand = new BooksCommand();
+	public ListBooksCommand create() {
+		ListBooksCommand listBooksCommand = new ListBooksCommand();
 
-		booksCommand.getPager().setPageNumber(defaultPageNumber);
-		booksCommand.getPager().setPageSize(defaultPageSize);
-		booksCommand.getPager().getSorter().setColumn(defaultSortColumn);
-		booksCommand.getPager().getSorter().setDirection(defaultSortDirection);
+		listBooksCommand.getPager().setPageNumber(defaultPageNumber);
+		listBooksCommand.getPager().setPageSize(defaultPageSize);
+		listBooksCommand.getPager().getSorter().setColumn(defaultSortColumn);
+		listBooksCommand.getPager().getSorter().setDirection(defaultSortDirection);
 
-		return booksCommand;
+		return listBooksCommand;
 	}
 }

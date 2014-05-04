@@ -66,7 +66,7 @@ import static pl.jojczykp.bookstore.utils.PageSorterDirection.DESC;
 @ContextConfiguration("classpath:spring/controllers-test-context.xml")
 public class BooksControllerPagerComponentTest {
 
-	private static final String BOOKS_COMMAND = "booksCommand";
+	private static final String LIST_BOOKS_COMMAND = "listBooksCommand";
 
 	private static final String URL_ACTION_SORT = "/books/sort";
 	private static final String URL_ACTION_GO_TO_PAGE = "/books/goToPage";
@@ -212,35 +212,35 @@ public class BooksControllerPagerComponentTest {
 	private void assertThatScrolledToPage(int pageNumber) throws Exception {
 		mvcMockPerformResult
 				.andExpect(status().isFound())
-				.andExpect(flash().attribute(BOOKS_COMMAND,
+				.andExpect(flash().attribute(LIST_BOOKS_COMMAND,
 						hasBeanProperty("pager.pageNumber", equalTo(pageNumber))))
-				.andExpect(flash().attribute(BOOKS_COMMAND,
+				.andExpect(flash().attribute(LIST_BOOKS_COMMAND,
 						hasBeanProperty("pager.pageSize", equalTo(PAGE_SIZE))))
-				.andExpect(flash().attribute(BOOKS_COMMAND,
+				.andExpect(flash().attribute(LIST_BOOKS_COMMAND,
 						hasBeanProperty("pager.pagesCount", equalTo(PAGES_COUNT))));
 	}
 
 	private void thenExpectPageSizeSetTo(int pageSize) throws Exception {
 		mvcMockPerformResult
 				.andExpect(status().isFound())
-				.andExpect(flash().attribute(BOOKS_COMMAND,
+				.andExpect(flash().attribute(LIST_BOOKS_COMMAND,
 						hasBeanProperty("pager.pageSize", equalTo(pageSize))));
 	}
 
 	private void thenExpectSortedBy(PageSorterColumn sortColumn, PageSorterDirection sortDirection) throws Exception {
 		mvcMockPerformResult
 				.andExpect(status().isFound())
-				.andExpect(flash().attribute(BOOKS_COMMAND,
+				.andExpect(flash().attribute(LIST_BOOKS_COMMAND,
 						hasBeanProperty("pager.sorter.column", equalTo(sortColumn))))
-				.andExpect(flash().attribute(BOOKS_COMMAND,
+				.andExpect(flash().attribute(LIST_BOOKS_COMMAND,
 						hasBeanProperty("pager.sorter.direction", equalTo(sortDirection))));
 	}
 
 	private void thenExpectHttpRedirectWith(ChangePagerCommand command) throws Exception {
 		mvcMockPerformResult
 				.andExpect(status().isFound())
-				.andExpect(redirectedUrl("/books/read"))
-				.andExpect(flash().attribute("booksCommand",
+				.andExpect(redirectedUrl("/books/list"))
+				.andExpect(flash().attribute("listBooksCommand",
 						hasBeanProperty("pager", sameInstance(command.getPager()))));
 	}
 

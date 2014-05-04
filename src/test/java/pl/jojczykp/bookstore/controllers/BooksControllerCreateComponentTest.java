@@ -169,8 +169,8 @@ public class BooksControllerCreateComponentTest {
 	private void thenExpectHttpRedirectWith(CreateBookCommand command) throws Exception {
 		mvcMockPerformResult
 				.andExpect(status().isFound())
-				.andExpect(redirectedUrl("/books/read"))
-				.andExpect(flash().attribute("booksCommand",
+				.andExpect(redirectedUrl("/books/list"))
+				.andExpect(flash().attribute("listBooksCommand",
 						hasBeanProperty("pager", sameInstance(command.getPager()))));
 	}
 

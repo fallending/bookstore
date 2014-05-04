@@ -20,7 +20,7 @@ package pl.jojczykp.bookstore.commands;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BooksCommand {
+public class ListBooksCommand {
 
 	private MessagesCommand messages;
 	private PagerCommand pager;
@@ -28,7 +28,7 @@ public class BooksCommand {
 	private BookCommand updatedBook;
 	private List<BookCommand> books;
 
-	public BooksCommand() {
+	public ListBooksCommand() {
 		messages = new MessagesCommand();
 		pager = new PagerCommand();
 		newBook = new BookCommand();

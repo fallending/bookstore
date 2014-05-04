@@ -28,13 +28,13 @@ import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.Matchers.empty;
 import static org.junit.Assert.assertThat;
 
-public class BooksCommandUnitTest {
+public class ListBooksCommandUnitTest {
 
-	private BooksCommand testee;
+	private ListBooksCommand testee;
 
 	@Before
 	public void createTestee() {
-		testee = new BooksCommand();
+		testee = new ListBooksCommand();
 	}
 
 	@Test

@@ -26,16 +26,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 import pl.jojczykp.bookstore.assemblers.BookAssembler;
-import pl.jojczykp.bookstore.commands.BooksCommand;
+import pl.jojczykp.bookstore.commands.ListBooksCommand;
 import pl.jojczykp.bookstore.commands.CreateBookCommand;
 import pl.jojczykp.bookstore.repositories.BooksRepository;
 import pl.jojczykp.bookstore.validators.BooksCreateValidator;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
-import static pl.jojczykp.bookstore.controllers.BooksConsts.BOOKS_COMMAND;
+import static pl.jojczykp.bookstore.controllers.BooksConsts.LIST_BOOKS_COMMAND;
 import static pl.jojczykp.bookstore.controllers.BooksConsts.CREATE_BOOK_COMMAND;
 import static pl.jojczykp.bookstore.controllers.BooksConsts.URL_ACTION_CREATE;
-import static pl.jojczykp.bookstore.controllers.BooksConsts.URL_ACTION_READ;
+import static pl.jojczykp.bookstore.controllers.BooksConsts.URL_ACTION_LIST;
 
 @Controller
 public class BooksControllerCreate {
@@ -52,40 +52,41 @@ public class BooksControllerCreate {
 	{
 		booksCreateValidator.validate(createBookCommand, bindingResult);
 
-		BooksCommand booksCommand;
+		ListBooksCommand listBooksCommand;
 		if (bindingResult.hasErrors()) {
-			booksCommand = processWhenCommandInvalid(createBookCommand, bindingResult);
+			listBooksCommand = processWhenCommandInvalid(createBookCommand, bindingResult);
 		} else {
-			booksCommand = processWhenCommandValid(createBookCommand);
+			listBooksCommand = processWhenCommandValid(createBookCommand);
 		}
 
-		return redirectToRead(booksCommand, redirectAttributes);
+		return redirectToRead(listBooksCommand, redirectAttributes);
 	}
 
-	private BooksCommand processWhenCommandInvalid(CreateBookCommand createBookCommand, BindingResult bindingResult) {
-		BooksCommand booksCommand = new BooksCommand();
-		booksCommand.setPager(createBookCommand.getPager());
+	private ListBooksCommand processWhenCommandInvalid(
+										CreateBookCommand createBookCommand, BindingResult bindingResult) {
+		ListBooksCommand listBooksCommand = new ListBooksCommand();
+		listBooksCommand.setPager(createBookCommand.getPager());
 
 		for (ObjectError error: bindingResult.getAllErrors()) {
-			booksCommand.getMessages().addErrors(error.getDefaultMessage());
+			listBooksCommand.getMessages().addErrors(error.getDefaultMessage());
 		}
 
-		return booksCommand;
+		return listBooksCommand;
 	}
 
-	private BooksCommand processWhenCommandValid(CreateBookCommand createBookCommand) {
-		BooksCommand booksCommand = new BooksCommand();
-		booksCommand.setPager(createBookCommand.getPager());
+	private ListBooksCommand processWhenCommandValid(CreateBookCommand createBookCommand) {
+		ListBooksCommand listBooksCommand = new ListBooksCommand();
+		listBooksCommand.setPager(createBookCommand.getPager());
 
 		booksRepository.create(bookAssembler.toDomain(createBookCommand));
-		booksCommand.getMessages().addInfos("Object created.");
+		listBooksCommand.getMessages().addInfos("Object created.");
 
-		return booksCommand;
+		return listBooksCommand;
 	}
 
-	private RedirectView redirectToRead(BooksCommand booksCommand, RedirectAttributes redirectAttributes) {
-		redirectAttributes.addFlashAttribute(BOOKS_COMMAND, booksCommand);
-		return new RedirectView(URL_ACTION_READ);
+	private RedirectView redirectToRead(ListBooksCommand listBooksCommand, RedirectAttributes redirectAttributes) {
+		redirectAttributes.addFlashAttribute(LIST_BOOKS_COMMAND, listBooksCommand);
+		return new RedirectView(URL_ACTION_LIST);
 	}
 
 }

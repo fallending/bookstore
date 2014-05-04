@@ -29,7 +29,7 @@ import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-public class DeleteBooksCommandUnitTest {
+public class DeleteListBooksCommandUnitTest {
 
 	private DeleteBooksCommand testee;
 

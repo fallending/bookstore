@@ -32,7 +32,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.context.WebApplicationContext;
 import pl.jojczykp.bookstore.assemblers.BookAssembler;
 import pl.jojczykp.bookstore.commands.BookCommand;
-import pl.jojczykp.bookstore.commands.BooksCommand;
+import pl.jojczykp.bookstore.commands.ListBooksCommand;
 import pl.jojczykp.bookstore.commands.MessagesCommand;
 import pl.jojczykp.bookstore.commands.PagerCommand;
 import pl.jojczykp.bookstore.entities.Book;
@@ -78,8 +78,8 @@ import static pl.jojczykp.bookstore.utils.PageSorterDirection.DESC;
 @ContextConfiguration("classpath:spring/controllers-test-context.xml")
 public class BooksControllerReadComponentTest {
 
-	private static final String BOOKS_COMMAND = "booksCommand";
-	private static final String URL_ACTION_READ = "/books/read";
+	private static final String LIST_BOOKS_COMMAND = "listBooksCommand";
+	private static final String URL_ACTION_READ = "/books/list";
 
 	private static final List<Book> REPO_DATA = new ArrayList<>();
 	private static final int REPO_TOTAL_COUNT = 23;
@@ -118,7 +118,7 @@ public class BooksControllerReadComponentTest {
 	@Captor private ArgumentCaptor<PageSorterColumn> pageSorterColumnCaptor;
 	@Captor private ArgumentCaptor<PageSorterDirection> pageSorterDirectionCaptor;
 
-	private BooksCommand defaultCommand = new BooksCommand();
+	private ListBooksCommand defaultCommand = new ListBooksCommand();
 
 	@Before
 	public void setUp() {
@@ -167,7 +167,7 @@ public class BooksControllerReadComponentTest {
 
 	@Test
 	public void shouldWalkThroughComponentsAndReturnData() throws Exception {
-		BooksCommand command = aBooksCommandWithPager();
+		ListBooksCommand command = aBooksCommandWithPager();
 
 		whenControllerReadPerformedWith(command);
 
@@ -185,7 +185,7 @@ public class BooksControllerReadComponentTest {
 		final List<String> infos = asList("info1", "info2", "info3");
 		final List<String> warns = asList("warn1", "warn2", "warn3");
 		final List<String> errors = asList("error1", "error2", "error3");
-		BooksCommand command = aBooksCommandWithMessages(infos, warns, errors);
+		ListBooksCommand command = aBooksCommandWithMessages(infos, warns, errors);
 
 		whenControllerReadPerformedWith(command);
 
@@ -196,14 +196,14 @@ public class BooksControllerReadComponentTest {
 		mvcMockPerformResult = mvcMock.perform(get(URL_ACTION_READ));
 	}
 
-	private void whenControllerReadPerformedWith(BooksCommand booksCommand) throws Exception {
+	private void whenControllerReadPerformedWith(ListBooksCommand listBooksCommand) throws Exception {
 		mvcMockPerformResult = mvcMock.perform(get(URL_ACTION_READ)
-				.flashAttr(BOOKS_COMMAND, booksCommand));
+				.flashAttr(LIST_BOOKS_COMMAND, listBooksCommand));
 	}
 
-	private ResultActions thenExpectProcessedCommandInstance(BooksCommand command) throws Exception {
+	private ResultActions thenExpectProcessedCommandInstance(ListBooksCommand command) throws Exception {
 		return mvcMockPerformResult
-				.andExpect(model().attribute(BOOKS_COMMAND,
+				.andExpect(model().attribute(LIST_BOOKS_COMMAND,
 						is(sameInstance(command))));
 	}
 
@@ -252,20 +252,22 @@ public class BooksControllerReadComponentTest {
 		mvcMockPerformResult
 			.andExpect(status().isOk())
 			.andExpect(view().name("books"))
-			.andExpect(model().attribute(BOOKS_COMMAND, hasProperty("books", is(sameInstance(ASSEMBLER_RESULT_DATA)))))
-			.andExpect(model().attribute(BOOKS_COMMAND, hasProperty("newBook", instanceOf(BookCommand.class))))
-			.andExpect(model().attribute(BOOKS_COMMAND, hasBeanProperty("pager.pageNumber", equalTo(
+			.andExpect(model().attribute(LIST_BOOKS_COMMAND, hasProperty("books",
+					is(sameInstance(ASSEMBLER_RESULT_DATA)))))
+			.andExpect(model().attribute(LIST_BOOKS_COMMAND, hasProperty("newBook", instanceOf(BookCommand.class))))
+			.andExpect(model().attribute(LIST_BOOKS_COMMAND, hasBeanProperty("pager.pageNumber", equalTo(
 					LIMITED_PAGE_NUMBER))))
-			.andExpect(model().attribute(BOOKS_COMMAND, hasBeanProperty("pager.pageSize", equalTo(
+			.andExpect(model().attribute(LIST_BOOKS_COMMAND, hasBeanProperty("pager.pageSize", equalTo(
 					LIMITED_PAGE_SIZE))))
-			.andExpect(model().attribute(BOOKS_COMMAND, hasBeanProperty("pager.pagesCount", equalTo(
+			.andExpect(model().attribute(LIST_BOOKS_COMMAND, hasBeanProperty("pager.pagesCount", equalTo(
 					LIMITED_PAGES_COUNT))))
-			.andExpect(model().attribute(BOOKS_COMMAND, hasBeanProperty("pager.totalCount", equalTo(
+			.andExpect(model().attribute(LIST_BOOKS_COMMAND, hasBeanProperty("pager.totalCount", equalTo(
 					LIMITED_TOTAL_COUNT))));
 	}
 
-	private static BooksCommand aBooksCommandWithMessages(List<String> infos, List<String> warns, List<String> errors) {
-		BooksCommand result = new BooksCommand();
+	private static ListBooksCommand aBooksCommandWithMessages(
+												List<String> infos, List<String> warns, List<String> errors) {
+		ListBooksCommand result = new ListBooksCommand();
 		result.setMessages(aMessagesCommand(infos, warns, errors));
 
 		return result;
@@ -280,8 +282,8 @@ public class BooksControllerReadComponentTest {
 		return result;
 	}
 
-	private static BooksCommand aBooksCommandWithPager() {
-		BooksCommand result = new BooksCommand();
+	private static ListBooksCommand aBooksCommandWithPager() {
+		ListBooksCommand result = new ListBooksCommand();
 		result.setPager(aPagerCommand());
 
 		return result;
