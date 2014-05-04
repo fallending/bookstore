@@ -52,7 +52,7 @@ public class DeleteBookController {
 			deleteBookFromRepository(id, displayBooksCommand.getMessages());
 		}
 
-		return redirectToRead(displayBooksCommand, redirectAttributes);
+		return redirect(displayBooksCommand, redirectAttributes);
 	}
 
 	private void deleteBookFromRepository(int bookId, MessagesCommand messagesContainer) {
@@ -64,8 +64,7 @@ public class DeleteBookController {
 		}
 	}
 
-	private RedirectView redirectToRead(
-								DisplayBooksCommand displayBooksCommand, RedirectAttributes redirectAttributes) {
+	private RedirectView redirect(DisplayBooksCommand displayBooksCommand, RedirectAttributes redirectAttributes) {
 		redirectAttributes.addFlashAttribute(DISPLAY_BOOKS_COMMAND, displayBooksCommand);
 		return new RedirectView(URL_ACTION_LIST);
 	}

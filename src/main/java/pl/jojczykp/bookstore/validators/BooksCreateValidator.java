@@ -34,7 +34,6 @@ public class BooksCreateValidator implements Validator {
 
 	@Override
 	public void validate(Object object, Errors errors) {
-		rejectIfEmptyOrWhitespace(errors,
-				"title", "title.empty", "Creating with empty title is not allowed.");
+		rejectIfEmptyOrWhitespace(errors, "title", "title.empty", "Creating with empty title is not allowed.");
 	}
 }

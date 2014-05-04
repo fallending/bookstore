@@ -34,7 +34,7 @@ public abstract class BooksConsts {
 	public static final String DELETE_BOOKS_COMMAND = "deleteBooksCommand";
 	public static final String CHANGE_PAGER_COMMAND = "changePagerCommand";
 
-	public static final String BOOKS_VIEW = "books";
+	public static final String DISPLAY_BOOKS_VIEW = "books";
 
 	public static final String EXCEPTION_VIEW = "exception";
 }

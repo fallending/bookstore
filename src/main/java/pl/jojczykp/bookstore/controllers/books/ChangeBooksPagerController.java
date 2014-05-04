@@ -53,7 +53,7 @@ public class ChangeBooksPagerController {
 		DisplayBooksCommand displayBooksCommand = new DisplayBooksCommand();
 		displayBooksCommand.setPager(changePagerCommand.getPager());
 
-		return redirectToRead(displayBooksCommand, redirectAttributes);
+		return redirect(displayBooksCommand, redirectAttributes);
 	}
 
 	@RequestMapping(value = URL_ACTION_SET_PAGE_SIZE, method = POST)
@@ -71,7 +71,7 @@ public class ChangeBooksPagerController {
 			displayBooksCommand = processWhenSetPageSizeCommandValid(changePagerCommand);
 		}
 
-		return redirectToRead(displayBooksCommand, redirectAttributes);
+		return redirect(displayBooksCommand, redirectAttributes);
 	}
 
 	private DisplayBooksCommand processWhenSetPageSizeCommandInvalid(
@@ -104,11 +104,10 @@ public class ChangeBooksPagerController {
 		DisplayBooksCommand displayBooksCommand = new DisplayBooksCommand();
 		displayBooksCommand.setPager(changePagerCommand.getPager());
 
-		return redirectToRead(displayBooksCommand, redirectAttributes);
+		return redirect(displayBooksCommand, redirectAttributes);
 	}
 
-	private RedirectView redirectToRead(
-								DisplayBooksCommand displayBooksCommand, RedirectAttributes redirectAttributes) {
+	private RedirectView redirect(DisplayBooksCommand displayBooksCommand, RedirectAttributes redirectAttributes) {
 		redirectAttributes.addFlashAttribute(DISPLAY_BOOKS_COMMAND, displayBooksCommand);
 		return new RedirectView(URL_ACTION_LIST);
 	}

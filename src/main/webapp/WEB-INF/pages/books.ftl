@@ -95,7 +95,8 @@
 
 <#macro formPagerSetPageSize>
 	<#assign possibleSizes = {"1":1, "2":2, "3":3, "5":5, "10":10, "15":15, "25":25, "50":50, "100":100}>
-	<@spring.formSingleSelect "displayBooksCommand.pager.pageSize" possibleSizes "class='setPageSizeInput' onChange='sendSetPageSize()'" />
+	<@spring.formSingleSelect "displayBooksCommand.pager.pageSize" possibleSizes
+								"class='setPageSizeInput' onChange='sendSetPageSize()'" />
 </#macro>
 
 <#macro formPagerNext>
@@ -164,13 +165,16 @@
 			<#list displayBooksCommand.books as book>
 				<tr>
 					<td>
-						<input type="checkbox" class="deleteCheckbox" bookId="${displayBooksCommand.books[book_index].id}"/>
+						<input type="checkbox"
+							   class="deleteCheckbox"
+							   bookId="${displayBooksCommand.books[book_index].id}"/>
 					</td>
 					<td>#${book.id}</td>
 					<td>
 						<@spring.formHiddenInput "displayBooksCommand.books[" + book_index + "].version"/>
 						<@spring.formInput "displayBooksCommand.books[" + book_index + "].title" "class='updateInput'"/>
-						<input type="button" value="update" onClick="sendUpdate(${displayBooksCommand.books[book_index].id}, ${book_index})"/>
+						<input type="button" value="update"
+							   onClick="sendUpdate(${displayBooksCommand.books[book_index].id}, ${book_index})"/>
 					</td>
 				</tr>
 			</#list>
@@ -191,7 +195,8 @@
 	<#if (displayBooksCommand.pager.sorter.direction = '${direction}')>
 		<input type="button" value="${marker}" class="arrowsButtons" disabled="true"/>
 	<#else>
-		<input type="button" value="${marker}" class="arrowsButtons" onClick="sendSort('${columnName}', '${direction}')"/>
+		<input type="button" value="${marker}" class="arrowsButtons"
+			   onClick="sendSort('${columnName}', '${direction}')"/>
 	</#if>
 </#macro>
 

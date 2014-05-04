@@ -30,7 +30,9 @@
 		<property name="port" value="${jmx.port}" />
 	</bean>
 
-	<bean id="bookstoreJmxServer" class="org.springframework.jmx.support.ConnectorServerFactoryBean" depends-on="rmiRegistry">
+	<bean id="bookstoreJmxServer"
+		  class="org.springframework.jmx.support.ConnectorServerFactoryBean"
+		  depends-on="rmiRegistry">
 		<property name="objectName" value="connector:name=rmi" />
 		<property name="serviceUrl" value="service:jmx:rmi://localhost/jndi/rmi://localhost:${jmx.port}/${jmx.connector.name}" />
 	</bean>

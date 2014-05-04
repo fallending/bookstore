@@ -35,7 +35,7 @@ import java.util.List;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static pl.jojczykp.bookstore.consts.BooksConsts.DISPLAY_BOOKS_COMMAND;
-import static pl.jojczykp.bookstore.consts.BooksConsts.BOOKS_VIEW;
+import static pl.jojczykp.bookstore.consts.BooksConsts.DISPLAY_BOOKS_VIEW;
 import static pl.jojczykp.bookstore.consts.BooksConsts.URL_ACTION_LIST;
 
 @Controller
@@ -62,7 +62,7 @@ public class DisplayBooksController {
 		List<Book> books = read(displayBooksCommand.getPager());
 		displayBooksCommand.setBooks(displayBookAssembler.toCommands(books));
 
-		return new ModelAndView(BOOKS_VIEW, aModelFor(displayBooksCommand));
+		return new ModelAndView(DISPLAY_BOOKS_VIEW, aModelFor(displayBooksCommand));
 	}
 
 	private List<Book> read(PagerCommand pager) {

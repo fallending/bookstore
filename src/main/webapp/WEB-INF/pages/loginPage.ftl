@@ -46,7 +46,8 @@
 		<@messages.sectionSingleKindMessages ['User logged out.'] 'sectionMessagesInfo' 'info'/>
 	</#if>
 	<#if Session.SPRING_SECURITY_LAST_EXCEPTION?? && Session.SPRING_SECURITY_LAST_EXCEPTION.message?has_content>
-		<@messages.sectionSingleKindMessages [Session.SPRING_SECURITY_LAST_EXCEPTION.message] 'sectionMessagesError' 'error'/>
+		<@messages.sectionSingleKindMessages [Session.SPRING_SECURITY_LAST_EXCEPTION.message]
+												'sectionMessagesError' 'error'/>
 	</#if>
 </#macro>
 

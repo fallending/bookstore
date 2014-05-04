@@ -60,7 +60,7 @@ public class UpdateBookController {
 			displayBooksCommand = processWhenCommandValid(updateBookCommand);
 		}
 
-		return redirectToRead(displayBooksCommand, redirectAttributes);
+		return redirect(displayBooksCommand, redirectAttributes);
 
 	}
 
@@ -91,8 +91,7 @@ public class UpdateBookController {
 		return displayBooksCommand;
 	}
 
-	private RedirectView redirectToRead(
-								DisplayBooksCommand displayBooksCommand, RedirectAttributes redirectAttributes) {
+	private RedirectView redirect(DisplayBooksCommand displayBooksCommand, RedirectAttributes redirectAttributes) {
 		redirectAttributes.addFlashAttribute(DISPLAY_BOOKS_COMMAND, displayBooksCommand);
 		return new RedirectView(URL_ACTION_LIST);
 	}

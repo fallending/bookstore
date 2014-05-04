@@ -13,8 +13,10 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
-INSERT INTO USERS (ID, NAME, PASSWORD, NOT_EXPIRED, NOT_LOCKED, CREDENTIALS_NOT_EXPIRED, ENABLED) VALUES (101, 'admin', 'admin', true, true, true, true);
-INSERT INTO USERS (ID, NAME, PASSWORD, NOT_EXPIRED, NOT_LOCKED, CREDENTIALS_NOT_EXPIRED, ENABLED) VALUES (102, 'user' , 'user' , true, true, true, true);
+INSERT INTO USERS (ID, NAME, PASSWORD, NOT_EXPIRED, NOT_LOCKED, CREDENTIALS_NOT_EXPIRED, ENABLED)
+	VALUES (101, 'admin', 'admin', true, true, true, true);
+INSERT INTO USERS (ID, NAME, PASSWORD, NOT_EXPIRED, NOT_LOCKED, CREDENTIALS_NOT_EXPIRED, ENABLED)
+	VALUES (102, 'user' , 'user' , true, true, true, true);
 
 INSERT INTO AUTHORITIES (ID, ROLE) VALUES (201, 'ROLE_ADMIN');
 INSERT INTO AUTHORITIES (ID, ROLE) VALUES (202, 'ROLE_USER');

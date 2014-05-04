@@ -155,7 +155,7 @@ public class ChangeBooksPagerControllerComponentTest {
 	}
 
 	private void whenUrlActionPerformedWithCommand(String action, ChangePagerCommand changePagerCommand)
-			throws Exception {
+																									throws Exception {
 		mvcMockPerformResult = mvcMock.perform(post(action)
 				.flashAttr("changePagerCommand", changePagerCommand));
 	}

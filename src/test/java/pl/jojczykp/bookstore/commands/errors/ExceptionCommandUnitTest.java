@@ -43,7 +43,7 @@ public class ExceptionCommandUnitTest {
 
 	@Test
 	public void shouldSetStackTraceAsText() {
-		final String stackTraceContent = "stacktrace content";
+		final String stackTraceContent = "stack trace content";
 
 		testee.setStackTraceAsString(stackTraceContent);
 
