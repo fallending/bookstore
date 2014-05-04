@@ -15,49 +15,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
  */
 
-package pl.jojczykp.bookstore.commands;
+package pl.jojczykp.bookstore.commands.errors;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-public class HttpErrorCommandTest {
+public class ExceptionCommandUnitTest {
 
-	private HttpErrorCommand testee;
+	private ExceptionCommand testee;
 
 	@Before
 	public void setUpTestee() {
-		testee = new HttpErrorCommand();
+		testee = new ExceptionCommand();
 	}
 
 	@Test
-	public void shouldSetId() {
-		final int id = 8;
+	public void shouldSetMessage() {
+		final String message = "some message";
 
-		testee.setId(id);
+		testee.setMessage(message);
 
-		assertThat(testee.getId(), is(id));
+		assertThat(testee.getMessage(), equalTo(message));
 	}
 
 	@Test
-	public void shouldSetOriginalUrl() {
-		final String originalUrl = "originalUrl";
+	public void shouldSetStackTraceAsText() {
+		final String stackTraceContent = "stacktrace content";
 
-		testee.setOriginalUrl(originalUrl);
+		testee.setStackTraceAsString(stackTraceContent);
 
-		assertThat(testee.getOriginalUrl(), is(equalTo(originalUrl)));
+		assertThat(testee.getStackTraceAsString(), equalTo(stackTraceContent));
 	}
-
-	@Test
-	public void shouldSetDescription() {
-		final String description = "description";
-
-		testee.setDescription(description);
-
-		assertThat(testee.getDescription(), is(equalTo(description)));
-	}
-
 }

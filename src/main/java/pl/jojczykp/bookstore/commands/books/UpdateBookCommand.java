@@ -15,19 +15,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
  */
 
-package pl.jojczykp.bookstore.commands;
+package pl.jojczykp.bookstore.commands.books;
 
-import java.util.ArrayList;
-import java.util.List;
+import pl.jojczykp.bookstore.commands.parts.PagerCommand;
 
-public class DeleteBooksCommand {
+public class UpdateBookCommand {
 
 	private PagerCommand pager;
-	private List<Integer> ids;
+	private int id;
+	private int version;
+	private String title;
 
-	public DeleteBooksCommand() {
+	public UpdateBookCommand() {
 		pager = new PagerCommand();
-		ids = new ArrayList<>();
+		id = 0;
+		version = 0;
+		title = "";
 	}
 
 	public PagerCommand getPager() {
@@ -38,12 +41,28 @@ public class DeleteBooksCommand {
 		this.pager = pager;
 	}
 
-	public List<Integer> getIds() {
-		return ids;
+	public int getId() {
+		return id;
 	}
 
-	public void setIds(List<Integer> ids) {
-		this.ids = ids;
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public int getVersion() {
+		return version;
+	}
+
+	public void setVersion(int version) {
+		this.version = version;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 }

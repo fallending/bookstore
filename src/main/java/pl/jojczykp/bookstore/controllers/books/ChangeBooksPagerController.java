@@ -26,8 +26,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
-import pl.jojczykp.bookstore.commands.DisplayBooksCommand;
-import pl.jojczykp.bookstore.commands.ChangePagerCommand;
+import pl.jojczykp.bookstore.commands.books.ChangePagerCommand;
+import pl.jojczykp.bookstore.commands.books.DisplayBooksCommand;
 import pl.jojczykp.bookstore.validators.BooksSetPageSizeValidator;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;

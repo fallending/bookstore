@@ -20,7 +20,7 @@ package pl.jojczykp.bookstore.controllers.errors;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
-import pl.jojczykp.bookstore.commands.ExceptionCommand;
+import pl.jojczykp.bookstore.commands.errors.ExceptionCommand;
 
 import static org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace;
 import static pl.jojczykp.bookstore.consts.BooksConsts.EXCEPTION_VIEW;

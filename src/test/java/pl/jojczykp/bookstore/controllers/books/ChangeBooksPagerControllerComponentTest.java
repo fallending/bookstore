@@ -31,7 +31,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.validation.Errors;
 import org.springframework.web.context.WebApplicationContext;
-import pl.jojczykp.bookstore.commands.ChangePagerCommand;
+import pl.jojczykp.bookstore.commands.books.ChangePagerCommand;
 import pl.jojczykp.bookstore.repositories.BooksRepository;
 import pl.jojczykp.bookstore.utils.PageSorterColumn;
 import pl.jojczykp.bookstore.utils.PageSorterDirection;
@@ -154,8 +154,8 @@ public class ChangeBooksPagerControllerComponentTest {
 		given(booksRepository.totalCount()).willReturn(PAGES_COUNT * PAGE_SIZE - 2);
 	}
 
-	private void whenUrlActionPerformedWithCommand(
-											String action, ChangePagerCommand changePagerCommand) throws Exception {
+	private void whenUrlActionPerformedWithCommand(String action, ChangePagerCommand changePagerCommand)
+			throws Exception {
 		mvcMockPerformResult = mvcMock.perform(post(action)
 				.flashAttr("changePagerCommand", changePagerCommand));
 	}

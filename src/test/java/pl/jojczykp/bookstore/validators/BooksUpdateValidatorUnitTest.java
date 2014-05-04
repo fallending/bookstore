@@ -22,7 +22,7 @@ import org.junit.Test;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
-import pl.jojczykp.bookstore.commands.UpdateBookCommand;
+import pl.jojczykp.bookstore.commands.books.UpdateBookCommand;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;

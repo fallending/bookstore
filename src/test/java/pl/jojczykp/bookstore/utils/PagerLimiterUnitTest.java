@@ -19,7 +19,7 @@ package pl.jojczykp.bookstore.utils;
 
 import org.junit.Before;
 import org.junit.Test;
-import pl.jojczykp.bookstore.commands.PagerCommand;
+import pl.jojczykp.bookstore.commands.parts.PagerCommand;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;

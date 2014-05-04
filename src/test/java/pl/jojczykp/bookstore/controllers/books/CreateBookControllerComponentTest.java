@@ -35,7 +35,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.validation.Errors;
 import org.springframework.web.context.WebApplicationContext;
 import pl.jojczykp.bookstore.assemblers.CreateBookAssembler;
-import pl.jojczykp.bookstore.commands.CreateBookCommand;
+import pl.jojczykp.bookstore.commands.books.CreateBookCommand;
 import pl.jojczykp.bookstore.entities.Book;
 import pl.jojczykp.bookstore.repositories.BooksRepository;
 import pl.jojczykp.bookstore.validators.BooksCreateValidator;

@@ -15,14 +15,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
  */
 
-package pl.jojczykp.bookstore.commands;
+package pl.jojczykp.bookstore.commands.books;
 
-public class ChangePagerCommand {
+import pl.jojczykp.bookstore.commands.parts.MessagesCommand;
+import pl.jojczykp.bookstore.commands.parts.PagerCommand;
 
+import java.util.ArrayList;
+import java.util.List;
+
+public class DisplayBooksCommand {
+
+	private MessagesCommand messages;
 	private PagerCommand pager;
+	private List<DisplayBookCommand> books;
 
-	public ChangePagerCommand() {
+	public DisplayBooksCommand() {
+		messages = new MessagesCommand();
 		pager = new PagerCommand();
+		books = new ArrayList<>();
+	}
+
+	public MessagesCommand getMessages() {
+		return messages;
+	}
+
+	public void setMessages(MessagesCommand messages) {
+		this.messages = messages;
 	}
 
 	public PagerCommand getPager() {
@@ -31,6 +49,14 @@ public class ChangePagerCommand {
 
 	public void setPager(PagerCommand pager) {
 		this.pager = pager;
+	}
+
+	public List<DisplayBookCommand> getBooks() {
+		return books;
+	}
+
+	public void setBooks(List<DisplayBookCommand> books) {
+		this.books = books;
 	}
 
 }

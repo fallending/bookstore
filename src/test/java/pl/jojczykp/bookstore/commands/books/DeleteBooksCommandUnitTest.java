@@ -15,28 +15,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
  */
 
-package pl.jojczykp.bookstore.commands;
+package pl.jojczykp.bookstore.commands.books;
 
 import org.junit.Before;
 import org.junit.Test;
+import pl.jojczykp.bookstore.commands.parts.PagerCommand;
 
+import java.util.List;
+
+import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-public class ChangePagerCommandUnitTest {
+public class DeleteBooksCommandUnitTest {
 
-	private ChangePagerCommand testee;
+	private DeleteBooksCommand testee;
 
 	@Before
 	public void setupInstance() {
-		testee = new ChangePagerCommand();
+		testee = new DeleteBooksCommand();
 	}
 
 	@Test
 	public void shouldBeSetUpByDefaultConstructor() {
 		assertThat(testee.getPager(), is(notNullValue()));
+		assertThat(testee.getIds(), is(empty()));
 	}
 
 	@Test
@@ -46,6 +52,15 @@ public class ChangePagerCommandUnitTest {
 		testee.setPager(pager);
 
 		assertThat(testee.getPager(), sameInstance(pager));
+	}
+
+	@Test
+	public void shouldSetIds() {
+		final List<Integer> ids = asList(1, 2, 3, 4, 5);
+
+		testee.setIds(ids);
+
+		assertThat(testee.getIds(), is(sameInstance(ids)));
 	}
 
 }

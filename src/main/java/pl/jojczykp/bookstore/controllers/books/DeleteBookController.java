@@ -24,9 +24,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
-import pl.jojczykp.bookstore.commands.DisplayBooksCommand;
-import pl.jojczykp.bookstore.commands.DeleteBooksCommand;
-import pl.jojczykp.bookstore.commands.MessagesCommand;
+import pl.jojczykp.bookstore.commands.books.DisplayBooksCommand;
+import pl.jojczykp.bookstore.commands.books.DeleteBooksCommand;
+import pl.jojczykp.bookstore.commands.parts.MessagesCommand;
 import pl.jojczykp.bookstore.repositories.BooksRepository;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;

@@ -15,45 +15,47 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
  */
 
-package pl.jojczykp.bookstore.commands;
+package pl.jojczykp.bookstore.commands.parts;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DisplayBooksCommand {
+import static java.util.Arrays.asList;
 
-	private MessagesCommand messages;
-	private PagerCommand pager;
-	private List<DisplayBookCommand> books;
+public class MessagesCommand {
 
-	public DisplayBooksCommand() {
-		messages = new MessagesCommand();
-		pager = new PagerCommand();
-		books = new ArrayList<>();
+	private List<String> infos;
+	private List<String> warns;
+	private List<String> errors;
+
+	public MessagesCommand() {
+		infos = new ArrayList<>();
+		warns = new ArrayList<>();
+		errors = new ArrayList<>();
 	}
 
-	public MessagesCommand getMessages() {
-		return messages;
+	public void addInfos(String... messages) {
+		infos.addAll(asList(messages));
 	}
 
-	public void setMessages(MessagesCommand messages) {
-		this.messages = messages;
+	public List<String> getInfos() {
+		return infos;
 	}
 
-	public PagerCommand getPager() {
-		return pager;
+	public void addWarns(String... messages) {
+		warns.addAll(asList(messages));
 	}
 
-	public void setPager(PagerCommand pager) {
-		this.pager = pager;
+	public List<String> getWarns() {
+		return warns;
 	}
 
-	public List<DisplayBookCommand> getBooks() {
-		return books;
+	public void addErrors(String... messages) {
+		errors.addAll(asList(messages));
 	}
 
-	public void setBooks(List<DisplayBookCommand> books) {
-		this.books = books;
+	public List<String> getErrors() {
+		return errors;
 	}
 
 }

@@ -15,47 +15,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
  */
 
-package pl.jojczykp.bookstore.commands;
+package pl.jojczykp.bookstore.commands.books;
+
+import pl.jojczykp.bookstore.commands.parts.PagerCommand;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.util.Arrays.asList;
+public class DeleteBooksCommand {
 
-public class MessagesCommand {
+	private PagerCommand pager;
+	private List<Integer> ids;
 
-	private List<String> infos;
-	private List<String> warns;
-	private List<String> errors;
-
-	public MessagesCommand() {
-		infos = new ArrayList<>();
-		warns = new ArrayList<>();
-		errors = new ArrayList<>();
+	public DeleteBooksCommand() {
+		pager = new PagerCommand();
+		ids = new ArrayList<>();
 	}
 
-	public void addInfos(String... messages) {
-		infos.addAll(asList(messages));
+	public PagerCommand getPager() {
+		return pager;
 	}
 
-	public List<String> getInfos() {
-		return infos;
+	public void setPager(PagerCommand pager) {
+		this.pager = pager;
 	}
 
-	public void addWarns(String... messages) {
-		warns.addAll(asList(messages));
+	public List<Integer> getIds() {
+		return ids;
 	}
 
-	public List<String> getWarns() {
-		return warns;
-	}
-
-	public void addErrors(String... messages) {
-		errors.addAll(asList(messages));
-	}
-
-	public List<String> getErrors() {
-		return errors;
+	public void setIds(List<Integer> ids) {
+		this.ids = ids;
 	}
 
 }

@@ -18,7 +18,7 @@
 package pl.jojczykp.bookstore.assemblers;
 
 import org.springframework.stereotype.Service;
-import pl.jojczykp.bookstore.commands.DisplayBookCommand;
+import pl.jojczykp.bookstore.commands.books.DisplayBookCommand;
 import pl.jojczykp.bookstore.entities.Book;
 
 import java.util.ArrayList;

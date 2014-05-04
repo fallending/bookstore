@@ -18,7 +18,7 @@
 package pl.jojczykp.bookstore.assemblers;
 
 import org.springframework.stereotype.Service;
-import pl.jojczykp.bookstore.commands.UpdateBookCommand;
+import pl.jojczykp.bookstore.commands.books.UpdateBookCommand;
 import pl.jojczykp.bookstore.entities.Book;
 
 @Service

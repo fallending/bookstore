@@ -19,7 +19,7 @@ package pl.jojczykp.bookstore.assemblers;
 
 import org.junit.Before;
 import org.junit.Test;
-import pl.jojczykp.bookstore.commands.CreateBookCommand;
+import pl.jojczykp.bookstore.commands.books.CreateBookCommand;
 import pl.jojczykp.bookstore.entities.Book;
 
 import static org.hamcrest.Matchers.is;

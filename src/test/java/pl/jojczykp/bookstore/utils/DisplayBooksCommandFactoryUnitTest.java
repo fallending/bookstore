@@ -24,7 +24,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-import pl.jojczykp.bookstore.commands.DisplayBooksCommand;
+import pl.jojczykp.bookstore.commands.books.DisplayBooksCommand;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;

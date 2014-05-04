@@ -15,33 +15,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
  */
 
-package pl.jojczykp.bookstore.commands;
+package pl.jojczykp.bookstore.commands.books;
 
 import org.junit.Before;
 import org.junit.Test;
+import pl.jojczykp.bookstore.commands.parts.PagerCommand;
 
-import java.util.List;
-
-import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.sameInstance;
-import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isEmptyString;
 import static org.junit.Assert.assertThat;
 
-public class DeleteDisplayBooksCommandUnitTest {
+public class CreateBookCommandUnitTest {
 
-	private DeleteBooksCommand testee;
+	private CreateBookCommand testee;
 
 	@Before
 	public void setupInstance() {
-		testee = new DeleteBooksCommand();
+		testee = new CreateBookCommand();
 	}
 
 	@Test
 	public void shouldBeSetUpByDefaultConstructor() {
 		assertThat(testee.getPager(), is(notNullValue()));
-		assertThat(testee.getIds(), is(empty()));
+		assertThat(testee.getTitle(), is(isEmptyString()));
 	}
 
 	@Test
@@ -54,12 +53,12 @@ public class DeleteDisplayBooksCommandUnitTest {
 	}
 
 	@Test
-	public void shouldSetIds() {
-		final List<Integer> ids = asList(1, 2, 3, 4, 5);
+	public void shouldSetTitle() {
+		final String title = "some title";
 
-		testee.setIds(ids);
+		testee.setTitle(title);
 
-		assertThat(testee.getIds(), is(sameInstance(ids)));
+		assertThat(testee.getTitle(), equalTo(title));
 	}
 
 }

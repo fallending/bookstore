@@ -20,7 +20,7 @@ package pl.jojczykp.bookstore.validators;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
-import pl.jojczykp.bookstore.commands.ChangePagerCommand;
+import pl.jojczykp.bookstore.commands.books.ChangePagerCommand;
 
 @Service
 public class BooksSetPageSizeValidator implements Validator {

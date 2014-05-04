@@ -15,10 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
  */
 
-package pl.jojczykp.bookstore.commands;
+package pl.jojczykp.bookstore.commands.books;
 
 import org.junit.Before;
 import org.junit.Test;
+import pl.jojczykp.bookstore.commands.parts.MessagesCommand;
+import pl.jojczykp.bookstore.commands.parts.PagerCommand;
 
 import java.util.ArrayList;
 import java.util.List;

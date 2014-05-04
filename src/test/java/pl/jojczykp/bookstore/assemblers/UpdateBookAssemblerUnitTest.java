@@ -19,7 +19,7 @@ package pl.jojczykp.bookstore.assemblers;
 
 import org.junit.Before;
 import org.junit.Test;
-import pl.jojczykp.bookstore.commands.UpdateBookCommand;
+import pl.jojczykp.bookstore.commands.books.UpdateBookCommand;
 import pl.jojczykp.bookstore.entities.Book;
 
 import static org.hamcrest.core.IsEqual.equalTo;

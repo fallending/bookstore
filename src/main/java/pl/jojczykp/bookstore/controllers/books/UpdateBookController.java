@@ -27,8 +27,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 import pl.jojczykp.bookstore.assemblers.UpdateBookAssembler;
-import pl.jojczykp.bookstore.commands.DisplayBooksCommand;
-import pl.jojczykp.bookstore.commands.UpdateBookCommand;
+import pl.jojczykp.bookstore.commands.books.DisplayBooksCommand;
+import pl.jojczykp.bookstore.commands.books.UpdateBookCommand;
 import pl.jojczykp.bookstore.repositories.BooksRepository;
 import pl.jojczykp.bookstore.validators.BooksUpdateValidator;
 

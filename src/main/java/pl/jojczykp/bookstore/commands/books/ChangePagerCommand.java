@@ -15,36 +15,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
  */
 
-package pl.jojczykp.bookstore.commands;
+package pl.jojczykp.bookstore.commands.books;
 
-public class DisplayBookCommand {
+import pl.jojczykp.bookstore.commands.parts.PagerCommand;
 
-	private int id;
-	private int version;
-	private String title;
+public class ChangePagerCommand {
 
-	public int getId() {
-		return id;
+	private PagerCommand pager;
+
+	public ChangePagerCommand() {
+		pager = new PagerCommand();
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public PagerCommand getPager() {
+		return pager;
 	}
 
-	public int getVersion() {
-		return version;
-	}
-
-	public void setVersion(int version) {
-		this.version = version;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
+	public void setPager(PagerCommand pager) {
+		this.pager = pager;
 	}
 
 }

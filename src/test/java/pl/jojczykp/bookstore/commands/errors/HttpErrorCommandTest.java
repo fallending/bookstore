@@ -15,49 +15,49 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
  */
 
-package pl.jojczykp.bookstore.commands;
+package pl.jojczykp.bookstore.commands.errors;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.isEmptyString;
 import static org.junit.Assert.assertThat;
 
-public class CreateDisplayBookCommandUnitTest {
+public class HttpErrorCommandTest {
 
-	private CreateBookCommand testee;
+	private HttpErrorCommand testee;
 
 	@Before
-	public void setupInstance() {
-		testee = new CreateBookCommand();
+	public void setUpTestee() {
+		testee = new HttpErrorCommand();
 	}
 
 	@Test
-	public void shouldBeSetUpByDefaultConstructor() {
-		assertThat(testee.getPager(), is(notNullValue()));
-		assertThat(testee.getTitle(), is(isEmptyString()));
+	public void shouldSetId() {
+		final int id = 8;
+
+		testee.setId(id);
+
+		assertThat(testee.getId(), is(id));
 	}
 
 	@Test
-	public void shouldSetPager() {
-		final PagerCommand pager = new PagerCommand();
+	public void shouldSetOriginalUrl() {
+		final String originalUrl = "originalUrl";
 
-		testee.setPager(pager);
+		testee.setOriginalUrl(originalUrl);
 
-		assertThat(testee.getPager(), sameInstance(pager));
+		assertThat(testee.getOriginalUrl(), is(equalTo(originalUrl)));
 	}
 
 	@Test
-	public void shouldSetTitle() {
-		final String title = "some title";
+	public void shouldSetDescription() {
+		final String description = "description";
 
-		testee.setTitle(title);
+		testee.setDescription(description);
 
-		assertThat(testee.getTitle(), equalTo(title));
+		assertThat(testee.getDescription(), is(equalTo(description)));
 	}
 
 }

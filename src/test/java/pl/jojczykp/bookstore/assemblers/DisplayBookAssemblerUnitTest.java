@@ -19,7 +19,7 @@ package pl.jojczykp.bookstore.assemblers;
 
 import org.junit.Before;
 import org.junit.Test;
-import pl.jojczykp.bookstore.commands.DisplayBookCommand;
+import pl.jojczykp.bookstore.commands.books.DisplayBookCommand;
 import pl.jojczykp.bookstore.entities.Book;
 
 import java.util.List;

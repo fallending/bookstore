@@ -15,38 +15,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
  */
 
-package pl.jojczykp.bookstore.commands;
+package pl.jojczykp.bookstore.commands.books;
 
 import org.junit.Before;
 import org.junit.Test;
+import pl.jojczykp.bookstore.commands.parts.PagerCommand;
 
-import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-public class ExceptionCommandUnitTest {
+public class ChangePagerCommandUnitTest {
 
-	private ExceptionCommand testee;
+	private ChangePagerCommand testee;
 
 	@Before
-	public void setUpTestee() {
-		testee = new ExceptionCommand();
+	public void setupInstance() {
+		testee = new ChangePagerCommand();
 	}
 
 	@Test
-	public void shouldSetMessage() {
-		final String message = "some message";
-
-		testee.setMessage(message);
-
-		assertThat(testee.getMessage(), equalTo(message));
+	public void shouldBeSetUpByDefaultConstructor() {
+		assertThat(testee.getPager(), is(notNullValue()));
 	}
 
 	@Test
-	public void shouldSetStackTraceAsText() {
-		final String stackTraceContent = "stacktrace content";
+	public void shouldSetPager() {
+		final PagerCommand pager = new PagerCommand();
 
-		testee.setStackTraceAsString(stackTraceContent);
+		testee.setPager(pager);
 
-		assertThat(testee.getStackTraceAsString(), equalTo(stackTraceContent));
+		assertThat(testee.getPager(), sameInstance(pager));
 	}
+
 }

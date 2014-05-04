@@ -15,19 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
  */
 
-package pl.jojczykp.bookstore.commands;
+package pl.jojczykp.bookstore.commands.books;
 
-public class UpdateBookCommand {
+import pl.jojczykp.bookstore.commands.parts.PagerCommand;
+
+public class CreateBookCommand {
 
 	private PagerCommand pager;
-	private int id;
-	private int version;
 	private String title;
 
-	public UpdateBookCommand() {
+	public CreateBookCommand() {
 		pager = new PagerCommand();
-		id = 0;
-		version = 0;
 		title = "";
 	}
 
@@ -37,22 +35,6 @@ public class UpdateBookCommand {
 
 	public void setPager(PagerCommand pager) {
 		this.pager = pager;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public int getVersion() {
-		return version;
-	}
-
-	public void setVersion(int version) {
-		this.version = version;
 	}
 
 	public String getTitle() {
