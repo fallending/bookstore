@@ -18,60 +18,19 @@
 package pl.jojczykp.bookstore.assemblers;
 
 import org.springframework.stereotype.Service;
-import pl.jojczykp.bookstore.commands.DisplayBookCommand;
 import pl.jojczykp.bookstore.commands.CreateBookCommand;
-import pl.jojczykp.bookstore.commands.UpdateBookCommand;
 import pl.jojczykp.bookstore.entities.Book;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Service
-public class BookAssembler {
+public class CreateBookAssembler {
 
 	private static final int ID_TO_BE_SET_AUTOMATICALLY = 0;
 	private static final int VERSION_TO_BE_SET_AUTOMATICALLY = 0;
-
-	public List<DisplayBookCommand> toCommands(List<Book> domains) {
-		List<DisplayBookCommand> commands = new ArrayList<>(domains.size());
-		for (Book domain : domains) {
-			commands.add(toCommand(domain));
-		}
-
-		return commands;
-	}
-
-	private DisplayBookCommand toCommand(Book domain) {
-		DisplayBookCommand command = new DisplayBookCommand();
-		command.setId(domain.getId());
-		command.setVersion(domain.getVersion());
-		command.setTitle(domain.getTitle());
-
-		return command;
-	}
-
-	public Book toDomain(DisplayBookCommand command) {
-		Book domain = new Book();
-		domain.setId(command.getId());
-		domain.setVersion(command.getVersion());
-		domain.setTitle(command.getTitle());
-
-		return domain;
-	}
 
 	public Book toDomain(CreateBookCommand command) {
 		Book domain = new Book();
 		domain.setId(ID_TO_BE_SET_AUTOMATICALLY);
 		domain.setVersion(VERSION_TO_BE_SET_AUTOMATICALLY);
-		domain.setTitle(command.getTitle());
-
-		return domain;
-	}
-
-	public Book toDomain(UpdateBookCommand command) {
-		Book domain = new Book();
-		domain.setId(command.getId());
-		domain.setVersion(command.getVersion());
 		domain.setTitle(command.getTitle());
 
 		return domain;

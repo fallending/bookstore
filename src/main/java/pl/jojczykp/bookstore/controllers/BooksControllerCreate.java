@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
-import pl.jojczykp.bookstore.assemblers.BookAssembler;
+import pl.jojczykp.bookstore.assemblers.CreateBookAssembler;
 import pl.jojczykp.bookstore.commands.DisplayBooksCommand;
 import pl.jojczykp.bookstore.commands.CreateBookCommand;
 import pl.jojczykp.bookstore.repositories.BooksRepository;
@@ -42,7 +42,7 @@ public class BooksControllerCreate {
 
 	@Autowired private BooksCreateValidator booksCreateValidator;
 	@Autowired private BooksRepository booksRepository;
-	@Autowired private BookAssembler bookAssembler;
+	@Autowired private CreateBookAssembler createBookAssembler;
 
 	@RequestMapping(value = URL_ACTION_CREATE, method = POST)
 	public RedirectView create(
@@ -78,7 +78,7 @@ public class BooksControllerCreate {
 		DisplayBooksCommand displayBooksCommand = new DisplayBooksCommand();
 		displayBooksCommand.setPager(createBookCommand.getPager());
 
-		booksRepository.create(bookAssembler.toDomain(createBookCommand));
+		booksRepository.create(createBookAssembler.toDomain(createBookCommand));
 		displayBooksCommand.getMessages().addInfos("Object created.");
 
 		return displayBooksCommand;

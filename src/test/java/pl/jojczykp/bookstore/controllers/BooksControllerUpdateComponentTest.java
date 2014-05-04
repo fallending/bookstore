@@ -35,7 +35,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.validation.Errors;
 import org.springframework.web.context.WebApplicationContext;
-import pl.jojczykp.bookstore.assemblers.BookAssembler;
+import pl.jojczykp.bookstore.assemblers.UpdateBookAssembler;
 import pl.jojczykp.bookstore.commands.UpdateBookCommand;
 import pl.jojczykp.bookstore.entities.Book;
 import pl.jojczykp.bookstore.repositories.BooksRepository;
@@ -74,7 +74,7 @@ public class BooksControllerUpdateComponentTest {
 	private MockMvc mvcMock;
 	private ResultActions mvcMockPerformResult;
 	@Autowired private BooksUpdateValidator booksUpdateValidator;
-	@Autowired private BookAssembler bookAssembler;
+	@Autowired private UpdateBookAssembler updateBookAssembler;
 	@Autowired private BooksRepository booksRepository;
 	@Autowired private WebApplicationContext wac;
 
@@ -91,9 +91,9 @@ public class BooksControllerUpdateComponentTest {
 				.build();
 		MockitoAnnotations.initMocks(this);
 		reset(booksUpdateValidator);
-		reset(bookAssembler);
+		reset(updateBookAssembler);
 		reset(booksRepository);
-		given(bookAssembler.toDomain(any(UpdateBookCommand.class))).willReturn(book);
+		given(updateBookAssembler.toDomain(any(UpdateBookCommand.class))).willReturn(book);
 	}
 
 	@Test
@@ -170,13 +170,13 @@ public class BooksControllerUpdateComponentTest {
 	}
 
 	private void thenExpectAssemblingCommandToDomainInvokedFor(UpdateBookCommand updateBookCommand) {
-		verify(bookAssembler).toDomain(updateBookCommandCaptor.capture());
+		verify(updateBookAssembler).toDomain(updateBookCommandCaptor.capture());
 		assertThat(updateBookCommandCaptor.getValue(), is(sameInstance(updateBookCommand)));
-		verifyNoMoreInteractions(bookAssembler);
+		verifyNoMoreInteractions(updateBookAssembler);
 	}
 
 	private void thenExpectAssemblingCommandToDomainNotInvoked() {
-		verifyZeroInteractions(bookAssembler);
+		verifyZeroInteractions(updateBookAssembler);
 	}
 
 	private void thenExpectUpdateInvokedOnRepository() {

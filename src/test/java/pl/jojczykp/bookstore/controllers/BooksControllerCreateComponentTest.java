@@ -34,7 +34,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.validation.Errors;
 import org.springframework.web.context.WebApplicationContext;
-import pl.jojczykp.bookstore.assemblers.BookAssembler;
+import pl.jojczykp.bookstore.assemblers.CreateBookAssembler;
 import pl.jojczykp.bookstore.commands.CreateBookCommand;
 import pl.jojczykp.bookstore.entities.Book;
 import pl.jojczykp.bookstore.repositories.BooksRepository;
@@ -71,7 +71,7 @@ public class BooksControllerCreateComponentTest {
 	private MockMvc mvcMock;
 	private ResultActions mvcMockPerformResult;
 	@Autowired private BooksCreateValidator booksCreateValidator;
-	@Autowired private BookAssembler bookAssembler;
+	@Autowired private CreateBookAssembler createBookAssembler;
 	@Autowired private BooksRepository booksRepository;
 	@Autowired private WebApplicationContext wac;
 
@@ -87,9 +87,9 @@ public class BooksControllerCreateComponentTest {
 				.build();
 		MockitoAnnotations.initMocks(this);
 		reset(booksCreateValidator);
-		reset(bookAssembler);
+		reset(createBookAssembler);
 		reset(booksRepository);
-		given(bookAssembler.toDomain(any(CreateBookCommand.class))).willReturn(book);
+		given(createBookAssembler.toDomain(any(CreateBookCommand.class))).willReturn(book);
 	}
 
 	@Test
@@ -147,13 +147,13 @@ public class BooksControllerCreateComponentTest {
 	}
 
 	private void thenExpectAssemblingCommandToDomainInvokedFor(CreateBookCommand createBookCommand) {
-		verify(bookAssembler).toDomain(createBookCommandCaptor.capture());
+		verify(createBookAssembler).toDomain(createBookCommandCaptor.capture());
 		assertThat(createBookCommandCaptor.getValue(), is(sameInstance(createBookCommand)));
-		verifyNoMoreInteractions(bookAssembler);
+		verifyNoMoreInteractions(createBookAssembler);
 	}
 
 	private void thenExpectAssemblingCommandToDomainNotInvoked() {
-		verifyZeroInteractions(bookAssembler);
+		verifyZeroInteractions(createBookAssembler);
 	}
 
 	private void thenExpectCreateInvokedOnRepository() {

@@ -30,7 +30,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.context.WebApplicationContext;
-import pl.jojczykp.bookstore.assemblers.BookAssembler;
+import pl.jojczykp.bookstore.assemblers.DisplayBookAssembler;
 import pl.jojczykp.bookstore.commands.DisplayBookCommand;
 import pl.jojczykp.bookstore.commands.DisplayBooksCommand;
 import pl.jojczykp.bookstore.commands.MessagesCommand;
@@ -105,7 +105,7 @@ public class BooksControllerReadComponentTest {
 
 	@Autowired private BooksCommandFactory booksCommandFactory;
 	@Autowired private BooksRepository booksRepository;
-	@Autowired private BookAssembler bookAssembler;
+	@Autowired private DisplayBookAssembler displayBookAssembler;
 	@Autowired private PagerLimiter pagerLimiter;
 	@Autowired private WebApplicationContext wac;
 
@@ -152,8 +152,8 @@ public class BooksControllerReadComponentTest {
 	}
 
 	private void givenBookAssemblerMockConfigured() {
-		reset(bookAssembler);
-		given(bookAssembler.toCommands(REPO_DATA)).willReturn(ASSEMBLER_RESULT_DATA);
+		reset(displayBookAssembler);
+		given(displayBookAssembler.toCommands(REPO_DATA)).willReturn(ASSEMBLER_RESULT_DATA);
 	}
 
 	@Test
@@ -242,9 +242,9 @@ public class BooksControllerReadComponentTest {
 	}
 
 	private void thenExpectBookAssemblerInvoked() {
-		verify(bookAssembler).toCommands(assembledListCaptor.capture());
+		verify(displayBookAssembler).toCommands(assembledListCaptor.capture());
 		assertThat(assembledListCaptor.getValue(), sameInstance(REPO_DATA));
-		verifyNoMoreInteractions(bookAssembler);
+		verifyNoMoreInteractions(displayBookAssembler);
 	}
 
 	private void thenExpectCorrectViewSelectedAndModelSet() throws Exception {

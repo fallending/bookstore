@@ -43,7 +43,9 @@
 
 	<mockito:mock id="booksCommandFactory" class="pl.jojczykp.bookstore.utils.BooksCommandFactory" />
 
-	<mockito:mock id="bookAssembler" class="pl.jojczykp.bookstore.assemblers.BookAssembler"/>
+	<mockito:mock id="displayBookAssembler" class="pl.jojczykp.bookstore.assemblers.DisplayBookAssembler"/>
+	<mockito:mock id="createBookAssembler" class="pl.jojczykp.bookstore.assemblers.CreateBookAssembler"/>
+	<mockito:mock id="updateBookAssembler" class="pl.jojczykp.bookstore.assemblers.UpdateBookAssembler"/>
 
 	<mockito:mock id="booksRepository" class="pl.jojczykp.bookstore.repositories.BooksRepository"/>
 

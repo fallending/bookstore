@@ -20,22 +20,16 @@ package pl.jojczykp.bookstore.assemblers;
 import org.junit.Before;
 import org.junit.Test;
 import pl.jojczykp.bookstore.commands.DisplayBookCommand;
-import pl.jojczykp.bookstore.commands.CreateBookCommand;
-import pl.jojczykp.bookstore.commands.UpdateBookCommand;
 import pl.jojczykp.bookstore.entities.Book;
 
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 import static pl.jojczykp.bookstore.testutils.builders.BookBuilder.aBook;
 
-public class BookAssemblerUnitTest {
-
-	private static final int ID_TO_BE_SET_AUTOMATICALLY = 0;
-	private static final int VERSION_TO_BE_SET_AUTOMATICALLY = 0;
+public class DisplayBookAssemblerUnitTest {
 
 	private static final int ID1 = 34;
 	private static final int VERSION1 = 45;
@@ -45,11 +39,11 @@ public class BookAssemblerUnitTest {
 	private static final int VERSION2 = 89;
 	private static final String TITLE2 = "A Title 002";
 
-	private BookAssembler testee;
+	private DisplayBookAssembler testee;
 
 	@Before
 	public void setUpTestee() {
-		testee = new BookAssembler();
+		testee = new DisplayBookAssembler();
 	}
 
 	@Test
@@ -64,22 +58,22 @@ public class BookAssemblerUnitTest {
 		}
 	}
 
-	private List<Book> aDomainObjectsList() {
-		return asList(
-				aBook(ID1, VERSION1, TITLE1),
-				aBook(ID2, VERSION2, TITLE2));
-	}
-
 	@Test
 	public void shouldAssemblySingleBookDomainObjectFromBookCommandObject() {
-		DisplayBookCommand command = aBookCommandObject();
+		DisplayBookCommand command = aDisplayBookCommand();
 
 		Book domain = testee.toDomain(command);
 
 		assertThatHaveEqualData(domain, command);
 	}
 
-	private DisplayBookCommand aBookCommandObject() {
+	private List<Book> aDomainObjectsList() {
+		return asList(
+				aBook(ID1, VERSION1, TITLE1),
+				aBook(ID2, VERSION2, TITLE2));
+	}
+
+	private DisplayBookCommand aDisplayBookCommand() {
 		DisplayBookCommand command = new DisplayBookCommand();
 		command.setId(ID1);
 		command.setVersion(VERSION1);
@@ -89,48 +83,6 @@ public class BookAssemblerUnitTest {
 	}
 
 	private void assertThatHaveEqualData(Book domain, DisplayBookCommand command) {
-		assertThat(domain.getId(), equalTo(command.getId()));
-		assertThat(domain.getVersion(), equalTo(command.getVersion()));
-		assertThat(domain.getTitle(), equalTo(command.getTitle()));
-	}
-
-	@Test
-	public void shouldAssemblySingleBookDomainObjectFromCreateBookCommandObject() {
-		CreateBookCommand command = aCreateBookCommandObject();
-
-		Book domain = testee.toDomain(command);
-
-		assertThat(domain.getId(), is(ID_TO_BE_SET_AUTOMATICALLY));
-		assertThat(domain.getVersion(), is(VERSION_TO_BE_SET_AUTOMATICALLY));
-		assertThat(domain.getTitle(), is(equalTo(command.getTitle())));
-	}
-
-	private CreateBookCommand aCreateBookCommandObject() {
-		CreateBookCommand command = new CreateBookCommand();
-		command.setTitle(TITLE1);
-
-		return command;
-	}
-
-	@Test
-	public void shouldAssemblySingleBookDomainObjectFromUpdateBookCommandObject() {
-		UpdateBookCommand command = anUpdateBookCommandObject();
-
-		Book domain = testee.toDomain(command);
-
-		assertThatHaveEqualData(domain, command);
-	}
-
-	private UpdateBookCommand anUpdateBookCommandObject() {
-		UpdateBookCommand command = new UpdateBookCommand();
-		command.setId(ID1);
-		command.setVersion(VERSION1);
-		command.setTitle(TITLE1);
-
-		return command;
-	}
-
-	private void assertThatHaveEqualData(Book domain, UpdateBookCommand command) {
 		assertThat(domain.getId(), equalTo(command.getId()));
 		assertThat(domain.getVersion(), equalTo(command.getVersion()));
 		assertThat(domain.getTitle(), equalTo(command.getTitle()));

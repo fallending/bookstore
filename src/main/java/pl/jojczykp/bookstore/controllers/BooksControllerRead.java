@@ -23,7 +23,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-import pl.jojczykp.bookstore.assemblers.BookAssembler;
+import pl.jojczykp.bookstore.assemblers.DisplayBookAssembler;
 import pl.jojczykp.bookstore.commands.DisplayBooksCommand;
 import pl.jojczykp.bookstore.commands.PagerCommand;
 import pl.jojczykp.bookstore.entities.Book;
@@ -44,10 +44,10 @@ public class BooksControllerRead {
 	@Autowired private BooksCommandFactory booksCommandFactory;
 	@Autowired private PagerLimiter pagerLimiter;
 	@Autowired private BooksRepository booksRepository;
-	@Autowired private BookAssembler bookAssembler;
+	@Autowired private DisplayBookAssembler displayBookAssembler;
 
 	@ModelAttribute(DISPLAY_BOOKS_COMMAND)
-	public DisplayBooksCommand getDefaultBooksCommand() {
+	public DisplayBooksCommand getDefaultCommand() {
 		return booksCommandFactory.create();
 	}
 
@@ -60,7 +60,7 @@ public class BooksControllerRead {
 		displayBooksCommand.setPager(limitedPager);
 
 		List<Book> books = read(displayBooksCommand.getPager());
-		displayBooksCommand.setBooks(bookAssembler.toCommands(books));
+		displayBooksCommand.setBooks(displayBookAssembler.toCommands(books));
 
 		return new ModelAndView(BOOKS_VIEW, aModelFor(displayBooksCommand));
 	}
