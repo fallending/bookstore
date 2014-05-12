@@ -15,26 +15,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
  */
 
-package pl.jojczykp.bookstore.assemblers;
+package pl.jojczykp.bookstore.testutils.builders;
 
-import org.springframework.stereotype.Service;
-import pl.jojczykp.bookstore.commands.books.UpdateBookCommand;
-import pl.jojczykp.bookstore.entities.Book;
 import pl.jojczykp.bookstore.entities.BookFile;
 
-import static org.apache.commons.codec.binary.StringUtils.getBytesUtf8;
+import java.nio.charset.Charset;
+import java.sql.Blob;
 
-@Service
-public class UpdateBookAssembler {
+import static pl.jojczykp.bookstore.utils.BlobUtils.aSerialBlobWith;
 
-	public Book toDomain(UpdateBookCommand command) {
-		Book domain = new Book();
-		domain.setId(command.getId());
-		domain.setVersion(command.getVersion());
-		domain.setTitle(command.getTitle());
-		domain.setBookFile(new BookFile("text/plain", getBytesUtf8("a Book Content")));
+public abstract class BookFileBuilder {
 
-		return domain;
+	public static BookFile aBookFile(int id, String content) {
+		byte[] bytes = content.getBytes(Charset.forName("UTF8"));
+		return aBookFile(id, "text/plain", aSerialBlobWith(bytes));
+	}
+
+	public static BookFile aBookFile(int id, String contentType, Blob content) {
+		BookFile result = new BookFile();
+		result.setId(id);
+		result.setContentType(contentType);
+		result.setContent(content);
+
+		return result;
 	}
 
 }

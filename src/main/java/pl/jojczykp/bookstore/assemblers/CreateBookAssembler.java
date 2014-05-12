@@ -20,6 +20,9 @@ package pl.jojczykp.bookstore.assemblers;
 import org.springframework.stereotype.Service;
 import pl.jojczykp.bookstore.commands.books.CreateBookCommand;
 import pl.jojczykp.bookstore.entities.Book;
+import pl.jojczykp.bookstore.entities.BookFile;
+
+import static org.apache.commons.codec.binary.StringUtils.getBytesUtf8;
 
 @Service
 public class CreateBookAssembler {
@@ -32,6 +35,7 @@ public class CreateBookAssembler {
 		domain.setId(ID_TO_BE_SET_AUTOMATICALLY);
 		domain.setVersion(VERSION_TO_BE_SET_AUTOMATICALLY);
 		domain.setTitle(command.getTitle());
+		domain.setBookFile(new BookFile("text/plain", getBytesUtf8("a Book Content")));
 
 		return domain;
 	}

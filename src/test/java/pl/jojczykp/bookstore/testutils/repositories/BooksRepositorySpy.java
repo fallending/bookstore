@@ -22,24 +22,29 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import pl.jojczykp.bookstore.entities.Book;
+import pl.jojczykp.bookstore.entities.BookFile;
 
 import java.util.List;
 
 import static pl.jojczykp.bookstore.utils.SuppressUnchecked.suppressUnchecked;
 
 @Repository
-public class TestRepository {
+public class BooksRepositorySpy {
 
 	public static final int ID_TO_GENERATE = 0;
 
 	@Autowired private SessionFactory sessionFactory;
 
 	public List<Book> getAllBooks() {
-		return getAll(Book.class);
+		return suppressUnchecked(getAll(Book.class));
 	}
 
-	private List<Book> getAll(Class clazz) {
-		return suppressUnchecked(getCurrentSession().createCriteria(clazz).list());
+	public List<BookFile> getAllBookFiles() {
+		return suppressUnchecked(getAll(BookFile.class));
+	}
+
+	private List<?> getAll(Class clazz) {
+		return getCurrentSession().createCriteria(clazz).list();
 	}
 
 	public void givenRepositoryWith(Object... objects) {

@@ -27,18 +27,23 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ReflectionUtils;
 import pl.jojczykp.bookstore.entities.Book;
-import pl.jojczykp.bookstore.testutils.repositories.TestRepository;
+import pl.jojczykp.bookstore.entities.BookFile;
+import pl.jojczykp.bookstore.testutils.repositories.BooksRepositorySpy;
 import pl.jojczykp.bookstore.utils.PageSorterColumn;
 import pl.jojczykp.bookstore.utils.PageSorterDirection;
 
 import java.lang.reflect.Field;
+import java.sql.Blob;
+import java.sql.SQLException;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.samePropertyValuesAs;
 import static pl.jojczykp.bookstore.testutils.builders.BookBuilder.aBook;
-import static pl.jojczykp.bookstore.testutils.repositories.TestRepository.ID_TO_GENERATE;
+import static pl.jojczykp.bookstore.testutils.builders.BookFileBuilder.aBookFile;
+import static pl.jojczykp.bookstore.testutils.repositories.BooksRepositorySpy.ID_TO_GENERATE;
 import static pl.jojczykp.bookstore.utils.PageSorterColumn.BOOK_TITLE;
 import static pl.jojczykp.bookstore.utils.PageSorterDirection.ASC;
 import static pl.jojczykp.bookstore.utils.PageSorterDirection.DESC;
@@ -55,14 +60,14 @@ public class BooksRepositoryIntegrationTest {
 	private static final PageSorterColumn SAMPLE_SORT_COLUMN = BOOK_TITLE;
 	private static final PageSorterDirection SAMPLE_DIRECTION = ASC;
 
-	private Book bookA = aBook(ID_TO_GENERATE, 1, "Book Title A");
-	private Book bookB = aBook(ID_TO_GENERATE, 2, "Book Title B");
-	private Book bookC = aBook(ID_TO_GENERATE, 1, "Book Title C");
-	private Book bookD = aBook(ID_TO_GENERATE, 2, "Book Title D");
-	private Book bookE = aBook(ID_TO_GENERATE, 1, "Book Title E");
-	private Book bookLowCaseC = aBook(ID_TO_GENERATE, 2, "Book Title c");
+	private Book bookA = aBook(ID_TO_GENERATE, 1, "Book Title A", aBookFile(ID_TO_GENERATE, "Book Title A"));
+	private Book bookB = aBook(ID_TO_GENERATE, 2, "Book Title B", aBookFile(ID_TO_GENERATE, "Book Title B"));
+	private Book bookC = aBook(ID_TO_GENERATE, 1, "Book Title C", aBookFile(ID_TO_GENERATE, "Book Title C"));
+	private Book bookD = aBook(ID_TO_GENERATE, 2, "Book Title D", aBookFile(ID_TO_GENERATE, "Book Title D"));
+	private Book bookE = aBook(ID_TO_GENERATE, 1, "Book Title E", aBookFile(ID_TO_GENERATE, "Book Title E"));
+	private Book bookLowCaseC = aBook(ID_TO_GENERATE, 2, "Book Title c", aBookFile(ID_TO_GENERATE, "Book Title c"));
 
-	@Autowired private TestRepository testRepository;
+	@Autowired private BooksRepositorySpy booksRepositorySpy;
 	@Autowired private BooksRepository testee;
 
 	@Test
@@ -81,7 +86,7 @@ public class BooksRepositoryIntegrationTest {
 
 		List<Book> foundBooks = testee.read(offset, size, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
 
-		assertThatCollectionContainsOnly(foundBooks, bookB, bookC, bookD);
+		assertThatListContainsOnly(foundBooks, bookB, bookC, bookD);
 	}
 
 	@Test
@@ -91,7 +96,7 @@ public class BooksRepositoryIntegrationTest {
 
 		List<Book> foundBooks = testee.read(2, givenBooks.length + 1, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
 
-		assertThatCollectionContainsOnly(foundBooks, bookC, bookD, bookE);
+		assertThatListContainsOnly(foundBooks, bookC, bookD, bookE);
 	}
 
 	@Test
@@ -102,7 +107,7 @@ public class BooksRepositoryIntegrationTest {
 
 		List<Book> foundBooks = testee.read(negativeOffset, 2, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
 
-		assertThatCollectionContainsOnly(foundBooks, bookA, bookB);
+		assertThatListContainsOnly(foundBooks, bookA, bookB);
 	}
 
 	@Test
@@ -146,7 +151,7 @@ public class BooksRepositoryIntegrationTest {
 
 		List<Book> foundBooks = testee.read(0, givenBooks.length, SAMPLE_SORT_COLUMN, ASC);
 
-		assertThatCollectionContainsOnly(foundBooks, bookA, bookB, bookC);
+		assertThatListContainsOnly(foundBooks, bookA, bookB, bookC);
 	}
 
 	@Test
@@ -157,7 +162,7 @@ public class BooksRepositoryIntegrationTest {
 
 		List<Book> foundBooks = testee.read(0, givenBooks.length, SAMPLE_SORT_COLUMN, DESC);
 
-		assertThatCollectionContainsOnly(foundBooks, bookC, bookB, bookA);
+		assertThatListContainsOnly(foundBooks, bookC, bookB, bookA);
 	}
 
 	@Test
@@ -167,7 +172,7 @@ public class BooksRepositoryIntegrationTest {
 
 		List<Book> foundBooks = testee.read(0, 2, SAMPLE_SORT_COLUMN, ASC);
 
-		assertThatCollectionContainsOnly(foundBooks, bookA, bookLowCaseC);
+		assertThatListContainsOnly(foundBooks, bookA, bookLowCaseC);
 	}
 
 	@Test
@@ -177,7 +182,7 @@ public class BooksRepositoryIntegrationTest {
 
 		List<Book> foundBooks = testee.read(0, 2, SAMPLE_SORT_COLUMN, ASC);
 
-		assertThatCollectionContainsOnly(foundBooks, bookD, bookLowCaseC);
+		assertThatListContainsOnly(foundBooks, bookD, bookLowCaseC);
 	}
 
 	@Test
@@ -188,11 +193,11 @@ public class BooksRepositoryIntegrationTest {
 	}
 
 	@Test
-	public void shouldUpdateBook() {
-		Book oldBook = aBook(ID_TO_GENERATE, OLD_VERSION, OLD_TITLE);
+	public void shouldUpdateBookTitle() {
+		Book oldBook = aBook(ID_TO_GENERATE, OLD_VERSION, OLD_TITLE, aBookFile(ID_TO_GENERATE, OLD_TITLE));
 		givenRepositoryWith(oldBook);
-		Book updatingBook = aBook(oldBook.getId(), OLD_VERSION, NEW_TITLE);
-		Book updatedBook = aBook(oldBook.getId(), OLD_VERSION + 1, NEW_TITLE);
+		Book updatingBook = aBook(oldBook.getId(), OLD_VERSION, NEW_TITLE, oldBook.getBookFile());
+		Book updatedBook = aBook(oldBook.getId(), OLD_VERSION + 1, NEW_TITLE, oldBook.getBookFile());
 
 		testee.update(updatingBook);
 
@@ -201,9 +206,9 @@ public class BooksRepositoryIntegrationTest {
 
 	@Test(expected = StaleObjectStateException.class)
 	public void shouldFailUpdatingBookWhenModifiedByOtherSession() {
-		Book oldBook = aBook(ID_TO_GENERATE, OLD_VERSION, OLD_TITLE);
+		Book oldBook = aBook(ID_TO_GENERATE, OLD_VERSION, OLD_TITLE, aBookFile(ID_TO_GENERATE, OLD_TITLE));
 		givenRepositoryWith(oldBook);
-		Book updatingBook = aBook(oldBook.getId(), OLD_VERSION - 1, NEW_TITLE);
+		Book updatingBook = aBook(oldBook.getId(), OLD_VERSION - 1, NEW_TITLE, oldBook.getBookFile());
 
 		testee.update(updatingBook);
 	}
@@ -232,19 +237,49 @@ public class BooksRepositoryIntegrationTest {
 	}
 
 	private void givenRepositoryWith(Book... books) {
-		testRepository.givenRepositoryWith((Object[]) books);
+		booksRepositorySpy.givenRepositoryWith((Object[]) books);
 	}
 
 	private void assertThatRepositoryContainsOnly(Book... books) {
-		assertThatCollectionContainsOnly(testRepository.getAllBooks(), books);
+		assertThatListContainsOnly(booksRepositorySpy.getAllBooks(), books);
+		assertThatListContainsOnly(booksRepositorySpy.getAllBookFiles(), bookFilesOf(books));
 	}
 
-	private void assertThatCollectionContainsOnly(List<Book> given, Book... books) {
-		assertThat(books.length, is(given.size()));
-		for (int i = 0; i < given.size(); i++) {
-			Book givenBook = given.get(i);
-			Book expectedBook = books[i];
-			assertThat(givenBook, samePropertyValuesAs(expectedBook));
+	private BookFile[] bookFilesOf(Book[] books) {
+		BookFile[] result = new BookFile[books.length];
+		for (int i = 0; i < books.length; i++) {
+			result[i] = books[i].getBookFile();
+		}
+
+		return result;
+	}
+
+	private void assertThatListContainsOnly(List<Book> givens, Book... expecteds) {
+		assertThat(expecteds.length, is(givens.size()));
+		for (int i = 0; i < givens.size(); i++) {
+			Book given = givens.get(i);
+			Book expected = expecteds[i];
+			assertThat(given, samePropertyValuesAs(expected));
+		}
+	}
+
+	private void assertThatListContainsOnly(List<BookFile> givens, BookFile... expecteds) {
+		assertThat(expecteds.length, is(givens.size()));
+		for (int i = 0; i < givens.size(); i++) {
+			BookFile given = givens.get(i);
+			BookFile expected = expecteds[i];
+			assertThat(given.getId(), is(equalTo(expected.getId())));
+			assertThat(given.getContentType(), is(equalTo(expected.getContentType())));
+			assertThat(contentOf(given), is(equalTo(contentOf(expected))));
+		}
+	}
+
+	private byte[] contentOf(BookFile bookFile) {
+		try {
+			Blob blob = bookFile.getContent();
+			return blob.getBytes(1, (int) blob.length());
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
 		}
 	}
 

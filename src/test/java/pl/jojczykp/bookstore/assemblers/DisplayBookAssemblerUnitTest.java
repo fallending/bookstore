@@ -28,6 +28,7 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 import static pl.jojczykp.bookstore.testutils.builders.BookBuilder.aBook;
+import static pl.jojczykp.bookstore.testutils.builders.BookFileBuilder.aBookFile;
 
 public class DisplayBookAssemblerUnitTest {
 
@@ -69,8 +70,8 @@ public class DisplayBookAssemblerUnitTest {
 
 	private List<Book> aDomainObjectsList() {
 		return asList(
-				aBook(ID1, VERSION1, TITLE1),
-				aBook(ID2, VERSION2, TITLE2));
+				aBook(ID1, VERSION1, TITLE1, aBookFile(ID1, "Book 1")),
+				aBook(ID2, VERSION2, TITLE2, aBookFile(ID1, "Book 1")));
 	}
 
 	private DisplayBookCommand aDisplayBookCommand() {

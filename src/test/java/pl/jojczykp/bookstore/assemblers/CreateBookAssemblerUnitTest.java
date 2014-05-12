@@ -25,6 +25,7 @@ import pl.jojczykp.bookstore.entities.Book;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
+import static pl.jojczykp.bookstore.utils.BlobUtils.blobBytes;
 
 public class CreateBookAssemblerUnitTest {
 
@@ -49,6 +50,8 @@ public class CreateBookAssemblerUnitTest {
 		assertThat(domain.getId(), is(ID_TO_BE_SET_AUTOMATICALLY));
 		assertThat(domain.getVersion(), is(VERSION_TO_BE_SET_AUTOMATICALLY));
 		assertThat(domain.getTitle(), is(equalTo(command.getTitle())));
+		assertThat(domain.getBookFile().getContentType(), is(equalTo("text/plain")));
+		assertThat(blobBytes(domain.getBookFile().getContent()), is(equalTo("a Book Content".getBytes())));
 	}
 
 	private CreateBookCommand aCreateBookCommand() {

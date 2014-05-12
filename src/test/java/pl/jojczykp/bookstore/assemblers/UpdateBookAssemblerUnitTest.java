@@ -22,8 +22,10 @@ import org.junit.Test;
 import pl.jojczykp.bookstore.commands.books.UpdateBookCommand;
 import pl.jojczykp.bookstore.entities.Book;
 
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
+import static pl.jojczykp.bookstore.utils.BlobUtils.blobBytes;
 
 public class UpdateBookAssemblerUnitTest {
 
@@ -60,6 +62,8 @@ public class UpdateBookAssemblerUnitTest {
 		assertThat(domain.getId(), equalTo(command.getId()));
 		assertThat(domain.getVersion(), equalTo(command.getVersion()));
 		assertThat(domain.getTitle(), equalTo(command.getTitle()));
+		assertThat(domain.getBookFile().getContentType(), is(equalTo("text/plain")));
+		assertThat(blobBytes(domain.getBookFile().getContent()), is(equalTo("a Book Content".getBytes())));
 	}
 
 }

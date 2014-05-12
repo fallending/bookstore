@@ -24,7 +24,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import pl.jojczykp.bookstore.entities.User;
-import pl.jojczykp.bookstore.testutils.repositories.TestRepository;
+import pl.jojczykp.bookstore.testutils.repositories.BooksRepositorySpy;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -32,7 +32,7 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.samePropertyValuesAs;
 import static pl.jojczykp.bookstore.testutils.builders.AuthorityBuilder.anAuthority;
 import static pl.jojczykp.bookstore.testutils.builders.UserBuilder.anUser;
-import static pl.jojczykp.bookstore.testutils.repositories.TestRepository.ID_TO_GENERATE;
+import static pl.jojczykp.bookstore.testutils.repositories.BooksRepositorySpy.ID_TO_GENERATE;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:spring/repositories-test-context.xml")
@@ -53,7 +53,7 @@ public class SecurityRepositoryIntegrationTest {
 			.withAuthorities(anAuthority(ID_TO_GENERATE, "ROLE_2"))
 			.build();
 
-	@Autowired private TestRepository testRepository;
+	@Autowired private BooksRepositorySpy booksRepositorySpy;
 	@Autowired private SecurityRepository testee;
 
 	@Test
@@ -84,7 +84,7 @@ public class SecurityRepositoryIntegrationTest {
 	}
 
 	private void givenRepositoryWith(User... users) {
-		testRepository.givenRepositoryWith((Object[]) users);
+		booksRepositorySpy.givenRepositoryWith((Object[]) users);
 	}
 
 }

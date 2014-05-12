@@ -21,39 +21,40 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.Lob;
 import javax.persistence.Table;
-import javax.persistence.Version;
+import java.sql.Blob;
 
-import static javax.persistence.CascadeType.ALL;
-import static javax.persistence.FetchType.EAGER;
+import static pl.jojczykp.bookstore.utils.BlobUtils.aSerialBlobWith;
+import static pl.jojczykp.bookstore.utils.BlobUtils.anEmptySerialBlob;
+import static pl.jojczykp.bookstore.utils.BlobUtils.blobLength;
 
 @Entity
-@Table(name = "BOOKS")
-public class Book {
+@Table(name = "BOOK_FILES")
+public class BookFile {
 
 	@Id
 	@GeneratedValue
 	@Column(name = "ID")
 	private int id;
 
-	@Version
-	@Column(name = "VERSION")
-	private int version;
+	@Column(name = "CONTENT_TYPE", nullable = false)
+	private String contentType;
 
-	@Column(name = "TITLE", nullable = false)
-	private String title;
+	@Lob
+	@Column(name = "CONTENT", nullable = false)
+	private Blob content;
 
-	@OneToOne(fetch = EAGER, cascade = ALL)
-	@JoinColumn(name = "BOOK_FILE_ID", nullable = false)
-	private BookFile bookFile;
-
-	public Book() {
+	public BookFile() {
 		this.id = 0;
-		this.version = 0;
-		this.title = "";
-		this.bookFile = null;
+		this.contentType = "";
+		this.content = anEmptySerialBlob();
+	}
+
+	public BookFile(String contentType, byte[] content) {
+		this.id = 0;
+		this.contentType = contentType;
+		this.content = aSerialBlobWith(content);
 	}
 
 	public int getId() {
@@ -64,28 +65,20 @@ public class Book {
 		this.id = id;
 	}
 
-	public int getVersion() {
-		return version;
+	public String getContentType() {
+		return contentType;
 	}
 
-	public void setVersion(int version) {
-		this.version = version;
+	public void setContentType(String contentType) {
+		this.contentType = contentType;
 	}
 
-	public String getTitle() {
-		return title;
+	public Blob getContent() {
+		return content;
 	}
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	public BookFile getBookFile() {
-		return bookFile;
-	}
-
-	public void setBookFile(BookFile bookFile) {
-		this.bookFile = bookFile;
+	public void setContent(Blob content) {
+		this.content = content;
 	}
 
 	@Override
@@ -98,9 +91,9 @@ public class Book {
 			return false;
 		}
 
-		Book book = (Book) o;
+		BookFile bookFile = (BookFile) o;
 
-		return (id == book.id);
+		return (id == bookFile.id);
 	}
 
 	@Override
@@ -111,7 +104,7 @@ public class Book {
 	@Override
 	public String toString() {
 		return getClass().getSimpleName()
-			+ "{id=" + id + ", version=" + version + ", title='" + title + "', bookFile={" + bookFile + "}}";
+				+ "{id=" + id + ", contentType='" + contentType + "', contentSize=" + blobLength(content) + "}";
 	}
 
 }

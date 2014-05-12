@@ -18,14 +18,16 @@
 package pl.jojczykp.bookstore.testutils.builders;
 
 import pl.jojczykp.bookstore.entities.Book;
+import pl.jojczykp.bookstore.entities.BookFile;
 
 public abstract class BookBuilder {
 
-	public static Book aBook(int id, int version, String title) {
+	public static Book aBook(int id, int version, String title, BookFile bookFile) {
 		Book result = new Book();
 		result.setId(id);
 		result.setVersion(version);
 		result.setTitle(title);
+		result.setBookFile(bookFile);
 
 		return result;
 	}
