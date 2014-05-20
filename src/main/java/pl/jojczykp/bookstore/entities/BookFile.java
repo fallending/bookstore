@@ -27,7 +27,6 @@ import java.sql.Blob;
 
 import static pl.jojczykp.bookstore.utils.BlobUtils.aSerialBlobWith;
 import static pl.jojczykp.bookstore.utils.BlobUtils.anEmptySerialBlob;
-import static pl.jojczykp.bookstore.utils.BlobUtils.blobLength;
 
 @Entity
 @Table(name = "BOOK_FILES")
@@ -103,8 +102,7 @@ public class BookFile {
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName()
-				+ "{id=" + id + ", contentType='" + contentType + "', contentSize=" + blobLength(content) + "}";
+		return getClass().getSimpleName() + "{id=" + id + ", contentType='" + contentType + "'}";
 	}
 
 }

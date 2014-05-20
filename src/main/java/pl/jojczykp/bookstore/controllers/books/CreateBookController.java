@@ -75,10 +75,10 @@ public class CreateBookController {
 	}
 
 	private DisplayBooksCommand processWhenCommandValid(CreateBookCommand createBookCommand) {
+		booksRepository.create(createBookAssembler.toDomain(createBookCommand));
+
 		DisplayBooksCommand displayBooksCommand = new DisplayBooksCommand();
 		displayBooksCommand.setPager(createBookCommand.getPager());
-
-		booksRepository.create(createBookAssembler.toDomain(createBookCommand));
 		displayBooksCommand.getMessages().addInfos("Object created.");
 
 		return displayBooksCommand;

@@ -97,8 +97,7 @@ public class BookFileUnitTest {
 		String toStringResult = testeeWithContent.toString();
 
 		assertThat(toStringResult, equalTo(
-				format("%s{id=%d, contentType='%s', contentSize=%d}",
-						testeeWithContent.getClass().getSimpleName(), ID, CONTENT_TYPE, blobLength(BLOB_CONTENT))));
+				format("%s{id=%d, contentType='%s'}", testeeWithContent.getClass().getSimpleName(), ID, CONTENT_TYPE)));
 	}
 
 }

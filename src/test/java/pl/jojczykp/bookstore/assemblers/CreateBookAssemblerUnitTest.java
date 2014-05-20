@@ -19,8 +19,11 @@ package pl.jojczykp.bookstore.assemblers;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.mock.web.MockMultipartFile;
 import pl.jojczykp.bookstore.commands.books.CreateBookCommand;
 import pl.jojczykp.bookstore.entities.Book;
+
+import java.io.IOException;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -33,6 +36,8 @@ public class CreateBookAssemblerUnitTest {
 	private static final int VERSION_TO_BE_SET_AUTOMATICALLY = 0;
 
 	private static final String TITLE = "A Title";
+	private static final String CONTENT_TYPE = "text/html";
+	private static final byte[] CONTENT = new byte[] {1, 2, 3};
 
 	private CreateBookAssembler testee;
 
@@ -43,22 +48,49 @@ public class CreateBookAssemblerUnitTest {
 
 	@Test
 	public void shouldAssemblySingleBookDomainObjectFromCreateBookCommandObject() {
-		CreateBookCommand command = aCreateBookCommand();
+		CreateBookCommand command = aCreateBookCommand(TITLE, aFile(CONTENT_TYPE, CONTENT));
 
 		Book domain = testee.toDomain(command);
 
 		assertThat(domain.getId(), is(ID_TO_BE_SET_AUTOMATICALLY));
 		assertThat(domain.getVersion(), is(VERSION_TO_BE_SET_AUTOMATICALLY));
-		assertThat(domain.getTitle(), is(equalTo(command.getTitle())));
-		assertThat(domain.getBookFile().getContentType(), is(equalTo("text/plain")));
-		assertThat(blobBytes(domain.getBookFile().getContent()), is(equalTo("a Book Content".getBytes())));
+		assertThat(domain.getTitle(), is(equalTo(TITLE)));
+		assertThat(domain.getBookFile().getContentType(), is(equalTo(CONTENT_TYPE)));
+		assertThat(blobBytes(domain.getBookFile().getContent()), is(equalTo(CONTENT)));
 	}
 
-	private CreateBookCommand aCreateBookCommand() {
+	@Test(expected = RuntimeException.class)
+	public void shouldThrowExceptionWhenRead() {
+		CreateBookCommand command = aCreateBookCommand(TITLE, aFileThrowingExceptionWhenRead());
+
+		Book domain = testee.toDomain(command);
+
+		assertThat(domain.getId(), is(ID_TO_BE_SET_AUTOMATICALLY));
+		assertThat(domain.getVersion(), is(VERSION_TO_BE_SET_AUTOMATICALLY));
+		assertThat(domain.getTitle(), is(equalTo(TITLE)));
+		assertThat(domain.getBookFile().getContentType(), is(equalTo(CONTENT_TYPE)));
+		assertThat(blobBytes(domain.getBookFile().getContent()), is(equalTo(CONTENT)));
+	}
+
+	private CreateBookCommand aCreateBookCommand(String title, MockMultipartFile file) {
 		CreateBookCommand command = new CreateBookCommand();
-		command.setTitle(TITLE);
+		command.setTitle(title);
+		command.setFile(file);
 
 		return command;
+	}
+
+	private MockMultipartFile aFile(String contentType, byte[] content) {
+		return new MockMultipartFile("file", "file.ext", contentType, content);
+	}
+
+	private MockMultipartFile aFileThrowingExceptionWhenRead() {
+		return new MockMultipartFile("file", "file.ext", "contentType", "content".getBytes()) {
+			@Override
+			public byte[] getBytes() throws IOException {
+				throw new IOException("Dummy " + getClass().getName());
+			}
+		};
 	}
 
 }

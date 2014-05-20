@@ -111,7 +111,7 @@ public class Book {
 	@Override
 	public String toString() {
 		return getClass().getSimpleName()
-			+ "{id=" + id + ", version=" + version + ", title='" + title + "', bookFile={" + bookFile + "}}";
+			+ "{id=" + id + ", version=" + version + ", title='" + title + "', bookFile=" + bookFile + "}";
 	}
 
 }

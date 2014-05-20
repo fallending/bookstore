@@ -17,8 +17,10 @@
 
 function sendCreate() {
 	var title = document.getElementById('newBook.title').value;
+	var fileInput = document.getElementById('newBook.file');
 	sendPost('create', {
-		'title' : title
+		'title' : title,
+		'file' : fileInput
 	})
 }
 
@@ -86,26 +88,53 @@ function createFormFor(action) {
 }
 
 function updateParams(finalParams, partialParams) {
-	for(var key in partialParams) {
-		if(partialParams.hasOwnProperty(key)) {
+	for (var key in partialParams) {
+		if (partialParams.hasOwnProperty(key)) {
 			finalParams[key] = partialParams[key];
 		}
 	}
 }
 
 function updateFormWithParams(form, params) {
-	for(var key in params) {
-		if(params.hasOwnProperty(key)) {
-			form.appendChild(createHiddenInput(key, params[key]));
+	for (var name in params) {
+		if (params.hasOwnProperty(name)) {
+			updateFormWithSingleParam(form, name, params[name]);
 		}
 	}
 }
 
-function createHiddenInput(key, value) {
-	var hiddenField = document.createElement("input");
-	hiddenField.setAttribute("type", "hidden");
-	hiddenField.setAttribute("name", key);
-	hiddenField.setAttribute("value", value);
+function updateFormWithSingleParam(form, name, param) {
+	if (isInputTag(param)) {
+		updateFormWithSingleInputParam(form, param);
+	} else {
+		updateFormWithSingleStringParam(form, name, param);
+	}
+}
 
-	return hiddenField;
+function isInputTag(value) {
+	return (value.tagName == 'INPUT');
+}
+
+function updateFormWithSingleInputParam(form, inputTag) {
+	form.appendChild(inputTag);
+	if ('files' in inputTag) {
+		form.setAttribute('enctype', 'multipart/form-data');
+	}
+}
+
+function updateFormWithSingleStringParam(form, name, value) {
+	form.appendChild(createHiddenInput(name, value));
+}
+
+function createHiddenInput(name, value) {
+	return createInput(name, value, "hidden");
+}
+
+function createInput(name, value, type) {
+	var element = document.createElement("input");
+	element.setAttribute("type", type);
+	element.setAttribute("name", name);
+	element.setAttribute("value", value);
+
+	return element;
 }

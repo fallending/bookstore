@@ -203,7 +203,14 @@
 <#macro sectionCreate>
 	<div class="sectionCreate">
 		<h3>Create new book:</h3>
-		Title: <input id="newBook.title" type="text " class="createInput"/>
-		<input type="button" value="create" class="createButton" onClick="sendCreate()"/>
+		<table>
+			<tr><td>
+				File: <input id="newBook.file" name="file" type="file"/>
+			</td></tr>
+			<tr><td>
+				Title: <input id="newBook.title" name="title" type="text" class="createInput"/>
+				<input type="button" value="create" class="createButton" onClick="sendCreate()"/>
+			</td></tr>
+		</table>
 	</div>
 </#macro>

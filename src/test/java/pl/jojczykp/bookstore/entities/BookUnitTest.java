@@ -105,7 +105,7 @@ public class BookUnitTest {
 		String toStringResult = testeeWithContent.toString();
 
 		assertThat(toStringResult, equalTo(
-				format("%s{id=%d, version=%d, title='%s', bookFile={" + BOOK_FILE_AS_STRING + "}}",
+				format("%s{id=%d, version=%d, title='%s', bookFile=" + BOOK_FILE_AS_STRING + "}",
 						testeeWithContent.getClass().getSimpleName(), ID, VERSION, TITLE)));
 	}
 

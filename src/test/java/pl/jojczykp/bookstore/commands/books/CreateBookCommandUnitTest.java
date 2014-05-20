@@ -19,6 +19,8 @@ package pl.jojczykp.bookstore.commands.books;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 import pl.jojczykp.bookstore.commands.parts.PagerCommand;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -59,6 +61,16 @@ public class CreateBookCommandUnitTest {
 		testee.setTitle(title);
 
 		assertThat(testee.getTitle(), equalTo(title));
+	}
+
+	@Test
+	public void shouldSetFile() {
+		final byte[] content = {1, 2, 3};
+		final MultipartFile file = new MockMultipartFile("aName", content);
+
+		testee.setFile(file);
+
+		assertThat(testee.getFile(), is(equalTo(file)));
 	}
 
 }
