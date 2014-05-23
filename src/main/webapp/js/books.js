@@ -18,7 +18,7 @@
 function sendCreate() {
 	var title = document.getElementById('newBook.title').value;
 	var fileInput = document.getElementById('newBook.file');
-	sendPost('create', {
+	sendPost('create', ORIGINAL_PARAMS, {
 		'title' : title,
 		'file' : fileInput
 	})
@@ -27,7 +27,7 @@ function sendCreate() {
 function sendUpdate(id, index) {
 	var version = document.getElementById('books' + index + '.version').value;
 	var title = document.getElementById('books' + index + '.title').value;
-	sendPost('update', {
+	sendPost('update', ORIGINAL_PARAMS, {
 		'id' : id,
 		'version' : version,
 		'title' : title
@@ -44,97 +44,25 @@ function sendDelete() {
 			idIndex = idIndex + 1;
 		}
 	}
-	sendPost('delete', params)
+	sendPost('delete', ORIGINAL_PARAMS, params)
 }
 
 function sendGoToPage(newPageNumber) {
-	sendPost('goToPage', {
+	sendPost('goToPage', ORIGINAL_PARAMS, {
 		'pager.pageNumber' : newPageNumber
 	})
 }
 
 function sendSetPageSize() {
 	var newPageSize = document.getElementsByClassName('setPageSizeInput')[0].value;
-	sendPost('setPageSize', {
+	sendPost('setPageSize', ORIGINAL_PARAMS, {
 		'pager.pageSize' : newPageSize
 	})
 }
 
 function sendSort(column, direction) {
-	sendPost('sort', {
+	sendPost('sort', ORIGINAL_PARAMS, {
 		'pager.sorter.column' : column,
 		'pager.sorter.direction' : direction
 	})
-}
-
-function sendPost(action, actualParams) {
-	var params = {};
-	updateParams(params, ORIGINAL_PARAMS);
-	updateParams(params, actualParams);
-
-	var form = createFormFor(action)
-	updateFormWithParams(form, params);
-
-	document.body.appendChild(form);
-	form.submit();
-}
-
-function createFormFor(action) {
-	var form = document.createElement("form");
-	form.setAttribute("method", "post");
-	form.setAttribute("action", action);
-
-	return form;
-}
-
-function updateParams(finalParams, partialParams) {
-	for (var key in partialParams) {
-		if (partialParams.hasOwnProperty(key)) {
-			finalParams[key] = partialParams[key];
-		}
-	}
-}
-
-function updateFormWithParams(form, params) {
-	for (var name in params) {
-		if (params.hasOwnProperty(name)) {
-			updateFormWithSingleParam(form, name, params[name]);
-		}
-	}
-}
-
-function updateFormWithSingleParam(form, name, param) {
-	if (isInputTag(param)) {
-		updateFormWithSingleInputParam(form, param);
-	} else {
-		updateFormWithSingleStringParam(form, name, param);
-	}
-}
-
-function isInputTag(value) {
-	return (value.tagName == 'INPUT');
-}
-
-function updateFormWithSingleInputParam(form, inputTag) {
-	form.appendChild(inputTag);
-	if ('files' in inputTag) {
-		form.setAttribute('enctype', 'multipart/form-data');
-	}
-}
-
-function updateFormWithSingleStringParam(form, name, value) {
-	form.appendChild(createHiddenInput(name, value));
-}
-
-function createHiddenInput(name, value) {
-	return createInput(name, value, "hidden");
-}
-
-function createInput(name, value, type) {
-	var element = document.createElement("input");
-	element.setAttribute("type", type);
-	element.setAttribute("name", name);
-	element.setAttribute("value", value);
-
-	return element;
 }

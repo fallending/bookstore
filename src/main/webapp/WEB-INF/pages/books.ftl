@@ -40,6 +40,7 @@
 				'pager.sorter.direction' : '${displayBooksCommand.pager.sorter.direction}'
 			}
 		</script>
+		<script type="text/javascript" src="/js/send.js"></script>
 		<script type="text/javascript" src="/js/books.js"></script>
 	</head>
 	<body>
@@ -94,7 +95,7 @@
 </#macro>
 
 <#macro formPagerSetPageSize>
-	<#assign possibleSizes = {"1":1, "2":2, "3":3, "5":5, "10":10, "15":15, "25":25, "50":50, "100":100}>
+	<#assign possibleSizes = {"1":1, "2":2, "3":3, "5":5, "7":7, "10":10, "15":15, "25":25, "50":50, "100":100}>
 	<@spring.formSingleSelect "displayBooksCommand.pager.pageSize" possibleSizes
 								"class='setPageSizeInput' onChange='sendSetPageSize()'" />
 </#macro>
