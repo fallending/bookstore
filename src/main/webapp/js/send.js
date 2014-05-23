@@ -17,73 +17,43 @@
 
 function sendPost(action, originalParams, actualParams) {
 
-	var createFormFor = function(action) {
-		var form = document.createElement("form");
-		form.setAttribute("method", "post");
-		form.setAttribute("action", action);
+	var SYNCHRONOUS = false;
 
-		return form;
-	};
+	var createForm = function(props1, props2) {
+		var mergeProperties = function(props1, props2) {
+			var updateResultWith = function(props) {
+				for (var name in props) {
+					if (props.hasOwnProperty(name)) {
+						result[name] = props[name];
+					}
+				}
+			};
 
-	var updateParams = function(finalParams, partialParams) {
-		for (var key in partialParams) {
-			if (partialParams.hasOwnProperty(key)) {
-				finalParams[key] = partialParams[key];
+			var result = {};
+			updateResultWith(props1);
+			updateResultWith(props2);
+
+			return result;
+		};
+
+		var mergedProps = mergeProperties(props1, props2);
+
+		var formData = new FormData();
+		for (var name in mergedProps) {
+			if (mergedProps.hasOwnProperty(name)) {
+				formData.append(name, mergedProps[name]);
 			}
 		}
+
+		return formData;
 	};
 
-	var updateFormWithParams = function(form, params) {
-		for (var name in params) {
-			if (params.hasOwnProperty(name)) {
-				updateFormWithSingleParam(form, name, params[name]);
-			}
-		}
-	};
+	var request = new XMLHttpRequest();
+	request.open('POST', action, SYNCHRONOUS);
+	request.send(createForm(originalParams, actualParams));
 
-	var updateFormWithSingleParam = function(form, name, param) {
-		if (isInputTag(param)) {
-			updateFormWithSingleInputParam(form, param);
-		} else {
-			updateFormWithSingleStringParam(form, name, param);
-		}
-	};
+	document.open();
+	document.write(request.responseText)
+	document.close();
 
-	var isInputTag = function(value) {
-		return (value.tagName == 'INPUT');
-	};
-
-	var updateFormWithSingleInputParam = function(form, inputTag) {
-		form.appendChild(inputTag);
-		if ('files' in inputTag) {
-			form.setAttribute('enctype', 'multipart/form-data');
-		}
-	};
-
-	var updateFormWithSingleStringParam = function(form, name, value) {
-		form.appendChild(createHiddenInput(name, value));
-	};
-
-	var createHiddenInput = function(name, value) {
-		return createInput(name, value, "hidden");
-	};
-
-	var createInput = function(name, value, type) {
-		var element = document.createElement("input");
-		element.setAttribute("type", type);
-		element.setAttribute("name", name);
-		element.setAttribute("value", value);
-
-		return element;
-	};
-
-	var params = {};
-	updateParams(params, originalParams);
-	updateParams(params, actualParams);
-
-	var form = createFormFor(action);
-	updateFormWithParams(form, params);
-
-	document.body.appendChild(form);
-	form.submit();
 }

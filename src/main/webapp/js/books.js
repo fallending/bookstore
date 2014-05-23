@@ -17,10 +17,10 @@
 
 function sendCreate() {
 	var title = document.getElementById('newBook.title').value;
-	var fileInput = document.getElementById('newBook.file');
+	var file = document.getElementById('newBook.file').files[0];
 	sendPost('create', ORIGINAL_PARAMS, {
 		'title' : title,
-		'file' : fileInput
+		'file' : file
 	})
 }
 
