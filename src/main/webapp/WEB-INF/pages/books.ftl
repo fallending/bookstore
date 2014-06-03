@@ -162,20 +162,25 @@
 				<th class="titleHeader">
 					<@sectionDataTableSorter 'BOOK_TITLE' 'Title'/>
 				</th>
+				<th class="downloadHeader"></th>
+				<th class="updateButtonHeader"></th>
 			</tr>
 			<#list displayBooksCommand.books as book>
 				<tr>
 					<td>
 						<input type="checkbox"
-							   class="deleteCheckbox"
-							   bookId="${displayBooksCommand.books[book_index].id}"/>
+								class="deleteCheckbox"
+								bookId="${displayBooksCommand.books[book_index].id}"/>
 					</td>
 					<td>#${book.id}</td>
 					<td>
 						<@spring.formHiddenInput "displayBooksCommand.books[" + book_index + "].version"/>
 						<@spring.formInput "displayBooksCommand.books[" + book_index + "].title" "class='updateInput'"/>
+					</td>
+					<td>${displayBooksCommand.books[book_index].bookFile.iconName}</td>
+					<td>
 						<input type="button" value="update"
-							   onClick="sendUpdate(${displayBooksCommand.books[book_index].id}, ${book_index})"/>
+								onClick="sendUpdate(${displayBooksCommand.books[book_index].id}, ${book_index})"/>
 					</td>
 				</tr>
 			</#list>

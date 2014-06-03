@@ -22,28 +22,23 @@ import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.isEmptyString;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
 
-public class DisplayBookCommandUnitTest {
+public class DisplayBookFileCommandUnitTest {
 
-	private DisplayBookCommand testee;
+	private DisplayBookFileCommand testee;
 
 	@Before
 	public void setupInstance() {
-		testee = new DisplayBookCommand();
+		testee = new DisplayBookFileCommand();
 	}
 
 	@Test
 	public void shouldBeSetUpByDefaultConstructor() {
 		assertThat(testee.getId(), is(0));
-		assertThat(testee.getVersion(), is(0));
-		assertThat(testee.getTitle(), isEmptyString());
-		assertThat(testee.getBookFile(), is(not(nullValue())));
+		assertThat(testee.getIconName(), is(equalTo("default")));
 	}
+
 	@Test
 	public void shouldSetId() {
 		final int id = 2;
@@ -54,30 +49,12 @@ public class DisplayBookCommandUnitTest {
 	}
 
 	@Test
-	public void shouldSetVersion() {
-		final int version = 54;
-
-		testee.setVersion(version);
-
-		assertThat(testee.getVersion(), equalTo(version));
-	}
-
-	@Test
 	public void shouldSetTitle() {
-		final String title = "some title";
+		final String contentType = "some/content-type";
 
-		testee.setTitle(title);
+		testee.setIconName(contentType);
 
-		assertThat(testee.getTitle(), equalTo(title));
-	}
-
-	@Test
-	public void shouldSetFile() {
-		final DisplayBookFileCommand file = new DisplayBookFileCommand();
-
-		testee.setBookFile(file);
-
-		assertThat(testee.getBookFile(), is(sameInstance(file)));
+		assertThat(testee.getIconName(), equalTo(contentType));
 	}
 
 }

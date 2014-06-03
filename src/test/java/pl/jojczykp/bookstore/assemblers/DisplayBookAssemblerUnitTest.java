@@ -19,32 +19,41 @@ package pl.jojczykp.bookstore.assemblers;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import pl.jojczykp.bookstore.commands.books.DisplayBookCommand;
+import pl.jojczykp.bookstore.commands.books.DisplayBookFileCommand;
 import pl.jojczykp.bookstore.entities.Book;
+import pl.jojczykp.bookstore.entities.BookFile;
 
 import java.util.List;
 
 import static java.util.Arrays.asList;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.mockito.BDDMockito.given;
 import static pl.jojczykp.bookstore.testutils.builders.BookBuilder.aBook;
-import static pl.jojczykp.bookstore.testutils.builders.BookFileBuilder.aBookFile;
 
+@RunWith(MockitoJUnitRunner.class)
 public class DisplayBookAssemblerUnitTest {
 
-	private static final int ID1 = 34;
-	private static final int VERSION1 = 45;
-	private static final String TITLE1 = "A Title 001";
+	@Mock private BookFile bookFile1;
+	@Mock private DisplayBookFileCommand displayBookFileCommand1;
 
-	private static final int ID2 = 54;
-	private static final int VERSION2 = 89;
-	private static final String TITLE2 = "A Title 002";
+	@Mock private BookFile bookFile2;
+	@Mock private DisplayBookFileCommand displayBookFileCommand2;
 
-	private DisplayBookAssembler testee;
+	@Mock private DisplayBookFileAssembler displayBookFileAssembler;
+
+	@InjectMocks private DisplayBookAssembler testee;
 
 	@Before
-	public void setUpTestee() {
-		testee = new DisplayBookAssembler();
+	public void setUpMocks() {
+		given(displayBookFileAssembler.toCommand(bookFile1)).willReturn(displayBookFileCommand1);
+		given(displayBookFileAssembler.toCommand(bookFile2)).willReturn(displayBookFileCommand2);
 	}
 
 	@Test
@@ -59,34 +68,18 @@ public class DisplayBookAssemblerUnitTest {
 		}
 	}
 
-	@Test
-	public void shouldAssemblySingleBookDomainObjectFromBookCommandObject() {
-		DisplayBookCommand command = aDisplayBookCommand();
-
-		Book domain = testee.toDomain(command);
-
-		assertThatHaveEqualData(domain, command);
-	}
-
 	private List<Book> aDomainObjectsList() {
 		return asList(
-				aBook(ID1, VERSION1, TITLE1, aBookFile(ID1, "Book 1")),
-				aBook(ID2, VERSION2, TITLE2, aBookFile(ID1, "Book 1")));
-	}
-
-	private DisplayBookCommand aDisplayBookCommand() {
-		DisplayBookCommand command = new DisplayBookCommand();
-		command.setId(ID1);
-		command.setVersion(VERSION1);
-		command.setTitle(TITLE1);
-
-		return command;
+				aBook(1, 0, "A Title 001", bookFile1),
+				aBook(2, 1, "A Title 002", bookFile2));
 	}
 
 	private void assertThatHaveEqualData(Book domain, DisplayBookCommand command) {
 		assertThat(domain.getId(), equalTo(command.getId()));
 		assertThat(domain.getVersion(), equalTo(command.getVersion()));
 		assertThat(domain.getTitle(), equalTo(command.getTitle()));
+		assertThat(domain.getBookFile().getId(), is(equalTo(command.getBookFile().getId())));
+		assertThat(domain.getBookFile().getContentType(), is(equalTo(command.getBookFile().getIconName())));
 	}
 
 }

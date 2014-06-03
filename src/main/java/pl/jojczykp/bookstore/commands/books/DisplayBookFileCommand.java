@@ -17,18 +17,14 @@
 
 package pl.jojczykp.bookstore.commands.books;
 
-public class DisplayBookCommand {
+public class DisplayBookFileCommand {
 
 	private int id;
-	private int version;
-	private String title;
-	private DisplayBookFileCommand bookFile;
+	private String iconName;
 
-	public DisplayBookCommand() {
+	public DisplayBookFileCommand() {
 		id = 0;
-		version = 0;
-		title = "";
-		bookFile = new DisplayBookFileCommand();
+		iconName = "default";
 	}
 
 	public int getId() {
@@ -39,28 +35,12 @@ public class DisplayBookCommand {
 		this.id = id;
 	}
 
-	public int getVersion() {
-		return version;
+	public String getIconName() {
+		return iconName;
 	}
 
-	public void setVersion(int version) {
-		this.version = version;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	public DisplayBookFileCommand getBookFile() {
-		return bookFile;
-	}
-
-	public void setBookFile(DisplayBookFileCommand bookFile) {
-		this.bookFile = bookFile;
+	public void setIconName(String iconName) {
+		this.iconName = iconName;
 	}
 
 }
