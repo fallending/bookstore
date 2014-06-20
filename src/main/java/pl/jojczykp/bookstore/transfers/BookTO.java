@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
  */
 
-package pl.jojczykp.bookstore.transfers.books;
+package pl.jojczykp.bookstore.transfers;
 
 import com.google.protobuf.ByteString;
 

@@ -24,7 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import pl.jojczykp.bookstore.entities.Book;
-import pl.jojczykp.bookstore.transfers.books.BookTO;
+import pl.jojczykp.bookstore.transfers.BookTO;
 import pl.jojczykp.bookstore.utils.PageSorterColumn;
 import pl.jojczykp.bookstore.utils.PageSorterDirection;
 

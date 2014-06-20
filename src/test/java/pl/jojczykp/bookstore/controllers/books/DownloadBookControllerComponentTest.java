@@ -32,7 +32,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.context.WebApplicationContext;
 import pl.jojczykp.bookstore.commands.books.DownloadBookCommand;
 import pl.jojczykp.bookstore.repositories.BooksRepository;
-import pl.jojczykp.bookstore.transfers.books.BookTO;
+import pl.jojczykp.bookstore.transfers.BookTO;
 
 import static com.google.protobuf.ByteString.copyFrom;
 import static org.hamcrest.Matchers.equalTo;

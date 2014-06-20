@@ -29,7 +29,7 @@ import org.springframework.util.ReflectionUtils;
 import pl.jojczykp.bookstore.entities.Book;
 import pl.jojczykp.bookstore.entities.BookFile;
 import pl.jojczykp.bookstore.testutils.repositories.BooksRepositorySpy;
-import pl.jojczykp.bookstore.transfers.books.BookTO;
+import pl.jojczykp.bookstore.transfers.BookTO;
 import pl.jojczykp.bookstore.utils.PageSorterColumn;
 import pl.jojczykp.bookstore.utils.PageSorterDirection;
 
