@@ -15,26 +15,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
  */
 
-package pl.jojczykp.bookstore.assemblers;
+package pl.jojczykp.bookstore.transfers.books;
 
-import org.springframework.stereotype.Service;
-import pl.jojczykp.bookstore.commands.books.UpdateBookCommand;
-import pl.jojczykp.bookstore.entities.Book;
-import pl.jojczykp.bookstore.entities.BookFile;
+import com.google.protobuf.ByteString;
 
-import static com.google.protobuf.ByteString.copyFromUtf8;
+public class BookTO {
 
-@Service
-public class UpdateBookAssembler {
+	private String title;
 
-	public Book toDomain(UpdateBookCommand command) {
-		Book domain = new Book();
-		domain.setId(command.getId());
-		domain.setVersion(command.getVersion());
-		domain.setTitle(command.getTitle());
-		domain.setBookFile(new BookFile("text/plain", copyFromUtf8("a Book Content")));
+	private String contentType;
 
-		return domain;
+	private ByteString content;
+
+	public BookTO(String title, String contentType, ByteString content) {
+		this.title = title;
+		this.contentType = contentType;
+		this.content = content;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public String getContentType() {
+		return contentType;
+	}
+
+	public ByteString getContent() {
+		return content;
 	}
 
 }

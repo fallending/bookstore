@@ -17,18 +17,22 @@
 
 package pl.jojczykp.bookstore.testutils.builders;
 
+import com.google.protobuf.ByteString;
 import pl.jojczykp.bookstore.entities.BookFile;
 
-import java.nio.charset.Charset;
 import java.sql.Blob;
 
+import static com.google.protobuf.ByteString.copyFromUtf8;
 import static pl.jojczykp.bookstore.utils.BlobUtils.aSerialBlobWith;
 
 public abstract class BookFileBuilder {
 
 	public static BookFile aBookFile(int id, String content) {
-		byte[] bytes = content.getBytes(Charset.forName("UTF8"));
-		return aBookFile(id, "text/plain", aSerialBlobWith(bytes));
+		return aBookFile(id, "text/plain", aSerialBlobWith(copyFromUtf8(content)));
+	}
+
+	public static BookFile aBookFile(int id, String contentType, ByteString content) {
+		return aBookFile(id, contentType, aSerialBlobWith(content));
 	}
 
 	public static BookFile aBookFile(int id, String contentType, Blob content) {

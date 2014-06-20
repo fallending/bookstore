@@ -177,7 +177,11 @@
 						<@spring.formHiddenInput "displayBooksCommand.books[" + book_index + "].version"/>
 						<@spring.formInput "displayBooksCommand.books[" + book_index + "].title" "class='updateInput'"/>
 					</td>
-					<td>${displayBooksCommand.books[book_index].bookFile.iconName}</td>
+					<td>
+						<a href="download?id=${displayBooksCommand.books[book_index].id}" class="downloadLink">
+							${displayBooksCommand.books[book_index].bookFile.iconName}
+						</a>
+					</td>
 					<td>
 						<input type="button" value="update"
 								onClick="sendUpdate(${displayBooksCommand.books[book_index].id}, ${book_index})"/>

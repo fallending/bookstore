@@ -15,26 +15,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
  */
 
-package pl.jojczykp.bookstore.assemblers;
+package pl.jojczykp.bookstore.commands.books;
 
-import org.springframework.stereotype.Service;
-import pl.jojczykp.bookstore.commands.books.UpdateBookCommand;
-import pl.jojczykp.bookstore.entities.Book;
-import pl.jojczykp.bookstore.entities.BookFile;
+import org.junit.Before;
+import org.junit.Test;
 
-import static com.google.protobuf.ByteString.copyFromUtf8;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.sameInstance;
+import static org.junit.Assert.assertThat;
 
-@Service
-public class UpdateBookAssembler {
+public class DownloadBookCommandUnitTest {
 
-	public Book toDomain(UpdateBookCommand command) {
-		Book domain = new Book();
-		domain.setId(command.getId());
-		domain.setVersion(command.getVersion());
-		domain.setTitle(command.getTitle());
-		domain.setBookFile(new BookFile("text/plain", copyFromUtf8("a Book Content")));
+	private DownloadBookCommand testee;
 
-		return domain;
+	@Before
+	public void createTestee() {
+		testee = new DownloadBookCommand();
+	}
+
+	@Test
+	public void shouldSetId() {
+		final int id = 2;
+
+		testee.setId(id);
+
+		assertThat(testee.getId(), is(sameInstance(id)));
 	}
 
 }

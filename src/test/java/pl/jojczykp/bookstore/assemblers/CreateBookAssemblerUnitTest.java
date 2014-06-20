@@ -17,6 +17,7 @@
 
 package pl.jojczykp.bookstore.assemblers;
 
+import com.google.protobuf.ByteString;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.mock.web.MockMultipartFile;
@@ -25,6 +26,7 @@ import pl.jojczykp.bookstore.entities.Book;
 
 import java.io.IOException;
 
+import static com.google.protobuf.ByteString.copyFrom;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
@@ -37,7 +39,7 @@ public class CreateBookAssemblerUnitTest {
 
 	private static final String TITLE = "A Title";
 	private static final String CONTENT_TYPE = "text/html";
-	private static final byte[] CONTENT = new byte[] {1, 2, 3};
+	private static final ByteString CONTENT = copyFrom(new byte[]{1, 2, 3});
 
 	private CreateBookAssembler testee;
 
@@ -48,7 +50,7 @@ public class CreateBookAssemblerUnitTest {
 
 	@Test
 	public void shouldAssemblySingleBookDomainObjectFromCreateBookCommandObject() {
-		CreateBookCommand command = aCreateBookCommand(TITLE, aFile(CONTENT_TYPE, CONTENT));
+		CreateBookCommand command = aCreateBookCommand(TITLE, aMultiPartFile(CONTENT_TYPE, CONTENT));
 
 		Book domain = testee.toDomain(command);
 
@@ -80,8 +82,8 @@ public class CreateBookAssemblerUnitTest {
 		return command;
 	}
 
-	private MockMultipartFile aFile(String contentType, byte[] content) {
-		return new MockMultipartFile("file", "file.ext", contentType, content);
+	private MockMultipartFile aMultiPartFile(String contentType, ByteString content) {
+		return new MockMultipartFile("file", "file.ext", contentType, content.toByteArray());
 	}
 
 	private MockMultipartFile aFileThrowingExceptionWhenRead() {

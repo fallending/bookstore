@@ -1,13 +1,16 @@
 package pl.jojczykp.bookstore.utils;
 
+import com.google.protobuf.ByteString;
 import org.hsqldb.jdbc.JDBCBlob;
 import org.junit.Test;
 
 import javax.sql.rowset.serial.SerialBlob;
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.sql.Blob;
 import java.sql.SQLException;
 
+import static com.google.protobuf.ByteString.copyFrom;
 import static java.lang.reflect.Modifier.isPrivate;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -15,7 +18,7 @@ import static org.hamcrest.Matchers.is;
 
 public class BlobUtilsTest {
 
-	private static final byte[] DATA = {8, 6, 4, 2, 1};
+	private static final ByteString DATA = copyFrom(new byte[] {8, 6, 4, 2, 1});
 
 	@Test
 	public void shouldCreateEmptySerialBlob() throws SQLException {
@@ -28,30 +31,30 @@ public class BlobUtilsTest {
 	public void shouldCreateSerialSerialBlobWithGivenContent() throws SQLException {
 		Blob blob = BlobUtils.aSerialBlobWith(DATA);
 
-		assertThat(blob.getBytes(1, (int) blob.length()), is(equalTo(DATA)));
+		assertThat(blob.getBytes(1, (int) blob.length()), is(equalTo(DATA.toByteArray())));
 	}
 
 	@Test
 	public void shouldComputeBlobLength() throws SQLException {
-		Blob blob = new SerialBlob(DATA);
+		Blob blob = new SerialBlob(DATA.toByteArray());
 
 		long length = BlobUtils.blobLength(blob);
 
-		assertThat(length, is((long) DATA.length));
+		assertThat(length, is((long) DATA.size()));
 	}
 
 	@Test
 	public void shouldGetBlobBytes() throws SQLException {
-		Blob blob = new SerialBlob(DATA);
+		Blob blob = new SerialBlob(DATA.toByteArray());
 
-		byte[] bytes = BlobUtils.blobBytes(blob);
+		ByteString bytes = BlobUtils.blobBytes(blob);
 
 		assertThat(bytes, is(equalTo(DATA)));
 	}
 
 	@Test(expected = RuntimeException.class)
 	public void shouldWrapExceptionWithRuntimeExceptionWhenCreatingSerialBlob() {
-		byte[] dataThrowingSQLException = null;
+		ByteString dataThrowingSQLException = null;
 
 		BlobUtils.aSerialBlobWith(dataThrowingSQLException);
 	}
@@ -72,7 +75,7 @@ public class BlobUtilsTest {
 	public void shouldWrapExceptionWithRuntimeExceptionWhenGettingBlobBytes() {
 		Blob blobThrowingSQLExceptionOnGetBytes = new JDBCBlob() {
 			@Override
-			public byte[] getBytes(long pos, int len) throws SQLException {
+			public InputStream getBinaryStream() throws SQLException {
 				throw new SQLException();
 			}
 		};

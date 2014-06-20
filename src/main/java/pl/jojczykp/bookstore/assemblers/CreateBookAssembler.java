@@ -17,12 +17,15 @@
 
 package pl.jojczykp.bookstore.assemblers;
 
+import com.google.protobuf.ByteString;
 import org.springframework.stereotype.Service;
 import pl.jojczykp.bookstore.commands.books.CreateBookCommand;
 import pl.jojczykp.bookstore.entities.Book;
 import pl.jojczykp.bookstore.entities.BookFile;
 
 import java.io.IOException;
+
+import static com.google.protobuf.ByteString.copyFrom;
 
 @Service
 public class CreateBookAssembler {
@@ -44,9 +47,9 @@ public class CreateBookAssembler {
 		return command.getFile().getContentType();
 	}
 
-	private byte[] fileContentIn(CreateBookCommand command) {
+	private ByteString fileContentIn(CreateBookCommand command) {
 		try {
-			return command.getFile().getBytes();
+			return copyFrom(command.getFile().getBytes());
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

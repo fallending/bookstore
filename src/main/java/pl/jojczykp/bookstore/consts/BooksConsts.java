@@ -23,6 +23,7 @@ public abstract class BooksConsts {
 	public static final String URL_ACTION_LIST = "/books/display";
 	public static final String URL_ACTION_UPDATE = "/books/update";
 	public static final String URL_ACTION_DELETE = "/books/delete";
+	public static final String URL_ACTION_DOWNLOAD = "/books/download";
 
 	public static final String URL_ACTION_SORT = "/books/sort";
 	public static final String URL_ACTION_GO_TO_PAGE = "/books/goToPage";
@@ -33,6 +34,7 @@ public abstract class BooksConsts {
 	public static final String UPDATE_BOOK_COMMAND = "updateBookCommand";
 	public static final String DELETE_BOOKS_COMMAND = "deleteBooksCommand";
 	public static final String CHANGE_PAGER_COMMAND = "changePagerCommand";
+	public static final String DOWNLOAD_BOOK_COMMAND = "downloadBookCommand";
 
 	public static final String DISPLAY_BOOKS_VIEW = "books";
 

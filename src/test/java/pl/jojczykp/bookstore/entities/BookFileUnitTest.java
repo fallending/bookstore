@@ -17,12 +17,14 @@
 
 package pl.jojczykp.bookstore.entities;
 
+import com.google.protobuf.ByteString;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.Blob;
 
+import static com.google.protobuf.ByteString.copyFrom;
 import static java.lang.String.format;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -36,8 +38,8 @@ public class BookFileUnitTest {
 
 	private static final int ID = 3;
 	private static final String CONTENT_TYPE = "content/type";
-	private static final byte[] BYTES_CONTENT = new byte[] {2, 4, 6, 8};
-	private static final Blob BLOB_CONTENT = aSerialBlobWith(BYTES_CONTENT);
+	private static final ByteString CONTENT = copyFrom(new byte[] {2, 4, 6, 8});
+	private static final Blob BLOB_CONTENT = aSerialBlobWith(CONTENT);
 
 	private BookFile testee = new BookFile();
 
@@ -55,11 +57,11 @@ public class BookFileUnitTest {
 
 	@Test
 	public void shouldHaveConstructorWithContentTypeAndContent() {
-		BookFile initializedTestee = new BookFile(CONTENT_TYPE, BYTES_CONTENT);
+		BookFile initializedTestee = new BookFile(CONTENT_TYPE, CONTENT);
 
 		assertThat(initializedTestee.getId(), is(0));
 		assertThat(initializedTestee.getContentType(), is(equalTo(CONTENT_TYPE)));
-		assertThat(blobBytes(initializedTestee.getContent()), is(equalTo(BYTES_CONTENT)));
+		assertThat(blobBytes(initializedTestee.getContent()), is(equalTo(CONTENT)));
 	}
 
 	@Test

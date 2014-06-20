@@ -17,6 +17,8 @@
 
 package pl.jojczykp.bookstore.entities;
 
+import com.google.protobuf.ByteString;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -50,7 +52,7 @@ public class BookFile {
 		this.content = anEmptySerialBlob();
 	}
 
-	public BookFile(String contentType, byte[] content) {
+	public BookFile(String contentType, ByteString content) {
 		this.id = 0;
 		this.contentType = contentType;
 		this.content = aSerialBlobWith(content);

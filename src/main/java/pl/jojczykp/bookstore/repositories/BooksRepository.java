@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import pl.jojczykp.bookstore.entities.Book;
+import pl.jojczykp.bookstore.transfers.books.BookTO;
 import pl.jojczykp.bookstore.utils.PageSorterColumn;
 import pl.jojczykp.bookstore.utils.PageSorterDirection;
 
@@ -32,6 +33,7 @@ import java.util.List;
 import static com.google.common.primitives.Ints.checkedCast;
 import static java.util.Collections.emptyList;
 import static org.hibernate.criterion.Projections.rowCount;
+import static pl.jojczykp.bookstore.utils.BlobUtils.blobBytes;
 import static pl.jojczykp.bookstore.utils.PageSorter.orderBy;
 import static pl.jojczykp.bookstore.utils.SuppressUnchecked.suppressUnchecked;
 
@@ -43,6 +45,20 @@ public class BooksRepository {
 
 	public int create(Book book) {
 		return (int) getCurrentSession().save(book);
+	}
+
+	public BookTO find(int id) {
+		Book book = (Book) getCurrentSession().get(Book.class, id);
+		return toTransferObjectOrNull(book);
+	}
+
+	private BookTO toTransferObjectOrNull(Book book) {
+		if (book != null) {
+			return new BookTO(book.getTitle(), book.getBookFile().getContentType(),
+								blobBytes(book.getBookFile().getContent()));
+		} else {
+			return null;
+		}
 	}
 
 	public List<Book> read(int offset, int size, PageSorterColumn sortColumn, PageSorterDirection sortDirection) {

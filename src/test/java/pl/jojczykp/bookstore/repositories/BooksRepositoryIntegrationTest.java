@@ -29,21 +29,22 @@ import org.springframework.util.ReflectionUtils;
 import pl.jojczykp.bookstore.entities.Book;
 import pl.jojczykp.bookstore.entities.BookFile;
 import pl.jojczykp.bookstore.testutils.repositories.BooksRepositorySpy;
+import pl.jojczykp.bookstore.transfers.books.BookTO;
 import pl.jojczykp.bookstore.utils.PageSorterColumn;
 import pl.jojczykp.bookstore.utils.PageSorterDirection;
 
 import java.lang.reflect.Field;
-import java.sql.Blob;
-import java.sql.SQLException;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.samePropertyValuesAs;
 import static pl.jojczykp.bookstore.testutils.builders.BookBuilder.aBook;
 import static pl.jojczykp.bookstore.testutils.builders.BookFileBuilder.aBookFile;
 import static pl.jojczykp.bookstore.testutils.repositories.BooksRepositorySpy.ID_TO_GENERATE;
+import static pl.jojczykp.bookstore.utils.BlobUtils.blobBytes;
 import static pl.jojczykp.bookstore.utils.PageSorterColumn.BOOK_TITLE;
 import static pl.jojczykp.bookstore.utils.PageSorterDirection.ASC;
 import static pl.jojczykp.bookstore.utils.PageSorterDirection.DESC;
@@ -79,35 +80,35 @@ public class BooksRepositoryIntegrationTest {
 	}
 
 	@Test
-	public void shouldFindBooksByOffsetAndSize() {
+	public void shouldReadBooksByOffsetAndSize() {
 		final int offset = 1;
 		final int size = 3;
 		givenRepositoryWith(bookA, bookB, bookC, bookD, bookE);
 
-		List<Book> foundBooks = testee.read(offset, size, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
+		List<Book> readBooks = testee.read(offset, size, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
 
-		assertThatListContainsOnly(foundBooks, bookB, bookC, bookD);
+		assertThatListContainsOnly(readBooks, bookB, bookC, bookD);
 	}
 
 	@Test
-	public void shouldFindBooksWhenOffsetInRangeAndSizeOutOfRange() {
+	public void shouldReadBooksWhenOffsetInRangeAndSizeOutOfRange() {
 		final Book[] givenBooks = {bookA, bookB, bookC, bookD, bookE};
 		givenRepositoryWith(givenBooks);
 
-		List<Book> foundBooks = testee.read(2, givenBooks.length + 1, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
+		List<Book> readBooks = testee.read(2, givenBooks.length + 1, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
 
-		assertThatListContainsOnly(foundBooks, bookC, bookD, bookE);
+		assertThatListContainsOnly(readBooks, bookC, bookD, bookE);
 	}
 
 	@Test
-	public void shouldFindBooksFromOffsetZeroWhenGivenNegativeOffset() {
+	public void shouldReadBooksFromOffsetZeroWhenGivenNegativeOffset() {
 		final int negativeOffset = -2;
 		final Book[] givenBooks = {bookA, bookB, bookC};
 		givenRepositoryWith(givenBooks);
 
-		List<Book> foundBooks = testee.read(negativeOffset, 2, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
+		List<Book> readBooks = testee.read(negativeOffset, 2, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
 
-		assertThatListContainsOnly(foundBooks, bookA, bookB);
+		assertThatListContainsOnly(readBooks, bookA, bookB);
 	}
 
 	@Test
@@ -117,9 +118,9 @@ public class BooksRepositoryIntegrationTest {
 		final int anySize = 8;
 		givenRepositoryWith(givenBooks);
 
-		List<Book> foundBooks = testee.read(outOfRangeOffset, anySize, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
+		List<Book> readBooks = testee.read(outOfRangeOffset, anySize, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
 
-		assertThat(foundBooks.size(), is(0));
+		assertThat(readBooks.size(), is(0));
 	}
 
 	@Test
@@ -128,9 +129,9 @@ public class BooksRepositoryIntegrationTest {
 		final int negativeSize = -1;
 		givenRepositoryWith(bookA, bookB);
 
-		List<Book> foundBooks = testee.read(anyOffset, negativeSize, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
+		List<Book> readBooks = testee.read(anyOffset, negativeSize, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
 
-		assertThat(foundBooks.size(), is(0));
+		assertThat(readBooks.size(), is(0));
 	}
 
 	@Test
@@ -138,51 +139,51 @@ public class BooksRepositoryIntegrationTest {
 		final int anyOffset = 7;
 		givenRepositoryWith(bookA, bookB);
 
-		List<Book> foundBooks = testee.read(anyOffset, 0, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
+		List<Book> readBooks = testee.read(anyOffset, 0, SAMPLE_SORT_COLUMN, SAMPLE_DIRECTION);
 
-		assertThat(foundBooks.size(), is(0));
+		assertThat(readBooks.size(), is(0));
 	}
 
 	@Test
-	public void shouldFindBooksOrderingAsc() throws NoSuchFieldException {
+	public void shouldReadBooksOrderingAsc() throws NoSuchFieldException {
 		final Book[] givenBooks = {bookB, bookA, bookC};
 		givenRepositoryWith(givenBooks);
 		givenIgnoreCaseWhileSort(BOOK_TITLE, true);
 
-		List<Book> foundBooks = testee.read(0, givenBooks.length, SAMPLE_SORT_COLUMN, ASC);
+		List<Book> readBooks = testee.read(0, givenBooks.length, SAMPLE_SORT_COLUMN, ASC);
 
-		assertThatListContainsOnly(foundBooks, bookA, bookB, bookC);
+		assertThatListContainsOnly(readBooks, bookA, bookB, bookC);
 	}
 
 	@Test
-	public void shouldFindBooksOrderingDesc() throws NoSuchFieldException {
+	public void shouldReadBooksOrderingDesc() throws NoSuchFieldException {
 		final Book[] givenBooks = {bookB, bookA, bookC};
 		givenRepositoryWith(givenBooks);
 		givenIgnoreCaseWhileSort(BOOK_TITLE, true);
 
-		List<Book> foundBooks = testee.read(0, givenBooks.length, SAMPLE_SORT_COLUMN, DESC);
+		List<Book> readBooks = testee.read(0, givenBooks.length, SAMPLE_SORT_COLUMN, DESC);
 
-		assertThatListContainsOnly(foundBooks, bookC, bookB, bookA);
+		assertThatListContainsOnly(readBooks, bookC, bookB, bookA);
 	}
 
 	@Test
-	public void shouldFindBooksOrderingCaseInsensitively() throws NoSuchFieldException {
+	public void shouldReadBooksOrderingCaseInsensitively() throws NoSuchFieldException {
 		givenIgnoreCaseWhileSort(BOOK_TITLE, true);
 		givenRepositoryWith(bookLowCaseC, bookA);
 
-		List<Book> foundBooks = testee.read(0, 2, SAMPLE_SORT_COLUMN, ASC);
+		List<Book> readBooks = testee.read(0, 2, SAMPLE_SORT_COLUMN, ASC);
 
-		assertThatListContainsOnly(foundBooks, bookA, bookLowCaseC);
+		assertThatListContainsOnly(readBooks, bookA, bookLowCaseC);
 	}
 
 	@Test
-	public void shouldFindBooksOrderingCaseSensitively() throws NoSuchFieldException {
+	public void shouldReadBooksOrderingCaseSensitively() throws NoSuchFieldException {
 		givenIgnoreCaseWhileSort(BOOK_TITLE, false);
 		givenRepositoryWith(bookLowCaseC, bookD);
 
-		List<Book> foundBooks = testee.read(0, 2, SAMPLE_SORT_COLUMN, ASC);
+		List<Book> readBooks = testee.read(0, 2, SAMPLE_SORT_COLUMN, ASC);
 
-		assertThatListContainsOnly(foundBooks, bookD, bookLowCaseC);
+		assertThatListContainsOnly(readBooks, bookD, bookLowCaseC);
 	}
 
 	@Test
@@ -230,6 +231,27 @@ public class BooksRepositoryIntegrationTest {
 		testee.delete(notExistingId);
 	}
 
+	@Test
+	public void shouldFindBookById() {
+		givenRepositoryWith(bookB, bookC);
+
+		BookTO foundBook = testee.find(bookB.getId());
+
+		assertThat(foundBook.getTitle(), is(equalTo(bookB.getTitle())));
+		assertThat(foundBook.getContentType(), is(equalTo(bookB.getBookFile().getContentType())));
+		assertThat(foundBook.getContent(), is(equalTo(blobBytes(bookB.getBookFile().getContent()))));
+	}
+
+	@Test
+	public void shouldFailFindingNotExistingBookById() {
+		givenRepositoryWith(bookB, bookC);
+		int notExistingId = bookB.getId() + bookC.getId();
+
+		BookTO foundBook = testee.find(notExistingId);
+
+		assertThat(foundBook, is(nullValue()));
+	}
+
 	private void givenIgnoreCaseWhileSort(PageSorterColumn column, boolean value) throws NoSuchFieldException {
 		Field ignoreCaseField = column.getClass().getDeclaredField("ignoreCase");
 		ReflectionUtils.makeAccessible(ignoreCaseField);
@@ -270,16 +292,7 @@ public class BooksRepositoryIntegrationTest {
 			BookFile expected = expecteds[i];
 			assertThat(given.getId(), is(equalTo(expected.getId())));
 			assertThat(given.getContentType(), is(equalTo(expected.getContentType())));
-			assertThat(contentOf(given), is(equalTo(contentOf(expected))));
-		}
-	}
-
-	private byte[] contentOf(BookFile bookFile) {
-		try {
-			Blob blob = bookFile.getContent();
-			return blob.getBytes(1, (int) blob.length());
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
+			assertThat(blobBytes(given.getContent()), is(equalTo(blobBytes(expected.getContent()))));
 		}
 	}
 

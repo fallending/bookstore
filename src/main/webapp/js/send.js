@@ -53,7 +53,6 @@ function sendPost(action, originalParams, actualParams) {
 	request.send(createForm(originalParams, actualParams));
 
 	document.open();
-	document.write(request.responseText)
+	document.write(request.responseText);
 	document.close();
-
 }

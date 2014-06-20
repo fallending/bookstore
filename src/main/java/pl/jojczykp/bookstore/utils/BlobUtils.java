@@ -18,7 +18,10 @@
 package pl.jojczykp.bookstore.utils;
 
 
+import com.google.protobuf.ByteString;
+
 import javax.sql.rowset.serial.SerialBlob;
+import java.io.IOException;
 import java.sql.Blob;
 import java.sql.SQLException;
 
@@ -28,19 +31,19 @@ public final class BlobUtils {
 	}
 
 	public static Blob anEmptySerialBlob() {
-		return aSerialBlobWith(new byte[0]);
+		return aSerialBlobWith(ByteString.EMPTY);
 	}
 
-	public static SerialBlob aSerialBlobWith(byte[] bytes) {
+	public static SerialBlob aSerialBlobWith(ByteString bytes) {
 		try {
 			throwExceptionOnNull(bytes);
-			return new SerialBlob(bytes);
+			return new SerialBlob(bytes.toByteArray());
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	private static void throwExceptionOnNull(byte[] bytes) throws SQLException {
+	private static void throwExceptionOnNull(ByteString bytes) throws SQLException {
 		if (bytes == null) {
 			throw new SQLException("Cannot create BLOB for null data");
 		}
@@ -54,10 +57,10 @@ public final class BlobUtils {
 		}
 	}
 
-	public static byte[] blobBytes(Blob blob) {
+	public static ByteString blobBytes(Blob blob) {
 		try {
-			return blob.getBytes(1, (int) blob.length());
-		} catch (SQLException e) {
+			return ByteString.readFrom(blob.getBinaryStream());
+		} catch (IOException | SQLException e) {
 			throw new RuntimeException(e);
 		}
 	}

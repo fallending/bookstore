@@ -32,6 +32,7 @@ import static pl.jojczykp.bookstore.utils.SuppressUnchecked.suppressUnchecked;
 public class BooksRepositorySpy {
 
 	public static final int ID_TO_GENERATE = 0;
+	public static final int FIRST_GENERATED_ID = 1;
 
 	@Autowired private SessionFactory sessionFactory;
 
