@@ -10,7 +10,6 @@ import java.lang.reflect.Constructor;
 import java.sql.Blob;
 import java.sql.SQLException;
 
-import static com.google.protobuf.ByteString.copyFrom;
 import static java.lang.reflect.Modifier.isPrivate;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -18,7 +17,7 @@ import static org.hamcrest.Matchers.is;
 
 public class BlobUtilsTest {
 
-	private static final ByteString DATA = copyFrom(new byte[] {8, 6, 4, 2, 1});
+	private static final byte[] DATA = {8, 6, 4, 2, 1};
 
 	@Test
 	public void shouldCreateEmptySerialBlob() throws SQLException {
@@ -31,30 +30,30 @@ public class BlobUtilsTest {
 	public void shouldCreateSerialSerialBlobWithGivenContent() throws SQLException {
 		Blob blob = BlobUtils.aSerialBlobWith(DATA);
 
-		assertThat(blob.getBytes(1, (int) blob.length()), is(equalTo(DATA.toByteArray())));
+		assertThat(blob.getBytes(1, (int) blob.length()), is(equalTo(DATA)));
 	}
 
 	@Test
 	public void shouldComputeBlobLength() throws SQLException {
-		Blob blob = new SerialBlob(DATA.toByteArray());
+		Blob blob = new SerialBlob(DATA);
 
 		long length = BlobUtils.blobLength(blob);
 
-		assertThat(length, is((long) DATA.size()));
+		assertThat(length, is((long) DATA.length));
 	}
 
 	@Test
 	public void shouldGetBlobBytes() throws SQLException {
-		Blob blob = new SerialBlob(DATA.toByteArray());
+		Blob blob = new SerialBlob(DATA);
 
 		ByteString bytes = BlobUtils.blobBytes(blob);
 
-		assertThat(bytes, is(equalTo(DATA)));
+		assertThat(bytes, is(equalTo(ByteString.copyFrom(DATA))));
 	}
 
 	@Test(expected = RuntimeException.class)
 	public void shouldWrapExceptionWithRuntimeExceptionWhenCreatingSerialBlob() {
-		ByteString dataThrowingSQLException = null;
+		byte[] dataThrowingSQLException = null;
 
 		BlobUtils.aSerialBlobWith(dataThrowingSQLException);
 	}

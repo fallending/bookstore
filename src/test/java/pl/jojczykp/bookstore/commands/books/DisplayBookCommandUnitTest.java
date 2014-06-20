@@ -23,9 +23,6 @@ import org.junit.Test;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isEmptyString;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
 
 public class DisplayBookCommandUnitTest {
@@ -42,15 +39,16 @@ public class DisplayBookCommandUnitTest {
 		assertThat(testee.getId(), is(0));
 		assertThat(testee.getVersion(), is(0));
 		assertThat(testee.getTitle(), isEmptyString());
-		assertThat(testee.getBookFile(), is(not(nullValue())));
+		assertThat(testee.getIconName(), isEmptyString());
 	}
+
 	@Test
 	public void shouldSetId() {
 		final int id = 2;
 
 		testee.setId(id);
 
-		assertThat(testee.getId(), equalTo(id));
+		assertThat(testee.getId(), is(equalTo(id)));
 	}
 
 	@Test
@@ -59,7 +57,7 @@ public class DisplayBookCommandUnitTest {
 
 		testee.setVersion(version);
 
-		assertThat(testee.getVersion(), equalTo(version));
+		assertThat(testee.getVersion(), is(equalTo(version)));
 	}
 
 	@Test
@@ -68,16 +66,16 @@ public class DisplayBookCommandUnitTest {
 
 		testee.setTitle(title);
 
-		assertThat(testee.getTitle(), equalTo(title));
+		assertThat(testee.getTitle(), is(equalTo(title)));
 	}
 
 	@Test
-	public void shouldSetFile() {
-		final DisplayBookFileCommand file = new DisplayBookFileCommand();
+	public void shouldFileType() {
+		final String fileType = "fileType";
 
-		testee.setBookFile(file);
+		testee.setIconName(fileType);
 
-		assertThat(testee.getBookFile(), is(sameInstance(file)));
+		assertThat(testee.getIconName(), is(equalTo(fileType)));
 	}
 
 }

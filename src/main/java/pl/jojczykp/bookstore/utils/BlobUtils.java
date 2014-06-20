@@ -31,19 +31,19 @@ public final class BlobUtils {
 	}
 
 	public static Blob anEmptySerialBlob() {
-		return aSerialBlobWith(ByteString.EMPTY);
+		return aSerialBlobWith(new byte[0]);
 	}
 
-	public static SerialBlob aSerialBlobWith(ByteString bytes) {
+	public static SerialBlob aSerialBlobWith(byte[] bytes) {
 		try {
 			throwExceptionOnNull(bytes);
-			return new SerialBlob(bytes.toByteArray());
+			return new SerialBlob(bytes);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	private static void throwExceptionOnNull(ByteString bytes) throws SQLException {
+	private static void throwExceptionOnNull(byte[] bytes) throws SQLException {
 		if (bytes == null) {
 			throw new SQLException("Cannot create BLOB for null data");
 		}

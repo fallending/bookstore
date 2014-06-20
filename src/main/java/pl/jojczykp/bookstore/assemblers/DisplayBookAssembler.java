@@ -17,7 +17,6 @@
 
 package pl.jojczykp.bookstore.assemblers;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.jojczykp.bookstore.commands.books.DisplayBookCommand;
 import pl.jojczykp.bookstore.entities.Book;
@@ -27,8 +26,6 @@ import java.util.List;
 
 @Service
 public class DisplayBookAssembler {
-
-	@Autowired private DisplayBookFileAssembler displayBookFileAssembler;
 
 	public List<DisplayBookCommand> toCommands(List<Book> domains) {
 		List<DisplayBookCommand> commands = new ArrayList<>(domains.size());
@@ -44,7 +41,7 @@ public class DisplayBookAssembler {
 		command.setId(domain.getId());
 		command.setVersion(domain.getVersion());
 		command.setTitle(domain.getTitle());
-		command.setBookFile(displayBookFileAssembler.toCommand(domain.getBookFile()));
+		command.setIconName(domain.getBookFile().getFileType());
 
 		return command;
 	}

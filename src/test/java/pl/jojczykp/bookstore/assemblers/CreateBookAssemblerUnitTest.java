@@ -38,8 +38,9 @@ public class CreateBookAssemblerUnitTest {
 	private static final int VERSION_TO_BE_SET_AUTOMATICALLY = 0;
 
 	private static final String TITLE = "A Title";
-	private static final String CONTENT_TYPE = "text/html";
-	private static final ByteString CONTENT = copyFrom(new byte[]{1, 2, 3});
+	private static final String FILE_TYPE = "fileType";
+	private static final String CONTENT_TYPE = "application/octet-stream";
+	private static final ByteString CONTENT = copyFrom(new byte[] {1, 2, 3});
 
 	private CreateBookAssembler testee;
 
@@ -50,13 +51,14 @@ public class CreateBookAssemblerUnitTest {
 
 	@Test
 	public void shouldAssemblySingleBookDomainObjectFromCreateBookCommandObject() {
-		CreateBookCommand command = aCreateBookCommand(TITLE, aMultiPartFile(CONTENT_TYPE, CONTENT));
+		CreateBookCommand command = aCreateBookCommand(TITLE, aMultiPartFile(FILE_TYPE, CONTENT_TYPE, CONTENT));
 
 		Book domain = testee.toDomain(command);
 
 		assertThat(domain.getId(), is(ID_TO_BE_SET_AUTOMATICALLY));
 		assertThat(domain.getVersion(), is(VERSION_TO_BE_SET_AUTOMATICALLY));
 		assertThat(domain.getTitle(), is(equalTo(TITLE)));
+		assertThat(domain.getBookFile().getFileType(), is(equalTo(FILE_TYPE)));
 		assertThat(domain.getBookFile().getContentType(), is(equalTo(CONTENT_TYPE)));
 		assertThat(blobBytes(domain.getBookFile().getContent()), is(equalTo(CONTENT)));
 	}
@@ -70,6 +72,7 @@ public class CreateBookAssemblerUnitTest {
 		assertThat(domain.getId(), is(ID_TO_BE_SET_AUTOMATICALLY));
 		assertThat(domain.getVersion(), is(VERSION_TO_BE_SET_AUTOMATICALLY));
 		assertThat(domain.getTitle(), is(equalTo(TITLE)));
+		assertThat(domain.getBookFile().getFileType(), is(equalTo(FILE_TYPE)));
 		assertThat(domain.getBookFile().getContentType(), is(equalTo(CONTENT_TYPE)));
 		assertThat(blobBytes(domain.getBookFile().getContent()), is(equalTo(CONTENT)));
 	}
@@ -82,12 +85,12 @@ public class CreateBookAssemblerUnitTest {
 		return command;
 	}
 
-	private MockMultipartFile aMultiPartFile(String contentType, ByteString content) {
-		return new MockMultipartFile("file", "file.ext", contentType, content.toByteArray());
+	private MockMultipartFile aMultiPartFile(String fileType, String contentType, ByteString content) {
+		return new MockMultipartFile("name", "baseName." + fileType, contentType, content.toByteArray());
 	}
 
 	private MockMultipartFile aFileThrowingExceptionWhenRead() {
-		return new MockMultipartFile("file", "file.ext", "contentType", "content".getBytes()) {
+		return new MockMultipartFile("name", "fileExt", "contentType", "content".getBytes()) {
 			@Override
 			public byte[] getBytes() throws IOException {
 				throw new IOException("Dummy " + getClass().getName());

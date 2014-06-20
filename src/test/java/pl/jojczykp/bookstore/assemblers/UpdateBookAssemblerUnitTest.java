@@ -63,7 +63,7 @@ public class UpdateBookAssemblerUnitTest {
 		assertThat(domain.getId(), equalTo(command.getId()));
 		assertThat(domain.getVersion(), equalTo(command.getVersion()));
 		assertThat(domain.getTitle(), equalTo(command.getTitle()));
-		assertThat(domain.getBookFile().getContentType(), is(equalTo("text/plain")));
+		assertThat(domain.getBookFile().getContentType(), is(equalTo("text/plain; charset=utf-8")));
 		assertThat(blobBytes(domain.getBookFile().getContent()), is(equalTo(copyFromUtf8("a Book Content"))));
 	}
 

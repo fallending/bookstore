@@ -17,14 +17,12 @@
 
 package pl.jojczykp.bookstore.assemblers;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import pl.jojczykp.bookstore.commands.books.DisplayBookCommand;
-import pl.jojczykp.bookstore.commands.books.DisplayBookFileCommand;
 import pl.jojczykp.bookstore.entities.Book;
 import pl.jojczykp.bookstore.entities.BookFile;
 
@@ -34,27 +32,15 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
-import static org.mockito.BDDMockito.given;
 import static pl.jojczykp.bookstore.testutils.builders.BookBuilder.aBook;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DisplayBookAssemblerUnitTest {
 
 	@Mock private BookFile bookFile1;
-	@Mock private DisplayBookFileCommand displayBookFileCommand1;
-
 	@Mock private BookFile bookFile2;
-	@Mock private DisplayBookFileCommand displayBookFileCommand2;
-
-	@Mock private DisplayBookFileAssembler displayBookFileAssembler;
 
 	@InjectMocks private DisplayBookAssembler testee;
-
-	@Before
-	public void setUpMocks() {
-		given(displayBookFileAssembler.toCommand(bookFile1)).willReturn(displayBookFileCommand1);
-		given(displayBookFileAssembler.toCommand(bookFile2)).willReturn(displayBookFileCommand2);
-	}
 
 	@Test
 	public void shouldAssemblyBookCommandObjectsListFromDomainObjectsList() {
@@ -78,8 +64,7 @@ public class DisplayBookAssemblerUnitTest {
 		assertThat(domain.getId(), equalTo(command.getId()));
 		assertThat(domain.getVersion(), equalTo(command.getVersion()));
 		assertThat(domain.getTitle(), equalTo(command.getTitle()));
-		assertThat(domain.getBookFile().getId(), is(equalTo(command.getBookFile().getId())));
-		assertThat(domain.getBookFile().getContentType(), is(equalTo(command.getBookFile().getIconName())));
+		assertThat(domain.getBookFile().getFileType(), is(equalTo(command.getIconName())));
 	}
 
 }

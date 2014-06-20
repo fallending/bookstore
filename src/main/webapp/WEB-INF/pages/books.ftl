@@ -179,7 +179,7 @@
 					</td>
 					<td>
 						<a href="download?id=${displayBooksCommand.books[book_index].id}" class="downloadLink">
-							${displayBooksCommand.books[book_index].bookFile.iconName}
+							${displayBooksCommand.books[book_index].iconName}
 						</a>
 					</td>
 					<td>

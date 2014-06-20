@@ -22,24 +22,22 @@ import pl.jojczykp.bookstore.entities.BookFile;
 
 import java.sql.Blob;
 
-import static com.google.protobuf.ByteString.copyFromUtf8;
+import static com.google.common.base.Charsets.UTF_8;
 import static pl.jojczykp.bookstore.utils.BlobUtils.aSerialBlobWith;
 
 public abstract class BookFileBuilder {
 
 	public static BookFile aBookFile(int id, String content) {
-		return aBookFile(id, "text/plain", aSerialBlobWith(copyFromUtf8(content)));
+		return aBookFile(id, "txt", "text/plain; charset=utf-8", aSerialBlobWith(content.getBytes(UTF_8)));
 	}
 
-	public static BookFile aBookFile(int id, String contentType, ByteString content) {
-		return aBookFile(id, contentType, aSerialBlobWith(content));
+	public static BookFile aBookFile(int id, String fileType, String contentType, ByteString content) {
+		return aBookFile(id, fileType, contentType, aSerialBlobWith(content.toByteArray()));
 	}
 
-	public static BookFile aBookFile(int id, String contentType, Blob content) {
-		BookFile result = new BookFile();
+	public static BookFile aBookFile(int id, String fileType, String contentType, Blob content) {
+		BookFile result = new BookFile(fileType, contentType, content);
 		result.setId(id);
-		result.setContentType(contentType);
-		result.setContent(content);
 
 		return result;
 	}

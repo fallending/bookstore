@@ -22,7 +22,8 @@ import pl.jojczykp.bookstore.commands.books.UpdateBookCommand;
 import pl.jojczykp.bookstore.entities.Book;
 import pl.jojczykp.bookstore.entities.BookFile;
 
-import static com.google.protobuf.ByteString.copyFromUtf8;
+import static com.google.common.base.Charsets.UTF_8;
+import static pl.jojczykp.bookstore.utils.BlobUtils.aSerialBlobWith;
 
 @Service
 public class UpdateBookAssembler {
@@ -32,7 +33,8 @@ public class UpdateBookAssembler {
 		domain.setId(command.getId());
 		domain.setVersion(command.getVersion());
 		domain.setTitle(command.getTitle());
-		domain.setBookFile(new BookFile("text/plain", copyFromUtf8("a Book Content")));
+		domain.setBookFile(new BookFile("txt", "text/plain; charset=utf-8",
+													aSerialBlobWith("a Book Content".getBytes(UTF_8))));
 
 		return domain;
 	}

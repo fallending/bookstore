@@ -22,13 +22,13 @@ public class DisplayBookCommand {
 	private int id;
 	private int version;
 	private String title;
-	private DisplayBookFileCommand bookFile;
+	private String iconName;
 
 	public DisplayBookCommand() {
 		id = 0;
 		version = 0;
 		title = "";
-		bookFile = new DisplayBookFileCommand();
+		iconName = "";
 	}
 
 	public int getId() {
@@ -55,12 +55,11 @@ public class DisplayBookCommand {
 		this.title = title;
 	}
 
-	public DisplayBookFileCommand getBookFile() {
-		return bookFile;
+	public String getIconName() {
+		return iconName;
 	}
 
-	public void setBookFile(DisplayBookFileCommand bookFile) {
-		this.bookFile = bookFile;
+	public void setIconName(String iconName) {
+		this.iconName = iconName;
 	}
-
 }

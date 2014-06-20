@@ -17,8 +17,6 @@
 
 package pl.jojczykp.bookstore.entities;
 
-import com.google.protobuf.ByteString;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -27,17 +25,21 @@ import javax.persistence.Lob;
 import javax.persistence.Table;
 import java.sql.Blob;
 
-import static pl.jojczykp.bookstore.utils.BlobUtils.aSerialBlobWith;
 import static pl.jojczykp.bookstore.utils.BlobUtils.anEmptySerialBlob;
 
 @Entity
 @Table(name = "BOOK_FILES")
 public class BookFile {
 
+	private static final int ID_TO_BE_GENERATED = 0;
+
 	@Id
 	@GeneratedValue
 	@Column(name = "ID")
 	private int id;
+
+	@Column(name = "FILE_TYPE", nullable = true)
+	private String fileType;
 
 	@Column(name = "CONTENT_TYPE", nullable = false)
 	private String contentType;
@@ -47,15 +49,14 @@ public class BookFile {
 	private Blob content;
 
 	public BookFile() {
-		this.id = 0;
-		this.contentType = "";
-		this.content = anEmptySerialBlob();
+		this("", "", anEmptySerialBlob());
 	}
 
-	public BookFile(String contentType, ByteString content) {
-		this.id = 0;
+	public BookFile(String fileType, String contentType, Blob content) {
+		this.id = ID_TO_BE_GENERATED;
+		this.fileType = fileType;
 		this.contentType = contentType;
-		this.content = aSerialBlobWith(content);
+		this.content = content;
 	}
 
 	public int getId() {
@@ -64,6 +65,14 @@ public class BookFile {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public String getFileType() {
+		return fileType;
+	}
+
+	public void setFileType(String fileType) {
+		this.fileType = fileType;
 	}
 
 	public String getContentType() {
@@ -104,7 +113,8 @@ public class BookFile {
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + "{id=" + id + ", contentType='" + contentType + "'}";
+		return getClass().getSimpleName()
+				+ "{id=" + id + ", fileType='" + fileType + "', contentType='" + contentType + "'}";
 	}
 
 }

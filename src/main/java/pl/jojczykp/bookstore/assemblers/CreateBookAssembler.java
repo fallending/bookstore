@@ -17,15 +17,16 @@
 
 package pl.jojczykp.bookstore.assemblers;
 
-import com.google.protobuf.ByteString;
 import org.springframework.stereotype.Service;
 import pl.jojczykp.bookstore.commands.books.CreateBookCommand;
 import pl.jojczykp.bookstore.entities.Book;
 import pl.jojczykp.bookstore.entities.BookFile;
 
 import java.io.IOException;
+import java.sql.Blob;
 
-import static com.google.protobuf.ByteString.copyFrom;
+import static org.apache.commons.io.FilenameUtils.getExtension;
+import static pl.jojczykp.bookstore.utils.BlobUtils.aSerialBlobWith;
 
 @Service
 public class CreateBookAssembler {
@@ -38,18 +39,22 @@ public class CreateBookAssembler {
 		domain.setId(ID_TO_BE_SET_AUTOMATICALLY);
 		domain.setVersion(VERSION_TO_BE_SET_AUTOMATICALLY);
 		domain.setTitle(command.getTitle());
-		domain.setBookFile(new BookFile(fileContentTypeIn(command), fileContentIn(command)));
+		domain.setBookFile(new BookFile(fileExtensionIn(command), fileContentTypeIn(command), fileContentIn(command)));
 
 		return domain;
+	}
+
+	private String fileExtensionIn(CreateBookCommand command) {
+		return getExtension(command.getFile().getOriginalFilename());
 	}
 
 	private String fileContentTypeIn(CreateBookCommand command) {
 		return command.getFile().getContentType();
 	}
 
-	private ByteString fileContentIn(CreateBookCommand command) {
+	private Blob fileContentIn(CreateBookCommand command) {
 		try {
-			return copyFrom(command.getFile().getBytes());
+			return aSerialBlobWith(command.getFile().getBytes());
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
