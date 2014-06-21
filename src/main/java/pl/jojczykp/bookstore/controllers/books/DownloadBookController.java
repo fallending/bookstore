@@ -23,14 +23,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import pl.jojczykp.bookstore.commands.books.DownloadBookCommand;
+import pl.jojczykp.bookstore.controllers.errors.ResourceNotFoundException;
 import pl.jojczykp.bookstore.repositories.BooksRepository;
 import pl.jojczykp.bookstore.transfers.BookTO;
 
+import static java.lang.String.format;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static pl.jojczykp.bookstore.consts.BooksConsts.DOWNLOAD_BOOK_COMMAND;
 import static pl.jojczykp.bookstore.consts.BooksConsts.URL_ACTION_DOWNLOAD;
@@ -38,29 +39,29 @@ import static pl.jojczykp.bookstore.consts.BooksConsts.URL_ACTION_DOWNLOAD;
 @Controller
 public class DownloadBookController {
 
-	private static final LinkedMultiValueMap<String, String> EMPTY_HEADERS = new LinkedMultiValueMap<>();
-
 	@Autowired private BooksRepository booksRepository;
 
 	@RequestMapping(value = URL_ACTION_DOWNLOAD, method = GET)
 	@ResponseBody
 	public ResponseEntity<byte[]> downloadBook(
-			@ModelAttribute(DOWNLOAD_BOOK_COMMAND) DownloadBookCommand downloadBookCommand) {
+			@ModelAttribute(DOWNLOAD_BOOK_COMMAND) DownloadBookCommand downloadBookCommand)
+	{
 		BookTO book = booksRepository.find(downloadBookCommand.getId());
 
 		if (book != null) {
 			return new ResponseEntity<>(book.getContent().toByteArray(), responseHeadersFor(book), HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(EMPTY_HEADERS, HttpStatus.NOT_FOUND);
+			throw new ResourceNotFoundException(format("Content of book with id '%d' not found.",
+																			downloadBookCommand.getId()));
 		}
 	}
 
-	private HttpHeaders responseHeadersFor(BookTO bookTO) {
+	private HttpHeaders responseHeadersFor(BookTO book) {
 		HttpHeaders responseHeaders = new HttpHeaders();
 
-		responseHeaders.setContentType(MediaType.parseMediaType(bookTO.getContentType()));
-		responseHeaders.setContentLength(bookTO.getContent().size());
-		responseHeaders.add("Content-Disposition", "attachment; filename=\"" + bookTO.getTitle() + "\"");
+		responseHeaders.setContentType(MediaType.parseMediaType(book.getContentType()));
+		responseHeaders.setContentLength(book.getContent().size());
+		responseHeaders.add("Content-Disposition", "attachment; filename=\"" + book.getTitle() + "\"");
 
 		return responseHeaders;
 	}

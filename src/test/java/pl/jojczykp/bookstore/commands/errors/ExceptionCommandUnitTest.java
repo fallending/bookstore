@@ -20,10 +20,15 @@ package pl.jojczykp.bookstore.commands.errors;
 import org.junit.Before;
 import org.junit.Test;
 
+import static java.lang.String.format;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 public class ExceptionCommandUnitTest {
+
+	private static final String MESSAGE = "some message";
+	private static final String STACK_TRACE = "some stack trace";
 
 	private ExceptionCommand testee;
 
@@ -34,19 +39,24 @@ public class ExceptionCommandUnitTest {
 
 	@Test
 	public void shouldSetMessage() {
-		final String message = "some message";
+		testee.setMessage(MESSAGE);
 
-		testee.setMessage(message);
-
-		assertThat(testee.getMessage(), equalTo(message));
+		assertThat(testee.getMessage(), is(equalTo(MESSAGE)));
 	}
 
 	@Test
 	public void shouldSetStackTraceAsText() {
-		final String stackTraceContent = "stack trace content";
+		testee.setStackTraceAsString(STACK_TRACE);
 
-		testee.setStackTraceAsString(stackTraceContent);
-
-		assertThat(testee.getStackTraceAsString(), equalTo(stackTraceContent));
+		assertThat(testee.getStackTraceAsString(), is(equalTo(STACK_TRACE)));
 	}
+
+	@Test
+	public void shouldHaveToStringForDiagnostics() {
+		testee.setMessage(MESSAGE);
+		testee.setStackTraceAsString(STACK_TRACE);
+
+		assertThat(testee.toString(), is(equalTo(format("message: %s\nstackTrace: %s", MESSAGE, STACK_TRACE))));
+	}
+
 }

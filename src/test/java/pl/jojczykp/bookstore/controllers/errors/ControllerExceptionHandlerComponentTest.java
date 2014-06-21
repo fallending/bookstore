@@ -21,6 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -29,7 +30,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.not;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -54,9 +55,20 @@ public class ControllerExceptionHandlerComponentTest {
 	}
 
 	@Test
-	public void shouldHandleExceptionFromController() throws Exception {
-		mvcMock.perform(get(THROW_EXCEPTION_CONTROLLER_URL))
-				.andExpect(status().isOk())
+	public void shouldHandleResourceNotFoundExceptionFromController() throws Exception {
+		shouldHandleExceptionFromController(ResourceNotFoundException.class, HttpStatus.NOT_FOUND);
+	}
+
+	@Test
+	public void shouldHandleAnyExceptionFromController() throws Exception {
+		shouldHandleExceptionFromController(RuntimeException.class, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	private void shouldHandleExceptionFromController(Class<? extends Exception> exceptionClass, HttpStatus status)
+																									throws Exception
+	{
+		mvcMock.perform(post(THROW_EXCEPTION_CONTROLLER_URL + "/" + exceptionClass.getName() + "/"))
+				.andExpect(status().is(status.value()))
 				.andExpect(view().name("exception"))
 				.andExpect(model().attribute("exceptionCommand",
 						hasBeanProperty("message", not(isEmptyOrNullString()))))

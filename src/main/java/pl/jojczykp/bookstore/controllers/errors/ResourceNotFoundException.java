@@ -15,30 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
  */
 
-package pl.jojczykp.bookstore.commands.errors;
+package pl.jojczykp.bookstore.controllers.errors;
 
-public class ExceptionCommand {
+public class ResourceNotFoundException extends RuntimeException {
 
-	private String message;
-	private String stackTraceAsString;
-
-	public String getMessage() {
-		return message;
+	public ResourceNotFoundException(String message) {
+		super(message);
 	}
 
-	public void setMessage(String message) {
-		this.message = message;
-	}
-
-	public String getStackTraceAsString() {
-		return stackTraceAsString;
-	}
-
-	public void setStackTraceAsString(String stackTraceAsString) {
-		this.stackTraceAsString = stackTraceAsString;
-	}
-
-	public String toString() {
-		return "message: " + message + "\nstackTrace: " + stackTraceAsString;
-	}
 }

@@ -35,28 +35,33 @@ import pl.jojczykp.bookstore.repositories.BooksRepository;
 import pl.jojczykp.bookstore.transfers.BookTO;
 
 import static com.google.protobuf.ByteString.copyFrom;
+import static java.lang.String.format;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isEmptyOrNullString;
+import static org.hamcrest.Matchers.not;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.reset;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
+import static pl.jojczykp.bookstore.testutils.matchers.HasBeanProperty.hasBeanProperty;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration("classpath:spring/controllers-test-context.xml")
 public class DownloadBookControllerComponentTest {
 
-	private static final int ID = 7;
-	private static final int OTHER_ID = 13;
+	private static final int EXISTING_ID = 7;
+	private static final int NOT_EXISTING_ID = 13;
 	private static final String TITLE = "Some Book Title";
 	private static final String CONTENT_TYPE = "content/type";
 	private static final ByteString CONTENT = copyFrom(new byte[] {9, 8, 7, 6, 5, 4, 3, 2, 1});
-	private static final ByteString EMPTY_CONTENT = ByteString.EMPTY;
 
 	private MockMvc mvcMock;
 	private ResultActions mvcMockPerformResult;
@@ -78,10 +83,10 @@ public class DownloadBookControllerComponentTest {
 
 	@Test
 	public void shouldDownloadBook() throws Exception {
-		givenBookReadFromRepositoryWith(ID, TITLE, CONTENT_TYPE, CONTENT);
+		DownloadBookCommand command = downloadBookCommandWith(EXISTING_ID);
+		givenBookReadFromRepositoryWith(EXISTING_ID, TITLE, CONTENT_TYPE, CONTENT);
 
-		mvcMockPerformResult = mvcMock.perform(get("/books/download")
-				.flashAttr("downloadBookCommand", downloadBookCommandWith(ID)));
+		whenControllerDownloadPerformedWithCommand(command);
 
 		thenExpectStatusIsOk();
 		thenExpectHeadersFor(TITLE, CONTENT_TYPE, CONTENT);
@@ -90,13 +95,21 @@ public class DownloadBookControllerComponentTest {
 
 	@Test
 	public void shouldFailDownloadingNotExistingBook() throws Exception {
-		givenBookReadFromRepositoryWith(ID, TITLE, CONTENT_TYPE, CONTENT);
+		DownloadBookCommand command = downloadBookCommandWith(NOT_EXISTING_ID);
+		givenBookReadFromRepositoryWith(EXISTING_ID, TITLE, CONTENT_TYPE, CONTENT);
 
-		mvcMockPerformResult = mvcMock.perform(get("/books/download")
-				.flashAttr("downloadBookCommand", downloadBookCommandWith(OTHER_ID)));
+		whenControllerDownloadPerformedWithCommand(command);
 
 		thenExpectStatusIsNotFound();
-		thenExpectContent(EMPTY_CONTENT);
+		thenExpectViewName("exception");
+		thenExpectCorrectExceptionCommandFor(NOT_EXISTING_ID);
+	}
+
+	private DownloadBookCommand downloadBookCommandWith(int id) {
+		DownloadBookCommand command = new DownloadBookCommand();
+		command.setId(id);
+
+		return command;
 	}
 
 	private void givenBookReadFromRepositoryWith(int id, String title, String contentType, ByteString content) {
@@ -106,11 +119,9 @@ public class DownloadBookControllerComponentTest {
 		given(bookTO.getContent()).willReturn(content);
 	}
 
-	private DownloadBookCommand downloadBookCommandWith(int id) {
-		DownloadBookCommand command = new DownloadBookCommand();
-		command.setId(id);
-
-		return command;
+	private void whenControllerDownloadPerformedWithCommand(DownloadBookCommand command) throws Exception {
+		mvcMockPerformResult = mvcMock.perform(get("/books/download")
+				.flashAttr("downloadBookCommand", command));
 	}
 
 	private void thenExpectStatusIsOk() throws Exception {
@@ -130,6 +141,21 @@ public class DownloadBookControllerComponentTest {
 
 	private void thenExpectContent(ByteString content) throws Exception {
 		mvcMockPerformResult.andExpect(content().bytes(content.toByteArray()));
+	}
+
+	private void thenExpectViewName(String viewName) throws Exception {
+		mvcMockPerformResult
+				.andExpect(view().name(viewName));
+	}
+
+	private void thenExpectCorrectExceptionCommandFor(int id) throws Exception {
+		mvcMockPerformResult
+				.andExpect(model().attribute("exceptionCommand",
+						hasBeanProperty("stackTraceAsString", not(isEmptyOrNullString()))))
+				.andExpect(model().attribute("exceptionCommand",
+						hasBeanProperty("message",
+								is(equalTo(format("Content of book with id '%d' not found.", id))))
+				));
 	}
 
 }

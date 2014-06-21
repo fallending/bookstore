@@ -15,30 +15,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
  */
 
-package pl.jojczykp.bookstore.commands.errors;
+package pl.jojczykp.bookstore.controllers.errors;
 
-public class ExceptionCommand {
+import org.junit.Test;
 
-	private String message;
-	private String stackTraceAsString;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 
-	public String getMessage() {
-		return message;
+public class ResourceNotFoundExceptionTest {
+
+	@Test
+	public void shouldHaveConstructorWithMessage() {
+		final String message = "some message";
+
+		ResourceNotFoundException exception = new ResourceNotFoundException(message);
+
+		assertThat(exception.getMessage(), is(equalTo(message)));
 	}
 
-	public void setMessage(String message) {
-		this.message = message;
-	}
-
-	public String getStackTraceAsString() {
-		return stackTraceAsString;
-	}
-
-	public void setStackTraceAsString(String stackTraceAsString) {
-		this.stackTraceAsString = stackTraceAsString;
-	}
-
-	public String toString() {
-		return "message: " + message + "\nstackTrace: " + stackTraceAsString;
-	}
 }
