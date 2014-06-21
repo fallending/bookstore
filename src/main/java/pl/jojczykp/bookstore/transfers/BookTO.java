@@ -23,18 +23,25 @@ public class BookTO {
 
 	private String title;
 
+	private String fileType;
+
 	private String contentType;
 
 	private ByteString content;
 
-	public BookTO(String title, String contentType, ByteString content) {
+	public BookTO(String title, String fileType, String contentType, ByteString content) {
 		this.title = title;
+		this.fileType = fileType;
 		this.contentType = contentType;
 		this.content = content;
 	}
 
 	public String getTitle() {
 		return title;
+	}
+
+	public String getFileType() {
+		return fileType;
 	}
 
 	public String getContentType() {

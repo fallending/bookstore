@@ -238,6 +238,7 @@ public class BooksRepositoryIntegrationTest {
 		BookTO foundBook = testee.find(bookB.getId());
 
 		assertThat(foundBook.getTitle(), is(equalTo(bookB.getTitle())));
+		assertThat(foundBook.getFileType(), is(equalTo(bookB.getBookFile().getFileType())));
 		assertThat(foundBook.getContentType(), is(equalTo(bookB.getBookFile().getContentType())));
 		assertThat(foundBook.getContent(), is(equalTo(blobBytes(bookB.getBookFile().getContent()))));
 	}
@@ -291,6 +292,7 @@ public class BooksRepositoryIntegrationTest {
 			BookFile given = givens.get(i);
 			BookFile expected = expecteds[i];
 			assertThat(given.getId(), is(equalTo(expected.getId())));
+			assertThat(given.getFileType(), is(equalTo(expected.getFileType())));
 			assertThat(given.getContentType(), is(equalTo(expected.getContentType())));
 			assertThat(blobBytes(given.getContent()), is(equalTo(blobBytes(expected.getContent()))));
 		}

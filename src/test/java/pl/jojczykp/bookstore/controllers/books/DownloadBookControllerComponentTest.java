@@ -62,6 +62,7 @@ public class DownloadBookControllerComponentTest {
 	private static final String NOT_EXISTING_ID = "13";
 	private static final String NOT_PARSABLE_ID = "someString";
 	private static final String TITLE = "Some Book Title";
+	private static final String FILE_TYPE = "fileType";
 	private static final String CONTENT_TYPE = "content/type";
 	private static final ByteString CONTENT = copyFrom(new byte[] {9, 8, 7, 6, 5, 4, 3, 2, 1});
 
@@ -86,19 +87,19 @@ public class DownloadBookControllerComponentTest {
 	@Test
 	public void shouldDownloadBook() throws Exception {
 		DownloadBookCommand command = downloadBookCommandWith(EXISTING_ID);
-		givenBookReadFromRepositoryWith(EXISTING_ID, TITLE, CONTENT_TYPE, CONTENT);
+		givenBookReadFromRepositoryWith(EXISTING_ID, TITLE, FILE_TYPE, CONTENT_TYPE, CONTENT);
 
 		whenControllerDownloadPerformedWithCommand(command);
 
 		thenExpectStatusIsOk();
-		thenExpectHeadersFor(TITLE, CONTENT_TYPE, CONTENT);
+		thenExpectHeadersFor(TITLE, FILE_TYPE, CONTENT_TYPE, CONTENT);
 		thenExpectContent(CONTENT);
 	}
 
 	@Test
 	public void shouldFailDownloadingNotExistingBook() throws Exception {
 		DownloadBookCommand command = downloadBookCommandWith(NOT_EXISTING_ID);
-		givenBookReadFromRepositoryWith(EXISTING_ID, TITLE, CONTENT_TYPE, CONTENT);
+		givenBookReadFromRepositoryWith(EXISTING_ID, TITLE, FILE_TYPE, CONTENT_TYPE, CONTENT);
 
 		whenControllerDownloadPerformedWithCommand(command);
 
@@ -125,9 +126,11 @@ public class DownloadBookControllerComponentTest {
 		return command;
 	}
 
-	private void givenBookReadFromRepositoryWith(String id, String title, String contentType, ByteString content) {
+	private void givenBookReadFromRepositoryWith(String id, String title, String fileType,
+												String contentType, ByteString content) {
 		given(booksRepository.find(parseInt(id))).willReturn(bookTO);
 		given(bookTO.getTitle()).willReturn(title);
+		given(bookTO.getFileType()).willReturn(fileType);
 		given(bookTO.getContentType()).willReturn(contentType);
 		given(bookTO.getContent()).willReturn(content);
 	}
@@ -145,11 +148,13 @@ public class DownloadBookControllerComponentTest {
 		mvcMockPerformResult.andExpect(status().isNotFound());
 	}
 
-	private void thenExpectHeadersFor(String title, String contentType, ByteString content) throws Exception {
+	private void thenExpectHeadersFor(String title, String fileType,
+									String contentType, ByteString content) throws Exception {
 		mvcMockPerformResult
 			.andExpect(header().string("Content-Type", is(equalTo(contentType))))
 			.andExpect(header().string("Content-Length", is(equalTo(Integer.toString(content.size())))))
-			.andExpect(header().string("Content-Disposition", is(equalTo("attachment; filename=\"" + title + "\""))));
+			.andExpect(header().string("Content-Disposition",
+								is(equalTo(format("attachment; filename=\"%s.%s\"", title, fileType)))));
 	}
 
 	private void thenExpectContent(ByteString content) throws Exception {

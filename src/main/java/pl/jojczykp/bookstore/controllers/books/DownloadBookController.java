@@ -20,7 +20,6 @@ package pl.jojczykp.bookstore.controllers.books;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -33,6 +32,7 @@ import pl.jojczykp.bookstore.transfers.BookTO;
 
 import static java.lang.Integer.parseInt;
 import static java.lang.String.format;
+import static org.springframework.http.MediaType.parseMediaType;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static pl.jojczykp.bookstore.consts.BooksConsts.DOWNLOAD_BOOK_COMMAND;
 import static pl.jojczykp.bookstore.consts.BooksConsts.URL_ACTION_DOWNLOAD;
@@ -71,11 +71,15 @@ public class DownloadBookController {
 	private HttpHeaders responseHeadersFor(BookTO book) {
 		HttpHeaders responseHeaders = new HttpHeaders();
 
-		responseHeaders.setContentType(MediaType.parseMediaType(book.getContentType()));
+		responseHeaders.setContentType(parseMediaType(book.getContentType()));
 		responseHeaders.setContentLength(book.getContent().size());
-		responseHeaders.add("Content-Disposition", "attachment; filename=\"" + book.getTitle() + "\"");
+		responseHeaders.add("Content-Disposition", "attachment; filename=\"" + fileNameFor(book) + "\"");
 
 		return responseHeaders;
+	}
+
+	private String fileNameFor(BookTO book) {
+		return book.getTitle() + "." + book.getFileType();
 	}
 
 }

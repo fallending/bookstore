@@ -54,8 +54,8 @@ public class BooksRepository {
 
 	private BookTO toTransferObjectOrNull(Book book) {
 		if (book != null) {
-			return new BookTO(book.getTitle(), book.getBookFile().getContentType(),
-								blobBytes(book.getBookFile().getContent()));
+			return new BookTO(book.getTitle(), book.getBookFile().getFileType(),
+								book.getBookFile().getContentType(), blobBytes(book.getBookFile().getContent()));
 		} else {
 			return null;
 		}

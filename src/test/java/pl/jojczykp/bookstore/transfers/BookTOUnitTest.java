@@ -29,6 +29,7 @@ import static org.junit.Assert.assertThat;
 public class BookTOUnitTest {
 
 	private static final String TITLE = "Some Book Title";
+	private static final String FILE_TYPE = "fileType";
 	private static final String CONTENT_TYPE = "some/content-type";
 	private static final ByteString CONTENT = copyFrom(new byte[] {8, 7, 3, 2, 3, 4, 9});
 
@@ -36,12 +37,13 @@ public class BookTOUnitTest {
 
 	@Before
 	public void createTestee() {
-		testee = new BookTO(TITLE, CONTENT_TYPE, CONTENT);
+		testee = new BookTO(TITLE, FILE_TYPE, CONTENT_TYPE, CONTENT);
 	}
 
 	@Test
 	public void shouldBeSetUpByConstructor() {
 		assertThat(testee.getTitle(), is(sameInstance(TITLE)));
+		assertThat(testee.getFileType(), is(sameInstance(FILE_TYPE)));
 		assertThat(testee.getContentType(), is(sameInstance(CONTENT_TYPE)));
 		assertThat(testee.getContent(), is(sameInstance(CONTENT)));
 	}
@@ -51,6 +53,13 @@ public class BookTOUnitTest {
 		String title = testee.getTitle();
 
 		assertThat(title, is(sameInstance(TITLE)));
+	}
+
+	@Test
+	public void shouldGetFileType() {
+		String fileType = testee.getFileType();
+
+		assertThat(fileType, is(sameInstance(FILE_TYPE)));
 	}
 
 	@Test
