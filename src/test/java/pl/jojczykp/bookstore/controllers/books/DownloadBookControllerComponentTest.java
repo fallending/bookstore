@@ -35,6 +35,7 @@ import pl.jojczykp.bookstore.repositories.BooksRepository;
 import pl.jojczykp.bookstore.transfers.BookTO;
 
 import static com.google.protobuf.ByteString.copyFrom;
+import static java.lang.Integer.parseInt;
 import static java.lang.String.format;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -57,8 +58,9 @@ import static pl.jojczykp.bookstore.testutils.matchers.HasBeanProperty.hasBeanPr
 @ContextConfiguration("classpath:spring/controllers-test-context.xml")
 public class DownloadBookControllerComponentTest {
 
-	private static final int EXISTING_ID = 7;
-	private static final int NOT_EXISTING_ID = 13;
+	private static final String EXISTING_ID = "7";
+	private static final String NOT_EXISTING_ID = "13";
+	private static final String NOT_PARSABLE_ID = "someString";
 	private static final String TITLE = "Some Book Title";
 	private static final String CONTENT_TYPE = "content/type";
 	private static final ByteString CONTENT = copyFrom(new byte[] {9, 8, 7, 6, 5, 4, 3, 2, 1});
@@ -105,15 +107,26 @@ public class DownloadBookControllerComponentTest {
 		thenExpectCorrectExceptionCommandFor(NOT_EXISTING_ID);
 	}
 
-	private DownloadBookCommand downloadBookCommandWith(int id) {
+	@Test
+	public void shouldFailDownloadingBookForNotParsableId() throws Exception {
+		DownloadBookCommand command = downloadBookCommandWith(NOT_PARSABLE_ID);
+
+		whenControllerDownloadPerformedWithCommand(command);
+
+		thenExpectStatusIsNotFound();
+		thenExpectViewName("exception");
+		thenExpectCorrectExceptionCommandFor(NOT_PARSABLE_ID);
+	}
+
+	private DownloadBookCommand downloadBookCommandWith(String id) {
 		DownloadBookCommand command = new DownloadBookCommand();
 		command.setId(id);
 
 		return command;
 	}
 
-	private void givenBookReadFromRepositoryWith(int id, String title, String contentType, ByteString content) {
-		given(booksRepository.find(id)).willReturn(bookTO);
+	private void givenBookReadFromRepositoryWith(String id, String title, String contentType, ByteString content) {
+		given(booksRepository.find(parseInt(id))).willReturn(bookTO);
 		given(bookTO.getTitle()).willReturn(title);
 		given(bookTO.getContentType()).willReturn(contentType);
 		given(bookTO.getContent()).willReturn(content);
@@ -148,13 +161,13 @@ public class DownloadBookControllerComponentTest {
 				.andExpect(view().name(viewName));
 	}
 
-	private void thenExpectCorrectExceptionCommandFor(int id) throws Exception {
+	private void thenExpectCorrectExceptionCommandFor(String id) throws Exception {
 		mvcMockPerformResult
 				.andExpect(model().attribute("exceptionCommand",
 						hasBeanProperty("stackTraceAsString", not(isEmptyOrNullString()))))
 				.andExpect(model().attribute("exceptionCommand",
 						hasBeanProperty("message",
-								is(equalTo(format("Content of book with id '%d' not found.", id))))
+								is(equalTo(format("Content of book with id '%s' not found.", id))))
 				));
 	}
 

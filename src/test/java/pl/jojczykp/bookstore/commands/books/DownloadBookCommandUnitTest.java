@@ -35,7 +35,7 @@ public class DownloadBookCommandUnitTest {
 
 	@Test
 	public void shouldSetId() {
-		final int id = 2;
+		final String id = "2";
 
 		testee.setId(id);
 

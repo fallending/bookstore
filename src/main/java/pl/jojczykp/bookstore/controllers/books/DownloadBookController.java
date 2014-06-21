@@ -31,6 +31,7 @@ import pl.jojczykp.bookstore.controllers.errors.ResourceNotFoundException;
 import pl.jojczykp.bookstore.repositories.BooksRepository;
 import pl.jojczykp.bookstore.transfers.BookTO;
 
+import static java.lang.Integer.parseInt;
 import static java.lang.String.format;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static pl.jojczykp.bookstore.consts.BooksConsts.DOWNLOAD_BOOK_COMMAND;
@@ -46,14 +47,25 @@ public class DownloadBookController {
 	public ResponseEntity<byte[]> downloadBook(
 			@ModelAttribute(DOWNLOAD_BOOK_COMMAND) DownloadBookCommand downloadBookCommand)
 	{
-		BookTO book = booksRepository.find(downloadBookCommand.getId());
+		try {
+			BookTO book = booksRepository.find(parseInt(downloadBookCommand.getId()));
+			return tryReturnBookForParsableId(downloadBookCommand.getId(), book);
+		} catch (NumberFormatException e) {
+			throw new ResourceNotFoundException(exceptionMessageFor(downloadBookCommand.getId()), e);
+		}
 
+	}
+
+	private ResponseEntity<byte[]> tryReturnBookForParsableId(String id, BookTO book) {
 		if (book != null) {
 			return new ResponseEntity<>(book.getContent().toByteArray(), responseHeadersFor(book), HttpStatus.OK);
 		} else {
-			throw new ResourceNotFoundException(format("Content of book with id '%d' not found.",
-																			downloadBookCommand.getId()));
+			throw new ResourceNotFoundException(exceptionMessageFor(id));
 		}
+	}
+
+	private String exceptionMessageFor(String id) {
+		return format("Content of book with id '%s' not found.", id);
 	}
 
 	private HttpHeaders responseHeadersFor(BookTO book) {
