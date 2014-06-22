@@ -17,7 +17,6 @@
 
 package pl.jojczykp.bookstore.utils;
 
-import com.google.protobuf.ByteString;
 import org.hsqldb.jdbc.JDBCBlob;
 import org.junit.Test;
 
@@ -64,9 +63,9 @@ public class BlobUtilsTest {
 	public void shouldGetBlobBytes() throws SQLException {
 		Blob blob = new SerialBlob(DATA);
 
-		ByteString bytes = BlobUtils.blobBytes(blob);
+		byte[] bytes = BlobUtils.blobBytes(blob);
 
-		assertThat(bytes, is(equalTo(ByteString.copyFrom(DATA))));
+		assertThat(bytes, is(equalTo(DATA)));
 	}
 
 	@Test

@@ -18,13 +18,13 @@
 package pl.jojczykp.bookstore.utils;
 
 
-import com.google.protobuf.ByteString;
-
 import javax.sql.rowset.serial.SerialBlob;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.SQLException;
+
+import static org.apache.commons.io.IOUtils.toByteArray;
 
 public final class BlobUtils {
 
@@ -58,9 +58,9 @@ public final class BlobUtils {
 		}
 	}
 
-	public static ByteString blobBytes(Blob blob) {
+	public static byte[] blobBytes(Blob blob) {
 		try {
-			return ByteString.readFrom(blob.getBinaryStream());
+			return toByteArray(blob.getBinaryStream());
 		} catch (IOException | SQLException e) {
 			throw new RuntimeException(e);
 		}

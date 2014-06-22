@@ -17,7 +17,6 @@
 
 package pl.jojczykp.bookstore.testutils.builders;
 
-import com.google.protobuf.ByteString;
 import pl.jojczykp.bookstore.entities.BookFile;
 
 import java.sql.Blob;
@@ -31,8 +30,8 @@ public abstract class BookFileBuilder {
 		return aBookFile(id, "txt", "text/plain; charset=utf-8", aSerialBlobWith(content.getBytes(UTF_8)));
 	}
 
-	public static BookFile aBookFile(int id, String fileType, String contentType, ByteString content) {
-		return aBookFile(id, fileType, contentType, aSerialBlobWith(content.toByteArray()));
+	public static BookFile aBookFile(int id, String fileType, String contentType, byte[] content) {
+		return aBookFile(id, fileType, contentType, aSerialBlobWith(content));
 	}
 
 	public static BookFile aBookFile(int id, String fileType, String contentType, Blob content) {

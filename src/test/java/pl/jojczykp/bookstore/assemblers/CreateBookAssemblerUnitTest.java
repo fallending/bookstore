@@ -17,7 +17,6 @@
 
 package pl.jojczykp.bookstore.assemblers;
 
-import com.google.protobuf.ByteString;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.mock.web.MockMultipartFile;
@@ -26,7 +25,6 @@ import pl.jojczykp.bookstore.entities.Book;
 
 import java.io.IOException;
 
-import static com.google.protobuf.ByteString.copyFrom;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
@@ -40,7 +38,7 @@ public class CreateBookAssemblerUnitTest {
 	private static final String TITLE = "A Title";
 	private static final String FILE_TYPE = "fileType";
 	private static final String CONTENT_TYPE = "application/octet-stream";
-	private static final ByteString CONTENT = copyFrom(new byte[] {1, 2, 3});
+	private static final byte[] CONTENT = {1, 2, 3};
 
 	private CreateBookAssembler testee;
 
@@ -85,8 +83,8 @@ public class CreateBookAssemblerUnitTest {
 		return command;
 	}
 
-	private MockMultipartFile aMultiPartFile(String fileType, String contentType, ByteString content) {
-		return new MockMultipartFile("name", "baseName." + fileType, contentType, content.toByteArray());
+	private MockMultipartFile aMultiPartFile(String fileType, String contentType, byte[] content) {
+		return new MockMultipartFile("name", "baseName." + fileType, contentType, content);
 	}
 
 	private MockMultipartFile aFileThrowingExceptionWhenRead() {

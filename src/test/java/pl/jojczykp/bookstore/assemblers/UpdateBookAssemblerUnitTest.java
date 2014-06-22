@@ -22,11 +22,12 @@ import org.junit.Test;
 import pl.jojczykp.bookstore.commands.books.UpdateBookCommand;
 import pl.jojczykp.bookstore.entities.Book;
 
-import static com.google.protobuf.ByteString.copyFromUtf8;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 import static pl.jojczykp.bookstore.utils.BlobUtils.blobBytes;
+
+import static com.google.common.base.Charsets.UTF_8;
 
 public class UpdateBookAssemblerUnitTest {
 
@@ -64,7 +65,7 @@ public class UpdateBookAssemblerUnitTest {
 		assertThat(domain.getVersion(), equalTo(command.getVersion()));
 		assertThat(domain.getTitle(), equalTo(command.getTitle()));
 		assertThat(domain.getBookFile().getContentType(), is(equalTo("text/plain; charset=utf-8")));
-		assertThat(blobBytes(domain.getBookFile().getContent()), is(equalTo(copyFromUtf8("a Book Content"))));
+		assertThat(blobBytes(domain.getBookFile().getContent()), is(equalTo("a Book Content".getBytes(UTF_8))));
 	}
 
 }
