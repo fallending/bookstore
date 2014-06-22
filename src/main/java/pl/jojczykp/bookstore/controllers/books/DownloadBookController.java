@@ -72,6 +72,7 @@ public class DownloadBookController {
 
 	private void setResponseHeaders(HttpServletResponse response, Book book) {
 		response.setContentType(book.getBookFile().getContentType());
+		response.setContentLength(book.getBookFile().getContentLength());
 		response.setHeader("Content-Disposition", "attachment; filename=\"" + fileNameFor(book) + "\"");
 	}
 

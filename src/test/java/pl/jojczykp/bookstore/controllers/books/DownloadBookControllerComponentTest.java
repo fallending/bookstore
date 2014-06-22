@@ -93,7 +93,7 @@ public class DownloadBookControllerComponentTest {
 		whenControllerDownloadPerformedWithCommand(command);
 
 		thenExpectStatusIsOk();
-		thenExpectHeadersFor(TITLE, FILE_TYPE, CONTENT_TYPE);
+		thenExpectHeadersFor(TITLE, FILE_TYPE, CONTENT.length, CONTENT_TYPE);
 		thenExpectContent(CONTENT);
 	}
 
@@ -134,6 +134,7 @@ public class DownloadBookControllerComponentTest {
 		given(book.getBookFile()).willReturn(bookFile);
 		given(bookFile.getFileType()).willReturn(fileType);
 		given(bookFile.getContentType()).willReturn(contentType);
+		given(bookFile.getContentLength()).willReturn(content.length);
 		given(bookFile.getContent()).willReturn(aSerialBlobWith(content));
 	}
 
@@ -151,9 +152,10 @@ public class DownloadBookControllerComponentTest {
 	}
 
 	private void thenExpectHeadersFor(String title, String fileType,
-									String contentType) throws Exception {
+									int contentLength, String contentType) throws Exception {
 		mvcMockPerformResult
 			.andExpect(header().string("Content-Type", is(equalTo(contentType))))
+			.andExpect(header().string("Content-Length", is(equalTo(Integer.toString(contentLength)))))
 			.andExpect(header().string("Content-Disposition",
 					is(equalTo(format("attachment; filename=\"%s.%s\"", title, fileType)))));
 	}

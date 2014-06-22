@@ -44,19 +44,19 @@ public class BookFile {
 	@Column(name = "CONTENT_TYPE", nullable = false)
 	private String contentType;
 
+	@Column(name = "CONTENT_LENGTH", nullable = false)
+	private int contentLength;
+
 	@Lob
 	@Column(name = "CONTENT", nullable = false)
 	private Blob content;
 
 	public BookFile() {
-		this("", "", anEmptySerialBlob());
-	}
-
-	public BookFile(String fileType, String contentType, Blob content) {
 		this.id = ID_TO_BE_GENERATED;
-		this.fileType = fileType;
-		this.contentType = contentType;
-		this.content = content;
+		this.fileType = "";
+		this.contentType = "";
+		this.contentLength = 0;
+		this.content = anEmptySerialBlob();
 	}
 
 	public int getId() {
@@ -81,6 +81,14 @@ public class BookFile {
 
 	public void setContentType(String contentType) {
 		this.contentType = contentType;
+	}
+
+	public int getContentLength() {
+		return contentLength;
+	}
+
+	public void setContentLength(int contentLength) {
+		this.contentLength = contentLength;
 	}
 
 	public Blob getContent() {
@@ -114,7 +122,8 @@ public class BookFile {
 	@Override
 	public String toString() {
 		return getClass().getSimpleName()
-				+ "{id=" + id + ", fileType='" + fileType + "', contentType='" + contentType + "'}";
+				+ "{id=" + id + ", fileType='" + fileType
+				+ "', contentType='" + contentType + "', contentLength='" + contentLength + "'}";
 	}
 
 }

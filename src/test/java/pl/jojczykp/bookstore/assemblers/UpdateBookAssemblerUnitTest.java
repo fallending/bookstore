@@ -32,7 +32,7 @@ import static com.google.common.base.Charsets.UTF_8;
 public class UpdateBookAssemblerUnitTest {
 
 	private static final int ID = 67;
-	private static final int VERSION = 76;
+	private static final int VERSION = 48;
 	private static final String TITLE = "A Title";
 
 	private UpdateBookAssembler testee;
@@ -44,14 +44,14 @@ public class UpdateBookAssemblerUnitTest {
 
 	@Test
 	public void shouldAssemblySingleBookDomainObjectFromUpdateBookCommandObject() {
-		UpdateBookCommand command = anUpdateBookCommand();
+		UpdateBookCommand command = anUpdateBookCommandWith();
 
 		Book domain = testee.toDomain(command);
 
 		assertThatHaveEqualData(domain, command);
 	}
 
-	private UpdateBookCommand anUpdateBookCommand() {
+	private UpdateBookCommand anUpdateBookCommandWith() {
 		UpdateBookCommand command = new UpdateBookCommand();
 		command.setId(ID);
 		command.setVersion(VERSION);

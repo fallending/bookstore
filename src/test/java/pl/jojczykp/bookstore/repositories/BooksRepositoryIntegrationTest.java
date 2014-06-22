@@ -40,8 +40,8 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.samePropertyValuesAs;
+import static pl.jojczykp.bookstore.entities.builders.BookFileBuilder.aBookFile;
 import static pl.jojczykp.bookstore.testutils.builders.BookBuilder.aBook;
-import static pl.jojczykp.bookstore.testutils.builders.BookFileBuilder.aBookFile;
 import static pl.jojczykp.bookstore.testutils.repositories.BooksRepositorySpy.ID_TO_GENERATE;
 import static pl.jojczykp.bookstore.utils.BlobUtils.blobBytes;
 import static pl.jojczykp.bookstore.utils.PageSorterColumn.BOOK_TITLE;
@@ -60,12 +60,12 @@ public class BooksRepositoryIntegrationTest {
 	private static final PageSorterColumn SAMPLE_SORT_COLUMN = BOOK_TITLE;
 	private static final PageSorterDirection SAMPLE_DIRECTION = ASC;
 
-	private Book bookA = aBook(ID_TO_GENERATE, 1, "Book Title A", aBookFile(ID_TO_GENERATE, "Book Title A"));
-	private Book bookB = aBook(ID_TO_GENERATE, 2, "Book Title B", aBookFile(ID_TO_GENERATE, "Book Title B"));
-	private Book bookC = aBook(ID_TO_GENERATE, 1, "Book Title C", aBookFile(ID_TO_GENERATE, "Book Title C"));
-	private Book bookD = aBook(ID_TO_GENERATE, 2, "Book Title D", aBookFile(ID_TO_GENERATE, "Book Title D"));
-	private Book bookE = aBook(ID_TO_GENERATE, 1, "Book Title E", aBookFile(ID_TO_GENERATE, "Book Title E"));
-	private Book bookLowCaseC = aBook(ID_TO_GENERATE, 2, "Book Title c", aBookFile(ID_TO_GENERATE, "Book Title c"));
+	private Book bookA = aBook(ID_TO_GENERATE, 1, "Book Title A", aBookFile().build());
+	private Book bookB = aBook(ID_TO_GENERATE, 2, "Book Title B", aBookFile().build());
+	private Book bookC = aBook(ID_TO_GENERATE, 1, "Book Title C", aBookFile().build());
+	private Book bookD = aBook(ID_TO_GENERATE, 2, "Book Title D", aBookFile().build());
+	private Book bookE = aBook(ID_TO_GENERATE, 1, "Book Title E", aBookFile().build());
+	private Book bookLowCaseC = aBook(ID_TO_GENERATE, 2, "Book Title c", aBookFile().build());
 
 	@Autowired private BooksRepositorySpy booksRepositorySpy;
 	@Autowired private BooksRepository testee;
@@ -194,7 +194,7 @@ public class BooksRepositoryIntegrationTest {
 
 	@Test
 	public void shouldUpdateBookTitle() {
-		Book oldBook = aBook(ID_TO_GENERATE, OLD_VERSION, OLD_TITLE, aBookFile(ID_TO_GENERATE, OLD_TITLE));
+		Book oldBook = aBook(ID_TO_GENERATE, OLD_VERSION, OLD_TITLE, aBookFile().build());
 		givenRepositoryWith(oldBook);
 		Book updatingBook = aBook(oldBook.getId(), OLD_VERSION, NEW_TITLE, oldBook.getBookFile());
 		Book updatedBook = aBook(oldBook.getId(), OLD_VERSION + 1, NEW_TITLE, oldBook.getBookFile());
@@ -206,7 +206,7 @@ public class BooksRepositoryIntegrationTest {
 
 	@Test(expected = StaleObjectStateException.class)
 	public void shouldFailUpdatingBookWhenModifiedByOtherSession() {
-		Book oldBook = aBook(ID_TO_GENERATE, OLD_VERSION, OLD_TITLE, aBookFile(ID_TO_GENERATE, OLD_TITLE));
+		Book oldBook = aBook(ID_TO_GENERATE, OLD_VERSION, OLD_TITLE, aBookFile().build());
 		givenRepositoryWith(oldBook);
 		Book updatingBook = aBook(oldBook.getId(), OLD_VERSION - 1, NEW_TITLE, oldBook.getBookFile());
 

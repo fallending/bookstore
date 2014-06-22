@@ -58,6 +58,7 @@ public class CreateBookAssemblerUnitTest {
 		assertThat(domain.getTitle(), is(equalTo(TITLE)));
 		assertThat(domain.getBookFile().getFileType(), is(equalTo(FILE_TYPE)));
 		assertThat(domain.getBookFile().getContentType(), is(equalTo(CONTENT_TYPE)));
+		assertThat(domain.getBookFile().getContentLength(), is(equalTo(CONTENT.length)));
 		assertThat(blobBytes(domain.getBookFile().getContent()), is(equalTo(CONTENT)));
 	}
 

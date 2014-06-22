@@ -17,13 +17,12 @@
 
 package pl.jojczykp.bookstore.assemblers;
 
+import com.google.common.base.Charsets;
 import org.springframework.stereotype.Service;
 import pl.jojczykp.bookstore.commands.books.UpdateBookCommand;
 import pl.jojczykp.bookstore.entities.Book;
-import pl.jojczykp.bookstore.entities.BookFile;
 
-import static com.google.common.base.Charsets.UTF_8;
-import static pl.jojczykp.bookstore.utils.BlobUtils.aSerialBlobWith;
+import static pl.jojczykp.bookstore.entities.builders.BookFileBuilder.aBookFile;
 
 @Service
 public class UpdateBookAssembler {
@@ -33,8 +32,11 @@ public class UpdateBookAssembler {
 		domain.setId(command.getId());
 		domain.setVersion(command.getVersion());
 		domain.setTitle(command.getTitle());
-		domain.setBookFile(new BookFile("txt", "text/plain; charset=utf-8",
-													aSerialBlobWith("a Book Content".getBytes(UTF_8))));
+		domain.setBookFile(aBookFile()
+								.withFileType("txt")
+								.withContentType("text/plain; charset=utf-8")
+								.withContent("a Book Content".getBytes(Charsets.UTF_8))
+								.build());
 
 		return domain;
 	}

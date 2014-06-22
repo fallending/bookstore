@@ -21,23 +21,23 @@ import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.sql.Blob;
-
 import static java.lang.String.format;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static pl.jojczykp.bookstore.testutils.builders.BookFileBuilder.aBookFile;
+import static pl.jojczykp.bookstore.entities.builders.BookFileBuilder.aBookFile;
 import static pl.jojczykp.bookstore.utils.BlobUtils.aSerialBlobWith;
 import static pl.jojczykp.bookstore.utils.BlobUtils.blobBytes;
 import static pl.jojczykp.bookstore.utils.BlobUtils.blobLength;
 
 public class BookFileUnitTest {
 
+	private static final int ID_TO_BE_GENERATED = 0;
+
 	private static final int ID = 3;
 	private static final String FILE_TYPE = "fileType";
 	private static final String CONTENT_TYPE = "content/type";
-	private static final Blob CONTENT = aSerialBlobWith(new byte[] {2, 4, 6, 8});
+	private static final byte[] CONTENT = {2, 4, 6, 8};
 
 	private BookFile testee = new BookFile();
 
@@ -48,20 +48,10 @@ public class BookFileUnitTest {
 
 	@Test
 	public void shouldHaveDefaultConstructorForHibernate() {
-		assertThat(testee.getId(), is(0));
+		assertThat(testee.getId(), is(ID_TO_BE_GENERATED));
 		assertThat(testee.getFileType(), is(equalTo("")));
 		assertThat(testee.getContentType(), is(equalTo("")));
 		assertThat(blobLength(testee.getContent()), is(0L));
-	}
-
-	@Test
-	public void shouldHaveConstructorWithContentTypeAndContent() {
-		BookFile initializedTestee = new BookFile(FILE_TYPE, CONTENT_TYPE, CONTENT);
-
-		assertThat(initializedTestee.getId(), is(0));
-		assertThat(initializedTestee.getFileType(), is(equalTo(FILE_TYPE)));
-		assertThat(initializedTestee.getContentType(), is(equalTo(CONTENT_TYPE)));
-		assertThat(blobBytes(initializedTestee.getContent()), is(equalTo(blobBytes(CONTENT))));
 	}
 
 	@Test
@@ -75,21 +65,28 @@ public class BookFileUnitTest {
 	public void shouldSetFileType() {
 		testee.setFileType(FILE_TYPE);
 
-		assertThat(testee.getFileType(), is(FILE_TYPE));
+		assertThat(testee.getFileType(), is(equalTo(FILE_TYPE)));
 	}
 
 	@Test
 	public void shouldSetContentType() {
 		testee.setContentType(CONTENT_TYPE);
 
-		assertThat(testee.getContentType(), is(CONTENT_TYPE));
+		assertThat(testee.getContentType(), is(equalTo(CONTENT_TYPE)));
+	}
+
+	@Test
+	public void shouldSetContentLength() {
+		testee.setContentLength(CONTENT.length);
+
+		assertThat(testee.getContentLength(), is(CONTENT.length));
 	}
 
 	@Test
 	public void shouldSetContent() {
-		testee.setContent(CONTENT);
+		testee.setContent(aSerialBlobWith(CONTENT));
 
-		assertThat(testee.getContent(), is(CONTENT));
+		assertThat(blobBytes(testee.getContent()), is(equalTo(CONTENT)));
 	}
 
 	@Test
@@ -101,12 +98,17 @@ public class BookFileUnitTest {
 
 	@Test
 	public void shouldHaveToStringWithDetails() {
-		BookFile testeeWithContent = aBookFile(ID, FILE_TYPE, CONTENT_TYPE, CONTENT);
+		BookFile testeeWithContent = aBookFile()
+										.withId(ID)
+										.withFileType(FILE_TYPE)
+										.withContentType(CONTENT_TYPE)
+										.withContent(CONTENT)
+										.build();
 
 		String toStringResult = testeeWithContent.toString();
 
-		assertThat(toStringResult, equalTo(format("%s{id=%d, fileType='%s', contentType='%s'}",
-						testeeWithContent.getClass().getSimpleName(), ID, FILE_TYPE, CONTENT_TYPE)));
+		assertThat(toStringResult, equalTo(format("%s{id=%d, fileType='%s', contentType='%s', contentLength='%d'}",
+						testeeWithContent.getClass().getSimpleName(), ID, FILE_TYPE, CONTENT_TYPE, CONTENT.length)));
 	}
 
 }

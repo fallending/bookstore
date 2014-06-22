@@ -20,13 +20,11 @@ package pl.jojczykp.bookstore.assemblers;
 import org.springframework.stereotype.Service;
 import pl.jojczykp.bookstore.commands.books.CreateBookCommand;
 import pl.jojczykp.bookstore.entities.Book;
-import pl.jojczykp.bookstore.entities.BookFile;
 
 import java.io.IOException;
-import java.sql.Blob;
 
 import static org.apache.commons.io.FilenameUtils.getExtension;
-import static pl.jojczykp.bookstore.utils.BlobUtils.aSerialBlobWith;
+import static pl.jojczykp.bookstore.entities.builders.BookFileBuilder.aBookFile;
 
 @Service
 public class CreateBookAssembler {
@@ -39,7 +37,11 @@ public class CreateBookAssembler {
 		domain.setId(ID_TO_BE_SET_AUTOMATICALLY);
 		domain.setVersion(VERSION_TO_BE_SET_AUTOMATICALLY);
 		domain.setTitle(command.getTitle());
-		domain.setBookFile(new BookFile(fileExtensionIn(command), fileContentTypeIn(command), fileContentIn(command)));
+		domain.setBookFile(aBookFile()
+				.withFileType(fileExtensionIn(command))
+				.withContentType(fileContentTypeIn(command))
+				.withContent(fileContentIn(command))
+				.build());
 
 		return domain;
 	}
@@ -52,9 +54,9 @@ public class CreateBookAssembler {
 		return command.getFile().getContentType();
 	}
 
-	private Blob fileContentIn(CreateBookCommand command) {
+	private byte[] fileContentIn(CreateBookCommand command) {
 		try {
-			return aSerialBlobWith(command.getFile().getBytes());
+			return command.getFile().getBytes();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
