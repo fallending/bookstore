@@ -17,7 +17,6 @@
 
 package pl.jojczykp.bookstore.controllers.books;
 
-import com.google.protobuf.ByteString;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,10 +30,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.context.WebApplicationContext;
 import pl.jojczykp.bookstore.commands.books.DownloadBookCommand;
+import pl.jojczykp.bookstore.entities.Book;
+import pl.jojczykp.bookstore.entities.BookFile;
 import pl.jojczykp.bookstore.repositories.BooksRepository;
-import pl.jojczykp.bookstore.transfers.BookTO;
 
-import static com.google.protobuf.ByteString.copyFrom;
 import static java.lang.Integer.parseInt;
 import static java.lang.String.format;
 import static org.hamcrest.Matchers.equalTo;
@@ -52,6 +51,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 import static pl.jojczykp.bookstore.testutils.matchers.HasBeanProperty.hasBeanProperty;
+import static pl.jojczykp.bookstore.utils.BlobUtils.aSerialBlobWith;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -64,7 +64,7 @@ public class DownloadBookControllerComponentTest {
 	private static final String TITLE = "Some Book Title";
 	private static final String FILE_TYPE = "fileType";
 	private static final String CONTENT_TYPE = "content/type";
-	private static final ByteString CONTENT = copyFrom(new byte[] {9, 8, 7, 6, 5, 4, 3, 2, 1});
+	private static final byte[] CONTENT = {1, 2, 3, 4, 5};
 
 	private MockMvc mvcMock;
 	private ResultActions mvcMockPerformResult;
@@ -72,7 +72,8 @@ public class DownloadBookControllerComponentTest {
 
 	@Autowired private BooksRepository booksRepository;
 
-	@Mock private BookTO bookTO;
+	@Mock private Book book;
+	@Mock private BookFile bookFile;
 
 	@Before
 	public void setUp() {
@@ -92,7 +93,7 @@ public class DownloadBookControllerComponentTest {
 		whenControllerDownloadPerformedWithCommand(command);
 
 		thenExpectStatusIsOk();
-		thenExpectHeadersFor(TITLE, FILE_TYPE, CONTENT_TYPE, CONTENT);
+		thenExpectHeadersFor(TITLE, FILE_TYPE, CONTENT_TYPE);
 		thenExpectContent(CONTENT);
 	}
 
@@ -127,12 +128,13 @@ public class DownloadBookControllerComponentTest {
 	}
 
 	private void givenBookReadFromRepositoryWith(String id, String title, String fileType,
-												String contentType, ByteString content) {
-		given(booksRepository.find(parseInt(id))).willReturn(bookTO);
-		given(bookTO.getTitle()).willReturn(title);
-		given(bookTO.getFileType()).willReturn(fileType);
-		given(bookTO.getContentType()).willReturn(contentType);
-		given(bookTO.getContent()).willReturn(content);
+												String contentType, byte[] content) {
+		given(booksRepository.find(parseInt(id))).willReturn(book);
+		given(book.getTitle()).willReturn(title);
+		given(book.getBookFile()).willReturn(bookFile);
+		given(bookFile.getFileType()).willReturn(fileType);
+		given(bookFile.getContentType()).willReturn(contentType);
+		given(bookFile.getContent()).willReturn(aSerialBlobWith(content));
 	}
 
 	private void whenControllerDownloadPerformedWithCommand(DownloadBookCommand command) throws Exception {
@@ -149,16 +151,15 @@ public class DownloadBookControllerComponentTest {
 	}
 
 	private void thenExpectHeadersFor(String title, String fileType,
-									String contentType, ByteString content) throws Exception {
+									String contentType) throws Exception {
 		mvcMockPerformResult
 			.andExpect(header().string("Content-Type", is(equalTo(contentType))))
-			.andExpect(header().string("Content-Length", is(equalTo(Integer.toString(content.size())))))
 			.andExpect(header().string("Content-Disposition",
-								is(equalTo(format("attachment; filename=\"%s.%s\"", title, fileType)))));
+					is(equalTo(format("attachment; filename=\"%s.%s\"", title, fileType)))));
 	}
 
-	private void thenExpectContent(ByteString content) throws Exception {
-		mvcMockPerformResult.andExpect(content().bytes(content.toByteArray()));
+	private void thenExpectContent(byte[] content) throws Exception {
+		mvcMockPerformResult.andExpect(content().bytes(content));
 	}
 
 	private void thenExpectViewName(String viewName) throws Exception {
@@ -172,8 +173,7 @@ public class DownloadBookControllerComponentTest {
 						hasBeanProperty("stackTraceAsString", not(isEmptyOrNullString()))))
 				.andExpect(model().attribute("exceptionCommand",
 						hasBeanProperty("message",
-								is(equalTo(format("Content of book with id '%s' not found.", id))))
-				));
+								is(equalTo(format("Content of book with id '%s' not found.", id))))));
 	}
 
 }

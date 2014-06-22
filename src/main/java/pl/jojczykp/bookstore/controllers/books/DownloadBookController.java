@@ -18,24 +18,26 @@
 package pl.jojczykp.bookstore.controllers.books;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import pl.jojczykp.bookstore.commands.books.DownloadBookCommand;
 import pl.jojczykp.bookstore.controllers.errors.ResourceNotFoundException;
+import pl.jojczykp.bookstore.entities.Book;
 import pl.jojczykp.bookstore.repositories.BooksRepository;
-import pl.jojczykp.bookstore.transfers.BookTO;
+
+import javax.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
 
 import static java.lang.Integer.parseInt;
 import static java.lang.String.format;
-import static org.springframework.http.MediaType.parseMediaType;
+import static org.apache.commons.io.IOUtils.copy;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static pl.jojczykp.bookstore.consts.BooksConsts.DOWNLOAD_BOOK_COMMAND;
 import static pl.jojczykp.bookstore.consts.BooksConsts.URL_ACTION_DOWNLOAD;
+import static pl.jojczykp.bookstore.utils.BlobUtils.blobInputStream;
 
 @Controller
 public class DownloadBookController {
@@ -43,43 +45,46 @@ public class DownloadBookController {
 	@Autowired private BooksRepository booksRepository;
 
 	@RequestMapping(value = URL_ACTION_DOWNLOAD, method = GET)
-	@ResponseBody
-	public ResponseEntity<byte[]> downloadBook(
-			@ModelAttribute(DOWNLOAD_BOOK_COMMAND) DownloadBookCommand downloadBookCommand)
-	{
+	@Transactional
+	public void downloadBook(
+			@ModelAttribute(DOWNLOAD_BOOK_COMMAND) DownloadBookCommand downloadBookCommand,
+			HttpServletResponse response) throws IOException {
 		try {
-			BookTO book = booksRepository.find(parseInt(downloadBookCommand.getId()));
-			return tryReturnBookForParsableId(downloadBookCommand.getId(), book);
+			Book book = booksRepository.find(parseInt(downloadBookCommand.getId()));
+			verifyBookFound(downloadBookCommand.getId(), book);
+			setResponse(response, book);
 		} catch (NumberFormatException e) {
 			throw new ResourceNotFoundException(exceptionMessageFor(downloadBookCommand.getId()), e);
 		}
 
 	}
 
-	private ResponseEntity<byte[]> tryReturnBookForParsableId(String id, BookTO book) {
-		if (book != null) {
-			return new ResponseEntity<>(book.getContent().toByteArray(), responseHeadersFor(book), HttpStatus.OK);
-		} else {
+	private void verifyBookFound(String id, Book book) {
+		if (book == null) {
 			throw new ResourceNotFoundException(exceptionMessageFor(id));
 		}
 	}
 
+	private void setResponse(HttpServletResponse response, Book book) throws IOException {
+		setResponseHeaders(response, book);
+		setResponseBody(response, book);
+	}
+
+	private void setResponseHeaders(HttpServletResponse response, Book book) {
+		response.setContentType(book.getBookFile().getContentType());
+		response.setHeader("Content-Disposition", "attachment; filename=\"" + fileNameFor(book) + "\"");
+	}
+
+	private String fileNameFor(Book book) {
+		return book.getTitle() + "." + book.getBookFile().getFileType();
+	}
+
+	private void setResponseBody(HttpServletResponse response, Book book) throws IOException {
+		copy(blobInputStream(book.getBookFile().getContent()), response.getOutputStream());
+	}
+
 	private String exceptionMessageFor(String id) {
 		return format("Content of book with id '%s' not found.", id);
-	}
-
-	private HttpHeaders responseHeadersFor(BookTO book) {
-		HttpHeaders responseHeaders = new HttpHeaders();
-
-		responseHeaders.setContentType(parseMediaType(book.getContentType()));
-		responseHeaders.setContentLength(book.getContent().size());
-		responseHeaders.add("Content-Disposition", "attachment; filename=\"" + fileNameFor(book) + "\"");
-
-		return responseHeaders;
-	}
-
-	private String fileNameFor(BookTO book) {
-		return book.getTitle() + "." + book.getFileType();
 	}
 
 }

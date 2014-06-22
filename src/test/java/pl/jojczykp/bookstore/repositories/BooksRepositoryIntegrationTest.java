@@ -29,7 +29,6 @@ import org.springframework.util.ReflectionUtils;
 import pl.jojczykp.bookstore.entities.Book;
 import pl.jojczykp.bookstore.entities.BookFile;
 import pl.jojczykp.bookstore.testutils.repositories.BooksRepositorySpy;
-import pl.jojczykp.bookstore.transfers.BookTO;
 import pl.jojczykp.bookstore.utils.PageSorterColumn;
 import pl.jojczykp.bookstore.utils.PageSorterDirection;
 
@@ -235,12 +234,10 @@ public class BooksRepositoryIntegrationTest {
 	public void shouldFindBookById() {
 		givenRepositoryWith(bookB, bookC);
 
-		BookTO foundBook = testee.find(bookB.getId());
+		Book foundBook = testee.find(bookB.getId());
 
-		assertThat(foundBook.getTitle(), is(equalTo(bookB.getTitle())));
-		assertThat(foundBook.getFileType(), is(equalTo(bookB.getBookFile().getFileType())));
-		assertThat(foundBook.getContentType(), is(equalTo(bookB.getBookFile().getContentType())));
-		assertThat(foundBook.getContent(), is(equalTo(blobBytes(bookB.getBookFile().getContent()))));
+		assertThat(foundBook, samePropertyValuesAs(bookB));
+		assertEquals(foundBook.getBookFile(), bookB.getBookFile());
 	}
 
 	@Test
@@ -248,7 +245,7 @@ public class BooksRepositoryIntegrationTest {
 		givenRepositoryWith(bookB, bookC);
 		int notExistingId = bookB.getId() + bookC.getId();
 
-		BookTO foundBook = testee.find(notExistingId);
+		Book foundBook = testee.find(notExistingId);
 
 		assertThat(foundBook, is(nullValue()));
 	}
@@ -291,11 +288,15 @@ public class BooksRepositoryIntegrationTest {
 		for (int i = 0; i < givens.size(); i++) {
 			BookFile given = givens.get(i);
 			BookFile expected = expecteds[i];
-			assertThat(given.getId(), is(equalTo(expected.getId())));
-			assertThat(given.getFileType(), is(equalTo(expected.getFileType())));
-			assertThat(given.getContentType(), is(equalTo(expected.getContentType())));
-			assertThat(blobBytes(given.getContent()), is(equalTo(blobBytes(expected.getContent()))));
+			assertEquals(given, expected);
 		}
+	}
+
+	private void assertEquals(BookFile given, BookFile expected) {
+		assertThat(given.getId(), is(equalTo(expected.getId())));
+		assertThat(given.getFileType(), is(equalTo(expected.getFileType())));
+		assertThat(given.getContentType(), is(equalTo(expected.getContentType())));
+		assertThat(blobBytes(given.getContent()), is(equalTo(blobBytes(expected.getContent()))));
 	}
 
 }

@@ -22,6 +22,7 @@ import com.google.protobuf.ByteString;
 
 import javax.sql.rowset.serial.SerialBlob;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.SQLException;
 
@@ -34,7 +35,7 @@ public final class BlobUtils {
 		return aSerialBlobWith(new byte[0]);
 	}
 
-	public static SerialBlob aSerialBlobWith(byte[] bytes) {
+	public static Blob aSerialBlobWith(byte[] bytes) {
 		try {
 			throwExceptionOnNull(bytes);
 			return new SerialBlob(bytes);
@@ -61,6 +62,14 @@ public final class BlobUtils {
 		try {
 			return ByteString.readFrom(blob.getBinaryStream());
 		} catch (IOException | SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public static InputStream blobInputStream(Blob blob) {
+		try {
+			return blob.getBinaryStream();
+		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
 	}
