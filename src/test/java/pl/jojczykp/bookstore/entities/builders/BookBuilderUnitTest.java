@@ -18,48 +18,49 @@
 package pl.jojczykp.bookstore.entities.builders;
 
 import org.junit.Test;
+import pl.jojczykp.bookstore.entities.Book;
 import pl.jojczykp.bookstore.entities.BookFile;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
+import static pl.jojczykp.bookstore.entities.builders.BookBuilder.aBook;
 import static pl.jojczykp.bookstore.entities.builders.BookFileBuilder.aBookFile;
-import static pl.jojczykp.bookstore.utils.BlobUtils.blobBytes;
 
-public class BookFileBuilderUnitTest {
+public class BookBuilderUnitTest {
 
-	private static final int ID = 7;
-	private static final String FILE_TYPE = "aFileType";
-	private static final String CONTENT_TYPE = "some-content/type";
-	private static final byte[] CONTENT = {7, 5, 3, 0, 1};
+	private static final int ID = 87;
+	private static final int VERSION = 57;
+	private static final String TITLE = "aFileType";
+	private static final BookFile BOOK_FILE = aBookFile().build();
 
 	@Test
 	public void shouldBuildWithId() {
-		BookFile bookFile = aBookFile().withId(ID).build();
+		Book book = aBook().withId(ID).build();
 
-		assertThat(bookFile.getId(), is(ID));
+		assertThat(book.getId(), is(ID));
 	}
 
 	@Test
-	public void shouldBuildWithFileType() {
-		BookFile bookFile = aBookFile().withFileType(FILE_TYPE).build();
+	public void shouldBuildWithVersion() {
+		Book book = aBook().withVersion(VERSION).build();
 
-		assertThat(bookFile.getFileType(), is(equalTo(FILE_TYPE)));
+		assertThat(book.getVersion(), is(VERSION));
 	}
 
 	@Test
-	public void shouldBuildWithContentType() {
-		BookFile bookFile = aBookFile().withContentType(CONTENT_TYPE).build();
+	public void shouldBuildWithTitle() {
+		Book book = aBook().withTitle(TITLE).build();
 
-		assertThat(bookFile.getContentType(), is(equalTo(CONTENT_TYPE)));
+		assertThat(book.getTitle(), is(equalTo(TITLE)));
 	}
 
 	@Test
-	public void shouldBuildWithContentAndContentLength() {
-		BookFile bookFile = aBookFile().withContent(CONTENT).build();
+	public void shouldBuildWithBookFile() {
+		Book book = aBook().withBookFile(BOOK_FILE).build();
 
-		assertThat(blobBytes(bookFile.getContent()), is(equalTo(CONTENT)));
-		assertThat(bookFile.getContentLength(), is(CONTENT.length));
+		assertThat(book.getBookFile(), is(sameInstance(BOOK_FILE)));
 	}
 
 }

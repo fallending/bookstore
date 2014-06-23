@@ -40,8 +40,8 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.samePropertyValuesAs;
+import static pl.jojczykp.bookstore.entities.builders.BookBuilder.aBook;
 import static pl.jojczykp.bookstore.entities.builders.BookFileBuilder.aBookFile;
-import static pl.jojczykp.bookstore.testutils.builders.BookBuilder.aBook;
 import static pl.jojczykp.bookstore.testutils.repositories.BooksRepositorySpy.ID_TO_GENERATE;
 import static pl.jojczykp.bookstore.utils.BlobUtils.blobBytes;
 import static pl.jojczykp.bookstore.utils.PageSorterColumn.BOOK_TITLE;
@@ -60,12 +60,18 @@ public class BooksRepositoryIntegrationTest {
 	private static final PageSorterColumn SAMPLE_SORT_COLUMN = BOOK_TITLE;
 	private static final PageSorterDirection SAMPLE_DIRECTION = ASC;
 
-	private Book bookA = aBook(ID_TO_GENERATE, 1, "Book Title A", aBookFile().build());
-	private Book bookB = aBook(ID_TO_GENERATE, 2, "Book Title B", aBookFile().build());
-	private Book bookC = aBook(ID_TO_GENERATE, 1, "Book Title C", aBookFile().build());
-	private Book bookD = aBook(ID_TO_GENERATE, 2, "Book Title D", aBookFile().build());
-	private Book bookE = aBook(ID_TO_GENERATE, 1, "Book Title E", aBookFile().build());
-	private Book bookLowCaseC = aBook(ID_TO_GENERATE, 2, "Book Title c", aBookFile().build());
+	private Book bookA = aBook().withId(ID_TO_GENERATE).withVersion(1).withTitle("Book Title A")
+													.withBookFile(aBookFile().withId(ID_TO_GENERATE).build()).build();
+	private Book bookB = aBook().withId(ID_TO_GENERATE).withVersion(2).withTitle("Book Title B")
+													.withBookFile(aBookFile().withId(ID_TO_GENERATE).build()).build();
+	private Book bookC = aBook().withId(ID_TO_GENERATE).withVersion(1).withTitle("Book Title C")
+													.withBookFile(aBookFile().withId(ID_TO_GENERATE).build()).build();
+	private Book bookD = aBook().withId(ID_TO_GENERATE).withVersion(2).withTitle("Book Title D")
+													.withBookFile(aBookFile().withId(ID_TO_GENERATE).build()).build();
+	private Book bookE = aBook().withId(ID_TO_GENERATE).withVersion(1).withTitle("Book Title E")
+													.withBookFile(aBookFile().withId(ID_TO_GENERATE).build()).build();
+	private Book bookLowCaseC = aBook().withId(ID_TO_GENERATE).withVersion(2).withTitle("Book Title c")
+													.withBookFile(aBookFile().withId(ID_TO_GENERATE).build()).build();
 
 	@Autowired private BooksRepositorySpy booksRepositorySpy;
 	@Autowired private BooksRepository testee;
@@ -194,10 +200,13 @@ public class BooksRepositoryIntegrationTest {
 
 	@Test
 	public void shouldUpdateBookTitle() {
-		Book oldBook = aBook(ID_TO_GENERATE, OLD_VERSION, OLD_TITLE, aBookFile().build());
+		Book oldBook = aBook().withId(ID_TO_GENERATE).withVersion(OLD_VERSION).withTitle(OLD_TITLE)
+						.withBookFile(aBookFile().withId(ID_TO_GENERATE).build()).build();
 		givenRepositoryWith(oldBook);
-		Book updatingBook = aBook(oldBook.getId(), OLD_VERSION, NEW_TITLE, oldBook.getBookFile());
-		Book updatedBook = aBook(oldBook.getId(), OLD_VERSION + 1, NEW_TITLE, oldBook.getBookFile());
+		Book updatingBook = aBook().withId(oldBook.getId()).withVersion(OLD_VERSION).withTitle(NEW_TITLE)
+																		.withBookFile(oldBook.getBookFile()).build();
+		Book updatedBook = aBook().withId(oldBook.getId()).withVersion(OLD_VERSION + 1).withTitle(NEW_TITLE)
+																		.withBookFile(oldBook.getBookFile()).build();
 
 		testee.update(updatingBook);
 
@@ -206,9 +215,13 @@ public class BooksRepositoryIntegrationTest {
 
 	@Test(expected = StaleObjectStateException.class)
 	public void shouldFailUpdatingBookWhenModifiedByOtherSession() {
-		Book oldBook = aBook(ID_TO_GENERATE, OLD_VERSION, OLD_TITLE, aBookFile().build());
+		Book oldBook = aBook().withId(ID_TO_GENERATE).withVersion(OLD_VERSION).withTitle(OLD_TITLE)
+						.withBookFile(aBookFile().withId(ID_TO_GENERATE).build())
+						.build();
+
 		givenRepositoryWith(oldBook);
-		Book updatingBook = aBook(oldBook.getId(), OLD_VERSION - 1, NEW_TITLE, oldBook.getBookFile());
+		Book updatingBook = aBook().withId(oldBook.getId()).withVersion(OLD_VERSION - 1).withTitle(NEW_TITLE)
+																		.withBookFile(oldBook.getBookFile()).build();
 
 		testee.update(updatingBook);
 	}

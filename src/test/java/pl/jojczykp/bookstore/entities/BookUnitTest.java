@@ -31,7 +31,7 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.BDDMockito.given;
-import static pl.jojczykp.bookstore.testutils.builders.BookBuilder.aBook;
+import static pl.jojczykp.bookstore.entities.builders.BookBuilder.aBook;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BookUnitTest {
@@ -100,13 +100,13 @@ public class BookUnitTest {
 
 	@Test
 	public void shouldHaveToStringWithDetails() {
-		Book testeeWithContent = aBook(ID, VERSION, TITLE, bookFile);
+		Book testeeFilled = aBook().withId(ID).withVersion(VERSION).withTitle(TITLE).withBookFile(bookFile).build();
 
-		String toStringResult = testeeWithContent.toString();
+		String toStringResult = testeeFilled.toString();
 
 		assertThat(toStringResult, equalTo(
 				format("%s{id=%d, version=%d, title='%s', bookFile=" + BOOK_FILE_AS_STRING + "}",
-						testeeWithContent.getClass().getSimpleName(), ID, VERSION, TITLE)));
+						testeeFilled.getClass().getSimpleName(), ID, VERSION, TITLE)));
 	}
 
 }

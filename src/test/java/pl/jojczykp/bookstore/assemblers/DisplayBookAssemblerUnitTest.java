@@ -32,7 +32,7 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
-import static pl.jojczykp.bookstore.testutils.builders.BookBuilder.aBook;
+import static pl.jojczykp.bookstore.entities.builders.BookBuilder.aBook;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DisplayBookAssemblerUnitTest {
@@ -56,8 +56,8 @@ public class DisplayBookAssemblerUnitTest {
 
 	private List<Book> aDomainObjectsList() {
 		return asList(
-				aBook(1, 0, "A Title 001", bookFile1),
-				aBook(2, 1, "A Title 002", bookFile2));
+				aBook().withId(1).withVersion(0).withTitle("A Title 001").withBookFile(bookFile1).build(),
+				aBook().withId(2).withVersion(1).withTitle("A Title 002").withBookFile(bookFile2).build());
 	}
 
 	private void assertThatHaveEqualData(Book domain, DisplayBookCommand command) {
