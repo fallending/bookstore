@@ -17,6 +17,9 @@
 
 package pl.jojczykp.bookstore.entities;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.DynamicUpdate;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -26,10 +29,12 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
-import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.EAGER;
+import static org.hibernate.annotations.CascadeType.DELETE;
+import static org.hibernate.annotations.CascadeType.SAVE_UPDATE;
 
 @Entity
+@DynamicUpdate
 @Table(name = "BOOKS")
 public class Book {
 
@@ -45,7 +50,8 @@ public class Book {
 	@Column(name = "TITLE", nullable = false)
 	private String title;
 
-	@OneToOne(fetch = EAGER, cascade = ALL)
+	@OneToOne(fetch = EAGER)
+	@Cascade({SAVE_UPDATE, DELETE})
 	@JoinColumn(name = "BOOK_FILE_ID", nullable = false)
 	private BookFile bookFile;
 

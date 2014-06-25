@@ -50,7 +50,7 @@ public class BooksRepositorySpy {
 
 	public void givenRepositoryWith(Object... objects) {
 		for (Object object: objects) {
-			getCurrentSession().persist(object);
+			getCurrentSession().save(object);
 		}
 		getCurrentSession().flush();
 		getCurrentSession().clear();

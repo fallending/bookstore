@@ -67,8 +67,10 @@ public class BooksRepository {
 		return suppressUnchecked(criteria.list());
 	}
 
-	public void update(Book template) {
-		getCurrentSession().merge(template);
+	public void update(Book updated) {
+		Book existing = (Book) getCurrentSession().load(Book.class, updated.getId());
+		updated.setBookFile(existing.getBookFile());
+		getCurrentSession().merge(updated);
 	}
 
 	public void delete(int id) {

@@ -292,7 +292,7 @@ public class BooksRepositoryIntegrationTest {
 		for (int i = 0; i < givens.size(); i++) {
 			Book given = givens.get(i);
 			Book expected = expecteds[i];
-			assertThat(given, samePropertyValuesAs(expected));
+			assertEquals(given, expected);
 		}
 	}
 
@@ -303,6 +303,13 @@ public class BooksRepositoryIntegrationTest {
 			BookFile expected = expecteds[i];
 			assertEquals(given, expected);
 		}
+	}
+
+	private void assertEquals(Book given, Book expected) {
+		assertThat(given.getId(), is(equalTo(expected.getId())));
+		assertThat(given.getVersion(), is(equalTo(expected.getVersion())));
+		assertThat(given.getTitle(), is(equalTo(expected.getTitle())));
+		assertThat(given.getBookFile().getId(), is(equalTo(expected.getBookFile().getId())));
 	}
 
 	private void assertEquals(BookFile given, BookFile expected) {

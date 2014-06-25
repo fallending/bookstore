@@ -82,7 +82,7 @@ public class UpdateBookController {
 
 		try {
 			booksRepository.update(updateBookAssembler.toDomain(updateBookCommand));
-			displayBooksCommand.getMessages().addInfos("Object updated.");
+			displayBooksCommand.getMessages().addInfos("Title updated.");
 		} catch (StaleObjectStateException e) {
 			displayBooksCommand.getMessages().addWarns(
 					"Object updated or deleted by another user. Please try again with actual data.");

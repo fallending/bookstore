@@ -23,11 +23,9 @@ import pl.jojczykp.bookstore.commands.books.UpdateBookCommand;
 import pl.jojczykp.bookstore.entities.Book;
 
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
-import static pl.jojczykp.bookstore.utils.BlobUtils.blobBytes;
-
-import static com.google.common.base.Charsets.UTF_8;
 
 public class UpdateBookAssemblerUnitTest {
 
@@ -44,18 +42,18 @@ public class UpdateBookAssemblerUnitTest {
 
 	@Test
 	public void shouldAssemblySingleBookDomainObjectFromUpdateBookCommandObject() {
-		UpdateBookCommand command = anUpdateBookCommandWith();
+		UpdateBookCommand command = anUpdateBookCommandWith(ID, VERSION, TITLE);
 
 		Book domain = testee.toDomain(command);
 
 		assertThatHaveEqualData(domain, command);
 	}
 
-	private UpdateBookCommand anUpdateBookCommandWith() {
+	private UpdateBookCommand anUpdateBookCommandWith(int id, int version, String title) {
 		UpdateBookCommand command = new UpdateBookCommand();
-		command.setId(ID);
-		command.setVersion(VERSION);
-		command.setTitle(TITLE);
+		command.setId(id);
+		command.setVersion(version);
+		command.setTitle(title);
 
 		return command;
 	}
@@ -64,8 +62,7 @@ public class UpdateBookAssemblerUnitTest {
 		assertThat(domain.getId(), equalTo(command.getId()));
 		assertThat(domain.getVersion(), equalTo(command.getVersion()));
 		assertThat(domain.getTitle(), equalTo(command.getTitle()));
-		assertThat(domain.getBookFile().getContentType(), is(equalTo("text/plain; charset=utf-8")));
-		assertThat(blobBytes(domain.getBookFile().getContent()), is(equalTo("a Book Content".getBytes(UTF_8))));
+		assertThat(domain.getBookFile(), is(nullValue()));
 	}
 
 }

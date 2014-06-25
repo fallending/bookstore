@@ -105,7 +105,7 @@ public class UpdateBookControllerComponentTest {
 		thenExpectValidationInvokedFor(command);
 		thenExpectAssemblingCommandToDomainInvokedFor(command);
 		thenExpectUpdateInvokedOnRepository();
-		thenExpectInfoOnlyFlashMessages(mvcMockPerformResult, "Object updated.");
+		thenExpectInfoOnlyFlashMessages(mvcMockPerformResult, "Title updated.");
 		thenExpectHttpRedirectWith(command);
 	}
 
