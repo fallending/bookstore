@@ -27,7 +27,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-		<meta http-equiv="content-type" content="application/xhtml+xml; charset=utf-8" />
+		<@common.sectionEncodingHeaders/>
 		<title>Bookstore</title>
 		<link rel="stylesheet" type="text/css" href="/css/public/common.css"/>
 		<link rel="stylesheet" type="text/css" href="/css/public/messages.css"/>

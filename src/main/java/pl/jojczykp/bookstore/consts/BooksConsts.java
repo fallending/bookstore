@@ -20,7 +20,7 @@ package pl.jojczykp.bookstore.consts;
 public abstract class BooksConsts {
 
 	public static final String URL_ACTION_CREATE = "/books/create";
-	public static final String URL_ACTION_LIST = "/books/display";
+	public static final String URL_ACTION_DISPLAY = "/books/display";
 	public static final String URL_ACTION_UPDATE = "/books/update";
 	public static final String URL_ACTION_DELETE = "/books/delete";
 	public static final String URL_ACTION_DOWNLOAD = "/books/download";

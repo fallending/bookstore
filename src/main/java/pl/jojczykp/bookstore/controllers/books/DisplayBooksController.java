@@ -36,7 +36,7 @@ import java.util.List;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static pl.jojczykp.bookstore.consts.BooksConsts.DISPLAY_BOOKS_COMMAND;
 import static pl.jojczykp.bookstore.consts.BooksConsts.DISPLAY_BOOKS_VIEW;
-import static pl.jojczykp.bookstore.consts.BooksConsts.URL_ACTION_LIST;
+import static pl.jojczykp.bookstore.consts.BooksConsts.URL_ACTION_DISPLAY;
 
 @Controller
 public class DisplayBooksController {
@@ -51,7 +51,7 @@ public class DisplayBooksController {
 		return booksCommandFactory.create();
 	}
 
-	@RequestMapping(value = URL_ACTION_LIST, method = GET)
+	@RequestMapping(value = URL_ACTION_DISPLAY, method = GET)
 	public ModelAndView display(
 			@ModelAttribute(DISPLAY_BOOKS_COMMAND) DisplayBooksCommand displayBooksCommand)
 	{

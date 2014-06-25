@@ -15,6 +15,10 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 -->
 
+<#macro sectionEncodingHeaders>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+</#macro>
+
 <#macro sectionUserBar>
 	<div class="sectionUserBar">
 		<#if Session['SPRING_SECURITY_CONTEXT']??>
@@ -32,6 +36,6 @@
 </#macro>
 
 <#macro sectionFooter>
-	<div class="sectionFooter">Copyright (C) 2013-2014 Pawel Jojczyk, GNU GPL v3.0</div>
+	<div class="sectionFooter">Copyright (C) 2013-2014 Pawe&#x0142 Jojczyk, GNU GPL v3.0</div>
 </#macro>
 

@@ -35,7 +35,7 @@ import pl.jojczykp.bookstore.validators.UpdateBookValidator;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static pl.jojczykp.bookstore.consts.BooksConsts.DISPLAY_BOOKS_COMMAND;
 import static pl.jojczykp.bookstore.consts.BooksConsts.UPDATE_BOOK_COMMAND;
-import static pl.jojczykp.bookstore.consts.BooksConsts.URL_ACTION_LIST;
+import static pl.jojczykp.bookstore.consts.BooksConsts.URL_ACTION_DISPLAY;
 import static pl.jojczykp.bookstore.consts.BooksConsts.URL_ACTION_UPDATE;
 
 @Controller
@@ -93,7 +93,7 @@ public class UpdateBookController {
 
 	private RedirectView redirect(DisplayBooksCommand displayBooksCommand, RedirectAttributes redirectAttributes) {
 		redirectAttributes.addFlashAttribute(DISPLAY_BOOKS_COMMAND, displayBooksCommand);
-		return new RedirectView(URL_ACTION_LIST);
+		return new RedirectView(URL_ACTION_DISPLAY);
 	}
 
 }
