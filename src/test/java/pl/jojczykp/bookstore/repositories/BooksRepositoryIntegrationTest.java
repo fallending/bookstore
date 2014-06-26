@@ -36,14 +36,13 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.Matchers.samePropertyValuesAs;
 import static pl.jojczykp.bookstore.entities.builders.BookBuilder.aBook;
 import static pl.jojczykp.bookstore.entities.builders.BookFileBuilder.aBookFile;
+import static pl.jojczykp.bookstore.testutils.matchers.IsBookEqualTo.isBookEqualTo;
+import static pl.jojczykp.bookstore.testutils.matchers.IsBookFileEqualTo.isBookFileEqualTo;
 import static pl.jojczykp.bookstore.testutils.repositories.BooksRepositorySpy.ID_TO_GENERATE;
-import static pl.jojczykp.bookstore.utils.BlobUtils.blobBytes;
 import static pl.jojczykp.bookstore.utils.PageSorterColumn.BOOK_TITLE;
 import static pl.jojczykp.bookstore.utils.PageSorterDirection.ASC;
 import static pl.jojczykp.bookstore.utils.PageSorterDirection.DESC;
@@ -249,8 +248,8 @@ public class BooksRepositoryIntegrationTest {
 
 		Book foundBook = testee.find(bookB.getId());
 
-		assertThat(foundBook, samePropertyValuesAs(bookB));
-		assertEquals(foundBook.getBookFile(), bookB.getBookFile());
+		assertThat(foundBook, isBookEqualTo(bookB));
+		assertThat(foundBook.getBookFile(), isBookFileEqualTo(bookB.getBookFile()));
 	}
 
 	@Test
@@ -292,7 +291,7 @@ public class BooksRepositoryIntegrationTest {
 		for (int i = 0; i < givens.size(); i++) {
 			Book given = givens.get(i);
 			Book expected = expecteds[i];
-			assertEquals(given, expected);
+			assertThat(given, isBookEqualTo(expected));
 		}
 	}
 
@@ -301,22 +300,8 @@ public class BooksRepositoryIntegrationTest {
 		for (int i = 0; i < givens.size(); i++) {
 			BookFile given = givens.get(i);
 			BookFile expected = expecteds[i];
-			assertEquals(given, expected);
+			assertThat(given, isBookFileEqualTo(expected));
 		}
-	}
-
-	private void assertEquals(Book given, Book expected) {
-		assertThat(given.getId(), is(equalTo(expected.getId())));
-		assertThat(given.getVersion(), is(equalTo(expected.getVersion())));
-		assertThat(given.getTitle(), is(equalTo(expected.getTitle())));
-		assertThat(given.getBookFile().getId(), is(equalTo(expected.getBookFile().getId())));
-	}
-
-	private void assertEquals(BookFile given, BookFile expected) {
-		assertThat(given.getId(), is(equalTo(expected.getId())));
-		assertThat(given.getFileType(), is(equalTo(expected.getFileType())));
-		assertThat(given.getContentType(), is(equalTo(expected.getContentType())));
-		assertThat(blobBytes(given.getContent()), is(equalTo(blobBytes(expected.getContent()))));
 	}
 
 }
