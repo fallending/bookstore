@@ -16,7 +16,7 @@
 -->
 
 <#macro sectionEncodingHeaders>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </#macro>
 
 <#macro sectionUserBar>
@@ -38,4 +38,3 @@
 <#macro sectionFooter>
 	<div class="sectionFooter">Copyright (C) 2013-2014 Pawe&#x0142 Jojczyk, GNU GPL v3.0</div>
 </#macro>
-

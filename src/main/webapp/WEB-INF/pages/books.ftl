@@ -27,39 +27,39 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-		<@common.sectionEncodingHeaders/>
-		<title>Bookstore</title>
-		<link rel="stylesheet" type="text/css" href="/css/public/common.css"/>
-		<link rel="stylesheet" type="text/css" href="/css/public/messages.css"/>
-		<link rel="stylesheet" type="text/css" href="/css/books.css"/>
-		<script type="text/javascript">
-			ORIGINAL_PARAMS = {
-				'pager.pageNumber' : ${displayBooksCommand.pager.pageNumber},
-				'pager.pageSize' : ${displayBooksCommand.pager.pageSize},
-				'pager.sorter.column' : '${displayBooksCommand.pager.sorter.column}',
-				'pager.sorter.direction' : '${displayBooksCommand.pager.sorter.direction}'
-			}
-		</script>
-		<script type="text/javascript" src="/js/send.js"></script>
-		<script type="text/javascript" src="/js/books.js"></script>
-	</head>
-	<body>
-		<div class="all">
-			<@common.sectionUserBar/>
-			<@common.sectionTitle/>
-			<div class="sectionMain">
-				<@sectionMessages/>
-				<#if (pagesCount > 0) >
-					<@sectionPager/>
-					<@sectionDataTable/>
-				<#else>
-					No books to display.
-				</#if>
-				<@sectionCreate/>
-			</div>
+	<@common.sectionEncodingHeaders/>
+	<title>Bookstore</title>
+	<link rel="stylesheet" type="text/css" href="/css/public/common.css"/>
+	<link rel="stylesheet" type="text/css" href="/css/public/messages.css"/>
+	<link rel="stylesheet" type="text/css" href="/css/books.css"/>
+	<script type="text/javascript">
+		ORIGINAL_PARAMS = {
+			'pager.pageNumber' : ${displayBooksCommand.pager.pageNumber},
+			'pager.pageSize' : ${displayBooksCommand.pager.pageSize},
+			'pager.sorter.column' : '${displayBooksCommand.pager.sorter.column}',
+			'pager.sorter.direction' : '${displayBooksCommand.pager.sorter.direction}'
+		}
+	</script>
+	<script type="text/javascript" src="/js/send.js"></script>
+	<script type="text/javascript" src="/js/books.js"></script>
+</head>
+<body>
+	<div class="all">
+		<@common.sectionUserBar/>
+		<@common.sectionTitle/>
+		<div class="sectionMain">
+			<@sectionMessages/>
+			<#if (pagesCount > 0) >
+				<@sectionPager/>
+				<@sectionDataTable/>
+			<#else>
+				No books to display.
+			</#if>
+			<@sectionCreate/>
 		</div>
-		<@common.sectionFooter/>
-	</body>
+	</div>
+	<@common.sectionFooter/>
+</body>
 </html>
 
 <#macro sectionMessages>

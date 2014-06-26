@@ -20,6 +20,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<@common.sectionEncodingHeaders/>
 	<title>Bookstore - HTTP Error</title>
 	<link rel="stylesheet" type="text/css" href="/css/public/common.css"/>
 	<link rel="stylesheet" type="text/css" href="/css/public/exception.css"/>

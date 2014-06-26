@@ -61,7 +61,6 @@ public class UpdateBookController {
 		}
 
 		return redirect(displayBooksCommand, redirectAttributes);
-
 	}
 
 	private DisplayBooksCommand processWhenCommandInvalid(
