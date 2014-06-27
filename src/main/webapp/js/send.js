@@ -23,7 +23,7 @@ function sendPost(action, originalParams, actualParams) {
 		var mergeProperties = function(props1, props2) {
 			var updateResultWith = function(props) {
 				for (var name in props) {
-					if (props.hasOwnProperty(name)) {
+					if (props.hasOwnProperty(name) && (props[name] !== undefined)) {
 						result[name] = props[name];
 					}
 				}
