@@ -17,7 +17,7 @@
 
 function sendCreate() {
 	var title = document.getElementById('newBook.title').value;
-	var file = document.getElementById('newBook.file').files[0];
+	var file = document.getElementById('newBook.file');
 	sendPost('create', ORIGINAL_PARAMS, {
 		'title' : title,
 		'file' : file
