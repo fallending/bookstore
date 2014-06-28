@@ -47,7 +47,7 @@ public class CreateBookAssembler {
 	}
 
 	private String fileExtensionIn(CreateBookCommand command) {
-		return getExtension(command.getFile().getOriginalFilename());
+		return getExtension(command.getFile().getOriginalFilename()).toLowerCase();
 	}
 
 	private String fileContentTypeIn(CreateBookCommand command) {

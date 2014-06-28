@@ -56,7 +56,7 @@ public class CreateBookAssemblerUnitTest {
 		assertThat(domain.getId(), is(ID_TO_BE_SET_AUTOMATICALLY));
 		assertThat(domain.getVersion(), is(VERSION_TO_BE_SET_AUTOMATICALLY));
 		assertThat(domain.getTitle(), is(equalTo(TITLE)));
-		assertThat(domain.getBookFile().getFileType(), is(equalTo(FILE_TYPE)));
+		assertThat(domain.getBookFile().getFileType(), is(equalTo(FILE_TYPE.toLowerCase())));
 		assertThat(domain.getBookFile().getContentType(), is(equalTo(CONTENT_TYPE)));
 		assertThat(domain.getBookFile().getContentLength(), is(equalTo(CONTENT.length)));
 		assertThat(blobBytes(domain.getBookFile().getContent()), is(equalTo(CONTENT)));

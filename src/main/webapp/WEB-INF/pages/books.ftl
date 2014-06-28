@@ -75,7 +75,7 @@
 				<td align="left">Page size: <@formPagerSetPageSize/></td>
 				<td aling="left">
 					Total pages:
-					<input type="text" value="${pagesCount}" disabled="true" class="pagesCount"/>
+					<input type="text" value="${pagesCount}" disabled="disabled" class="pagesCount"/>
 				</td>
 				<td align="center">Go to page:</td>
 				<td align="left"><@formPagerPrev/></td>
@@ -88,7 +88,7 @@
 
 <#macro formPagerPrev>
 	<#if (pageNumber <= 1) >
-		<input type="button" value="&#x25C0;" class="arrowsButtons" disabled="true" />
+		<input type="button" value="&#x25C0;" class="arrowsButtons" disabled="disabled" />
 	<#else>
 		<input type="button" value="&#x25C0;" class="arrowsButtons" onClick="sendGoToPage(${pageNumber - 1})" />
 	</#if>
@@ -102,7 +102,7 @@
 
 <#macro formPagerNext>
 	<#if (pageNumber >= pagesCount) >
-		<input type="button" value="&#x25B6;" class="arrowsButtons" disabled="true" />
+		<input type="button" value="&#x25B6;" class="arrowsButtons" disabled="disabled" />
 	<#else>
 		<input type="button" value="&#x25B6;" class="arrowsButtons" onClick="sendGoToPage(${pageNumber + 1})" />
 	</#if>
@@ -141,7 +141,7 @@
 	<#list min..max as p>
 		<#if (p = pageNumber) >
 			<td class="pagerScrollCell">
-				<input type="button" value="${p}" class="pageNumberButton" disabled="true" />
+				<input type="button" value="${p}" class="pageNumberButton" disabled="disabled" />
 			</td>
 		<#else>
 			<td class="pagerScrollCell">
@@ -178,8 +178,9 @@
 						<@spring.formInput "displayBooksCommand.books[" + book_index + "].title" "class='updateInput'"/>
 					</td>
 					<td>
-						<a href="download?id=${displayBooksCommand.books[book_index].id}" class="downloadLink">
-							${displayBooksCommand.books[book_index].iconName}
+						<a href="download?id=${displayBooksCommand.books[book_index].id}" class="downloadLink"
+							title="Download in format '${displayBooksCommand.books[book_index].iconName}'">
+							<img src="/img/filetypes/${displayBooksCommand.books[book_index].iconName}.png"/>
 						</a>
 					</td>
 					<td>
@@ -203,7 +204,7 @@
 
 <#macro sectionDataTableSorterDirection columnName columnTitle direction marker>
 	<#if (displayBooksCommand.pager.sorter.direction = '${direction}')>
-		<input type="button" value="${marker}" class="arrowsButtons" disabled="true"/>
+		<input type="button" value="${marker}" class="arrowsButtons" disabled="disabled"/>
 	<#else>
 		<input type="button" value="${marker}" class="arrowsButtons"
 			   onClick="sendSort('${columnName}', '${direction}')"/>
