@@ -24,6 +24,7 @@ import pl.jojczykp.bookstore.commands.books.CreateBookCommand;
 import pl.jojczykp.bookstore.entities.Book;
 
 import java.io.IOException;
+import java.util.Locale;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -56,7 +57,7 @@ public class CreateBookAssemblerUnitTest {
 		assertThat(domain.getId(), is(ID_TO_BE_SET_AUTOMATICALLY));
 		assertThat(domain.getVersion(), is(VERSION_TO_BE_SET_AUTOMATICALLY));
 		assertThat(domain.getTitle(), is(equalTo(TITLE)));
-		assertThat(domain.getBookFile().getFileType(), is(equalTo(FILE_TYPE.toLowerCase())));
+		assertThat(domain.getBookFile().getFileType(), is(equalTo(FILE_TYPE.toLowerCase(Locale.US))));
 		assertThat(domain.getBookFile().getContentType(), is(equalTo(CONTENT_TYPE)));
 		assertThat(domain.getBookFile().getContentLength(), is(equalTo(CONTENT.length)));
 		assertThat(blobBytes(domain.getBookFile().getContent()), is(equalTo(CONTENT)));

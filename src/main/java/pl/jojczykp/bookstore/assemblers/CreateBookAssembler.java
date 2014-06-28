@@ -22,6 +22,7 @@ import pl.jojczykp.bookstore.commands.books.CreateBookCommand;
 import pl.jojczykp.bookstore.entities.Book;
 
 import java.io.IOException;
+import java.util.Locale;
 
 import static org.apache.commons.io.FilenameUtils.getExtension;
 import static pl.jojczykp.bookstore.entities.builders.BookFileBuilder.aBookFile;
@@ -47,7 +48,7 @@ public class CreateBookAssembler {
 	}
 
 	private String fileExtensionIn(CreateBookCommand command) {
-		return getExtension(command.getFile().getOriginalFilename()).toLowerCase();
+		return getExtension(command.getFile().getOriginalFilename()).toLowerCase(Locale.US);
 	}
 
 	private String fileContentTypeIn(CreateBookCommand command) {
