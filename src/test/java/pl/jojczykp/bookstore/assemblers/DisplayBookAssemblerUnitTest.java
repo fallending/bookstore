@@ -20,11 +20,9 @@ package pl.jojczykp.bookstore.assemblers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import pl.jojczykp.bookstore.commands.books.DisplayBookCommand;
 import pl.jojczykp.bookstore.entities.Book;
-import pl.jojczykp.bookstore.entities.BookFile;
 
 import java.util.List;
 
@@ -33,12 +31,14 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 import static pl.jojczykp.bookstore.entities.builders.BookBuilder.aBook;
+import static pl.jojczykp.bookstore.entities.builders.BookFileBuilder.aBookFile;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DisplayBookAssemblerUnitTest {
 
-	@Mock private BookFile bookFile1;
-	@Mock private BookFile bookFile2;
+	private static final String KNOWN_FILE_TYPE = "txt";
+	private static final String OTHER_KNOWN_FILE_TYPE = "pdf";
+	private static final String UNKNOWN_FILE_TYPE = "someUnknownFileType";
 
 	@InjectMocks private DisplayBookAssembler testee;
 
@@ -50,17 +50,30 @@ public class DisplayBookAssemblerUnitTest {
 
 		assertThat(commands.size(), equalTo(domains.size()));
 		for (int i = 0; i < domains.size(); i++) {
-			assertThatHaveEqualData(domains.get(i), commands.get(i));
+			assertThatHaveEqualBookData(domains.get(i), commands.get(i));
 		}
+	}
+
+	@Test
+	public void shouldSetDefaultIconForUnknownFileType() {
+		Book domain = aBook().withBookFile(aBookFile().withId(0).withFileType(UNKNOWN_FILE_TYPE).build()).build();
+
+		List<DisplayBookCommand> commands = testee.toCommands(asList(domain));
+
+		assertThat(commands.get(0).getIconName(), is(equalTo("unknown")));
 	}
 
 	private List<Book> aDomainObjectsList() {
 		return asList(
-				aBook().withId(1).withVersion(0).withTitle("A Title 001").withBookFile(bookFile1).build(),
-				aBook().withId(2).withVersion(1).withTitle("A Title 002").withBookFile(bookFile2).build());
+				aBook().withId(1).withVersion(0).withTitle("A Title 001")
+						.withBookFile(aBookFile().withId(0).withFileType(KNOWN_FILE_TYPE).build())
+						.build(),
+				aBook().withId(2).withVersion(1).withTitle("A Title 002")
+						.withBookFile(aBookFile().withId(1).withFileType(OTHER_KNOWN_FILE_TYPE).build())
+						.build());
 	}
 
-	private void assertThatHaveEqualData(Book domain, DisplayBookCommand command) {
+	private void assertThatHaveEqualBookData(Book domain, DisplayBookCommand command) {
 		assertThat(domain.getId(), equalTo(command.getId()));
 		assertThat(domain.getVersion(), equalTo(command.getVersion()));
 		assertThat(domain.getTitle(), equalTo(command.getTitle()));
