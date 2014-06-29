@@ -30,6 +30,8 @@ import pl.jojczykp.bookstore.commands.books.ChangePagerCommand;
 import pl.jojczykp.bookstore.commands.books.DisplayBooksCommand;
 import pl.jojczykp.bookstore.validators.ChangePagerValidator;
 
+import javax.servlet.http.HttpServletRequest;
+
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static pl.jojczykp.bookstore.consts.BooksConsts.DISPLAY_BOOKS_COMMAND;
 import static pl.jojczykp.bookstore.consts.BooksConsts.CHANGE_PAGER_COMMAND;
@@ -48,19 +50,21 @@ public class ChangeBooksPagerController {
 	@RequestMapping(value = URL_ACTION_SORT, method = POST)
 	public RedirectView sort(
 			@ModelAttribute(CHANGE_PAGER_COMMAND) ChangePagerCommand changePagerCommand,
-			RedirectAttributes redirectAttributes)
+			RedirectAttributes redirectAttributes,
+			HttpServletRequest request)
 	{
 		DisplayBooksCommand displayBooksCommand = new DisplayBooksCommand();
 		displayBooksCommand.setPager(changePagerCommand.getPager());
 
-		return redirect(displayBooksCommand, redirectAttributes);
+		return redirect(request, displayBooksCommand, redirectAttributes);
 	}
 
 	@RequestMapping(value = URL_ACTION_SET_PAGE_SIZE, method = POST)
 	public RedirectView setPageSize(
 			@ModelAttribute(CHANGE_PAGER_COMMAND) ChangePagerCommand changePagerCommand,
 			RedirectAttributes redirectAttributes,
-			BindingResult bindingResult)
+			BindingResult bindingResult,
+			HttpServletRequest request)
 	{
 		changePagerValidator.validate(changePagerCommand, bindingResult);
 
@@ -71,7 +75,7 @@ public class ChangeBooksPagerController {
 			displayBooksCommand = processWhenSetPageSizeCommandValid(changePagerCommand);
 		}
 
-		return redirect(displayBooksCommand, redirectAttributes);
+		return redirect(request, displayBooksCommand, redirectAttributes);
 	}
 
 	private DisplayBooksCommand processWhenSetPageSizeCommandInvalid(
@@ -99,17 +103,19 @@ public class ChangeBooksPagerController {
 	@RequestMapping(value = URL_ACTION_GO_TO_PAGE, method = POST)
 	public RedirectView goToPage(
 			@ModelAttribute(CHANGE_PAGER_COMMAND) ChangePagerCommand changePagerCommand,
-			RedirectAttributes redirectAttributes)
+			RedirectAttributes redirectAttributes,
+			HttpServletRequest request)
 	{
 		DisplayBooksCommand displayBooksCommand = new DisplayBooksCommand();
 		displayBooksCommand.setPager(changePagerCommand.getPager());
 
-		return redirect(displayBooksCommand, redirectAttributes);
+		return redirect(request, displayBooksCommand, redirectAttributes);
 	}
 
-	private RedirectView redirect(DisplayBooksCommand displayBooksCommand, RedirectAttributes redirectAttributes) {
+	private RedirectView redirect(HttpServletRequest request, DisplayBooksCommand displayBooksCommand,
+									RedirectAttributes redirectAttributes) {
 		redirectAttributes.addFlashAttribute(DISPLAY_BOOKS_COMMAND, displayBooksCommand);
-		return new RedirectView(URL_ACTION_DISPLAY);
+		return new RedirectView(request.getContextPath() + URL_ACTION_DISPLAY);
 	}
 
 }

@@ -15,14 +15,15 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 -->
 
+<#import "/spring.ftl" as spring>
 <#import "macros/common.ftl" as common>
 
 <!DOCTYPE html>
 <html>
 <head>
 	<title>Bookstore - Exception</title>
-	<link rel="stylesheet" type="text/css" href="/css/public/common.css"/>
-	<link rel="stylesheet" type="text/css" href="/css/public/exception.css"/>
+	<link rel="stylesheet" type="text/css" href="<@spring.url '/css/public/common.css'/>"/>
+	<link rel="stylesheet" type="text/css" href="<@spring.url '/css/public/exception.css'/>"/>
 </head>
 <body>
 	<h1 class="sectionTitle">
@@ -30,7 +31,7 @@
 	</h1>
 	<div class="sectionMain">
 		<table><tr>
-			<td align="center" valign="center" width="50"><img src="/img/public/error.png"/></td>
+			<td align="center" valign="center" width="50"><img src="<@spring.url '/img/public/error.png'/>"/></td>
 			<td>
 				<#if exceptionCommand??>
 					<p>${exceptionCommand.message!"(no exception message present)"}</p>

@@ -21,6 +21,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.servlet.http.HttpServletRequest;
+
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static pl.jojczykp.bookstore.consts.BooksConsts.URL_ACTION_DISPLAY;
 
@@ -28,7 +30,7 @@ import static pl.jojczykp.bookstore.consts.BooksConsts.URL_ACTION_DISPLAY;
 public class WelcomeController {
 
 	@RequestMapping(value = "/", method = GET)
-	public RedirectView redirectToWelcomePage() {
-		return new RedirectView(URL_ACTION_DISPLAY);
+	public RedirectView redirectToWelcomePage(HttpServletRequest request) {
+		return new RedirectView(request.getContextPath() + URL_ACTION_DISPLAY);
 	}
 }

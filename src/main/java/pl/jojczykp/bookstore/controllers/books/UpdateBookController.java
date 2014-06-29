@@ -32,6 +32,8 @@ import pl.jojczykp.bookstore.commands.books.UpdateBookCommand;
 import pl.jojczykp.bookstore.repositories.BooksRepository;
 import pl.jojczykp.bookstore.validators.UpdateBookValidator;
 
+import javax.servlet.http.HttpServletRequest;
+
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static pl.jojczykp.bookstore.consts.BooksConsts.DISPLAY_BOOKS_COMMAND;
 import static pl.jojczykp.bookstore.consts.BooksConsts.UPDATE_BOOK_COMMAND;
@@ -49,7 +51,8 @@ public class UpdateBookController {
 	public RedirectView update(
 			@ModelAttribute(UPDATE_BOOK_COMMAND) UpdateBookCommand updateBookCommand,
 			RedirectAttributes redirectAttributes,
-			BindingResult bindingResult)
+			BindingResult bindingResult,
+			HttpServletRequest request)
 	{
 		updateBookValidator.validate(updateBookCommand, bindingResult);
 
@@ -60,7 +63,7 @@ public class UpdateBookController {
 			displayBooksCommand = processWhenCommandValid(updateBookCommand);
 		}
 
-		return redirect(displayBooksCommand, redirectAttributes);
+		return redirect(request, displayBooksCommand, redirectAttributes);
 	}
 
 	private DisplayBooksCommand processWhenCommandInvalid(
@@ -90,9 +93,10 @@ public class UpdateBookController {
 		return displayBooksCommand;
 	}
 
-	private RedirectView redirect(DisplayBooksCommand displayBooksCommand, RedirectAttributes redirectAttributes) {
+	private RedirectView redirect(HttpServletRequest request, DisplayBooksCommand displayBooksCommand,
+									RedirectAttributes redirectAttributes) {
 		redirectAttributes.addFlashAttribute(DISPLAY_BOOKS_COMMAND, displayBooksCommand);
-		return new RedirectView(URL_ACTION_DISPLAY);
+		return new RedirectView(request.getContextPath() + URL_ACTION_DISPLAY);
 	}
 
 }

@@ -14,7 +14,7 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 -->
-
+<#import "/spring.ftl" as spring/>
 <#import "macros/common.ftl" as common>
 <#import "macros/messages.ftl" as messages>
 
@@ -23,9 +23,9 @@
 <head>
 	<@common.sectionEncodingHeaders/>
 	<title>Bookstore - Login</title>
-	<link rel="stylesheet" type="text/css" href="/css/public/common.css"/>
-	<link rel="stylesheet" type="text/css" href="/css/public/messages.css"/>
-	<link rel="stylesheet" type="text/css" href="/css/public/loginPage.css"/>
+	<link rel="stylesheet" type="text/css" href="<@spring.url '/css/public/common.css'/>"/>
+	<link rel="stylesheet" type="text/css" href="<@spring.url '/css/public/messages.css'/>"/>
+	<link rel="stylesheet" type="text/css" href="<@spring.url '/css/public/loginPage.css'/>"/>
 </head>
 <body>
 	<div class="all">
@@ -58,7 +58,7 @@
 </#macro>
 
 <#macro sectionLoginTable>
-	<form method="POST" action="/security/login">
+	<form method="POST" action="<@spring.url '/security/login'/>">
 		<div class="sectionTable">
 			<table>
 				<tr>

@@ -31,6 +31,8 @@ import pl.jojczykp.bookstore.commands.books.CreateBookCommand;
 import pl.jojczykp.bookstore.repositories.BooksRepository;
 import pl.jojczykp.bookstore.validators.CreateBookValidator;
 
+import javax.servlet.http.HttpServletRequest;
+
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static pl.jojczykp.bookstore.consts.BooksConsts.DISPLAY_BOOKS_COMMAND;
 import static pl.jojczykp.bookstore.consts.BooksConsts.CREATE_BOOK_COMMAND;
@@ -48,7 +50,8 @@ public class CreateBookController {
 	public RedirectView create(
 			@ModelAttribute(CREATE_BOOK_COMMAND) CreateBookCommand createBookCommand,
 			RedirectAttributes redirectAttributes,
-			BindingResult bindingResult)
+			BindingResult bindingResult,
+			HttpServletRequest request)
 	{
 		createBookValidator.validate(createBookCommand, bindingResult);
 
@@ -59,7 +62,7 @@ public class CreateBookController {
 			displayBooksCommand = processWhenCommandValid(createBookCommand);
 		}
 
-		return redirect(displayBooksCommand, redirectAttributes);
+		return redirect(request, displayBooksCommand, redirectAttributes);
 	}
 
 	private DisplayBooksCommand processWhenCommandInvalid(
@@ -84,9 +87,10 @@ public class CreateBookController {
 		return displayBooksCommand;
 	}
 
-	private RedirectView redirect(DisplayBooksCommand displayBooksCommand, RedirectAttributes redirectAttributes) {
+	private RedirectView redirect(HttpServletRequest request, DisplayBooksCommand displayBooksCommand,
+									RedirectAttributes redirectAttributes) {
 		redirectAttributes.addFlashAttribute(DISPLAY_BOOKS_COMMAND, displayBooksCommand);
-		return new RedirectView(URL_ACTION_DISPLAY);
+		return new RedirectView(request.getContextPath() + URL_ACTION_DISPLAY);
 	}
 
 }

@@ -15,9 +15,9 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 -->
 
+<#import "/spring.ftl" as spring>
 <#import "macros/common.ftl" as common>
 <#import "macros/messages.ftl" as messages>
-<#import "/spring.ftl" as spring>
 
 <#assign pageNumber = displayBooksCommand.pager.pageNumber>
 <#assign pageSize = displayBooksCommand.pager.pageSize>
@@ -29,9 +29,9 @@
 <head>
 	<@common.sectionEncodingHeaders/>
 	<title>Bookstore</title>
-	<link rel="stylesheet" type="text/css" href="/css/public/common.css"/>
-	<link rel="stylesheet" type="text/css" href="/css/public/messages.css"/>
-	<link rel="stylesheet" type="text/css" href="/css/books.css"/>
+	<link rel="stylesheet" type="text/css" href="<@spring.url '/css/public/common.css'/>"/>
+	<link rel="stylesheet" type="text/css" href="<@spring.url '/css/public/messages.css'/>"/>
+	<link rel="stylesheet" type="text/css" href="<@spring.url '/css/books.css'/>"/>
 	<script type="text/javascript">
 		ORIGINAL_PARAMS = {
 			'pager.pageNumber' : ${displayBooksCommand.pager.pageNumber},
@@ -40,8 +40,8 @@
 			'pager.sorter.direction' : '${displayBooksCommand.pager.sorter.direction}'
 		}
 	</script>
-	<script type="text/javascript" src="/js/send.js"></script>
-	<script type="text/javascript" src="/js/books.js"></script>
+	<script type="text/javascript" src="<@spring.url '/js/send.js'/>"></script>
+	<script type="text/javascript" src="<@spring.url '/js/books.js'/>"></script>
 </head>
 <body>
 	<div class="all">
@@ -180,7 +180,7 @@
 					<td>
 						<a href="download?id=${displayBooksCommand.books[book_index].id}" class="downloadLink"
 							title="Download in format '${displayBooksCommand.books[book_index].iconName}'">
-							<img src="/img/filetypes/${displayBooksCommand.books[book_index].iconName}.png"/>
+							<img src="<@spring.url '/img/filetypes/${displayBooksCommand.books[book_index].iconName}.png'/>"/>
 						</a>
 					</td>
 					<td>

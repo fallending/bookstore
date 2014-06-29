@@ -22,7 +22,7 @@
 <#macro sectionUserBar>
 	<div class="sectionUserBar">
 		<#if Session['SPRING_SECURITY_CONTEXT']??>
-			<a href="/security/logout">
+			<a href="<@spring.url '/security/logout'/>">
 				Logout "${Session['SPRING_SECURITY_CONTEXT'].authentication.name}"
 			</a>
 		<#else>

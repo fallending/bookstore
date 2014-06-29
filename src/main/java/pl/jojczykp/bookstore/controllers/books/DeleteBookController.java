@@ -29,6 +29,8 @@ import pl.jojczykp.bookstore.commands.books.DeleteBooksCommand;
 import pl.jojczykp.bookstore.commands.parts.MessagesCommand;
 import pl.jojczykp.bookstore.repositories.BooksRepository;
 
+import javax.servlet.http.HttpServletRequest;
+
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static pl.jojczykp.bookstore.consts.BooksConsts.DISPLAY_BOOKS_COMMAND;
 import static pl.jojczykp.bookstore.consts.BooksConsts.DELETE_BOOKS_COMMAND;
@@ -43,7 +45,8 @@ public class DeleteBookController {
 	@RequestMapping(value = URL_ACTION_DELETE, method = POST)
 	public RedirectView delete(
 			@ModelAttribute(DELETE_BOOKS_COMMAND) DeleteBooksCommand deleteBooksCommand,
-			RedirectAttributes redirectAttributes)
+			RedirectAttributes redirectAttributes,
+			HttpServletRequest request)
 	{
 		DisplayBooksCommand displayBooksCommand = new DisplayBooksCommand();
 		displayBooksCommand.setPager(deleteBooksCommand.getPager());
@@ -52,7 +55,7 @@ public class DeleteBookController {
 			deleteBookFromRepository(id, displayBooksCommand.getMessages());
 		}
 
-		return redirect(displayBooksCommand, redirectAttributes);
+		return redirect(request, displayBooksCommand, redirectAttributes);
 	}
 
 	private void deleteBookFromRepository(int bookId, MessagesCommand messagesContainer) {
@@ -64,9 +67,10 @@ public class DeleteBookController {
 		}
 	}
 
-	private RedirectView redirect(DisplayBooksCommand displayBooksCommand, RedirectAttributes redirectAttributes) {
+	private RedirectView redirect(HttpServletRequest request, DisplayBooksCommand displayBooksCommand,
+									RedirectAttributes redirectAttributes) {
 		redirectAttributes.addFlashAttribute(DISPLAY_BOOKS_COMMAND, displayBooksCommand);
-		return new RedirectView(URL_ACTION_DISPLAY);
+		return new RedirectView(request.getContextPath() + URL_ACTION_DISPLAY);
 	}
 
 }
