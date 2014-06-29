@@ -180,7 +180,8 @@
 					<td>
 						<a href="download?id=${displayBooksCommand.books[book_index].id}" class="downloadLink"
 							title="Download in format '${displayBooksCommand.books[book_index].iconName}'">
-							<img src="<@spring.url '/img/filetypes/${displayBooksCommand.books[book_index].iconName}.png'/>"/>
+							<img src="<@spring.url '/img/filetypes/${displayBooksCommand.books[book_index].iconName}.png'/>"
+									class="downloadImg"/>
 						</a>
 					</td>
 					<td>
