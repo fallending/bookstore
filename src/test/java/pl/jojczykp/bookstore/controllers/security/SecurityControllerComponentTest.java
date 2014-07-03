@@ -59,6 +59,8 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.springframework.security.crypto.bcrypt.BCrypt.gensalt;
+import static org.springframework.security.crypto.bcrypt.BCrypt.hashpw;
 import static org.springframework.security.web.WebAttributes.AUTHENTICATION_EXCEPTION;
 import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -242,12 +244,17 @@ public class SecurityControllerComponentTest {
 	private void givenAuthenticatorProvidingUserDetails(String userName, String password, String... roles) {
 		given(authenticationProvider.loadUserByUsername(userName)).willReturn(userDetails);
 		given(userDetails.getUsername()).willReturn(userName);
-		given(userDetails.getPassword()).willReturn(password);
+		given(userDetails.getPassword()).willReturn(encrypted(password));
 		given(userDetails.isAccountNonExpired()).willReturn(true);
 		given(userDetails.isAccountNonLocked()).willReturn(true);
 		given(userDetails.isCredentialsNonExpired()).willReturn(true);
 		given(userDetails.isEnabled()).willReturn(true);
 		doReturn(grantedAuthoritiesFor(roles)).when(userDetails).getAuthorities();
+	}
+
+	private String encrypted(String password) {
+		final int logRound = 10;
+		return hashpw(password, gensalt(logRound));
 	}
 
 	private void whenPerformedGetForUrl(String url) throws Exception {
