@@ -17,17 +17,18 @@
 
 package pl.jojczykp.bookstore.controllers.books;
 
+import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.web.context.WebApplicationContext;
 import pl.jojczykp.bookstore.commands.books.DownloadBookCommand;
 import pl.jojczykp.bookstore.entities.Book;
@@ -36,12 +37,14 @@ import pl.jojczykp.bookstore.repositories.BooksRepository;
 
 import static java.lang.Integer.parseInt;
 import static java.lang.String.format;
+import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.not;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.reset;
+import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -81,7 +84,7 @@ public class DownloadBookControllerComponentTest {
 				.alwaysDo(print())
 				.build();
 
-		MockitoAnnotations.initMocks(this);
+		initMocks(this);
 		reset(booksRepository);
 	}
 
@@ -171,11 +174,13 @@ public class DownloadBookControllerComponentTest {
 
 	private void thenExpectCorrectExceptionCommandFor(String id) throws Exception {
 		mvcMockPerformResult
-				.andExpect(model().attribute("exceptionCommand",
-						hasBeanProperty("stackTraceAsString", not(isEmptyOrNullString()))))
-				.andExpect(model().attribute("exceptionCommand",
-						hasBeanProperty("message",
-								is(equalTo(format("Content of book with id '%s' not found.", id))))));
+				.andExpect(modelExceptionCommand(allOf(
+					hasBeanProperty("stackTraceAsString", not(isEmptyOrNullString())),
+					hasBeanProperty("message", is(equalTo(format("Content of book with id '%s' not found.", id)))))));
+	}
+
+	private ResultMatcher modelExceptionCommand(Matcher<?> matcher) {
+		return model().attribute("exceptionCommand", matcher);
 	}
 
 }

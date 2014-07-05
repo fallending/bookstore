@@ -17,18 +17,19 @@
 
 package pl.jojczykp.bookstore.controllers.books;
 
+import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.web.context.WebApplicationContext;
 import pl.jojczykp.bookstore.assemblers.DisplayBookAssembler;
 import pl.jojczykp.bookstore.commands.books.DisplayBookCommand;
@@ -47,6 +48,7 @@ import java.util.List;
 
 import static com.cedarsoftware.util.DeepEquals.deepEquals;
 import static java.util.Arrays.asList;
+import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
@@ -56,10 +58,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -125,7 +124,7 @@ public class DisplayBooksControllerComponentTest {
 				.alwaysDo(print())
 				.build();
 
-		MockitoAnnotations.initMocks(this);
+		initMocks(this);
 
 		givenBooksCommandFactoryMockConfigured();
 		givenRepositoryMockConfigured();
@@ -160,8 +159,8 @@ public class DisplayBooksControllerComponentTest {
 	public void shouldUseDefaultBooksCommandWhenNoCommandPresent() throws Exception {
 		whenControllerReadPerformedWithNoCommand();
 
-		thenExpectBooksCommandFactoryInvoked();
 		thenExpectProcessedCommandInstance(defaultCommand);
+		thenExpectCorrectViewSelectedAndModelSet();
 	}
 
 	@Test
@@ -170,12 +169,7 @@ public class DisplayBooksControllerComponentTest {
 
 		whenControllerReadPerformedWith(command);
 
-		thenExpectBooksCommandFactoryNotInvoked();
 		thenExpectProcessedCommandInstance(command);
-		thenExpectBooksRepositoryTotalCountTaken();
-		thenExpectParametersLimitationUsage();
-		thenExpectBooksRepositoryRead();
-		thenExpectBookAssemblerInvoked();
 		thenExpectCorrectViewSelectedAndModelSet();
 	}
 
@@ -202,65 +196,23 @@ public class DisplayBooksControllerComponentTest {
 
 	private ResultActions thenExpectProcessedCommandInstance(DisplayBooksCommand command) throws Exception {
 		return mvcMockPerformResult
-				.andExpect(model().attribute(DISPLAY_BOOKS_COMMAND,
-						is(sameInstance(command))));
-	}
-
-	private void thenExpectBooksCommandFactoryInvoked() {
-		verify(booksCommandFactory).create();
-		verifyNoMoreInteractions(booksCommandFactory);
-	}
-
-	private void thenExpectBooksCommandFactoryNotInvoked() {
-		verifyZeroInteractions(booksCommandFactory);
-	}
-
-	private void thenExpectBooksRepositoryTotalCountTaken() {
-		verify(booksRepository).totalCount();
-	}
-
-	private void thenExpectParametersLimitationUsage() {
-		verify(pagerLimiter).createLimited(pagerCommandCaptor.capture(), totalCountCaptor.capture());
-		assertPagersEqual(pagerCommandCaptor.getValue(), aPagerCommand());
-		assertThat(totalCountCaptor.getValue(), equalTo(REPO_TOTAL_COUNT));
-		verifyNoMoreInteractions(pagerLimiter);
-	}
-
-	private void thenExpectBooksRepositoryRead() {
-		verify(booksRepository, times(1)).read(
-				offsetCaptor.capture(),
-				sizeCaptor.capture(),
-				pageSorterColumnCaptor.capture(),
-				pageSorterDirectionCaptor.capture());
-
-		assertThat(offsetCaptor.getValue(), equalTo((LIMITED_PAGE_NUMBER - 1) * LIMITED_PAGE_SIZE));
-		assertThat(sizeCaptor.getValue(), equalTo(LIMITED_PAGE_SIZE));
-		assertThat(pageSorterColumnCaptor.getValue(), equalTo(LIMITED_SORT_COLUMN));
-		assertThat(pageSorterDirectionCaptor.getValue(), equalTo(LIMITED_SORT_DIRECTION));
-
-		verifyNoMoreInteractions(booksRepository);
-	}
-
-	private void thenExpectBookAssemblerInvoked() {
-		verify(displayBookAssembler).toCommands(assembledListCaptor.capture());
-		assertThat(assembledListCaptor.getValue(), sameInstance(REPO_DATA));
-		verifyNoMoreInteractions(displayBookAssembler);
+				.andExpect(modelDisplayBooksCommand(is(sameInstance(command))));
 	}
 
 	private void thenExpectCorrectViewSelectedAndModelSet() throws Exception {
 		mvcMockPerformResult
 			.andExpect(status().isOk())
 			.andExpect(view().name("books"))
-			.andExpect(model().attribute(DISPLAY_BOOKS_COMMAND, hasProperty("books",
-					is(sameInstance(ASSEMBLER_RESULT_DATA)))))
-			.andExpect(model().attribute(DISPLAY_BOOKS_COMMAND, hasBeanProperty("pager.pageNumber", equalTo(
-					LIMITED_PAGE_NUMBER))))
-			.andExpect(model().attribute(DISPLAY_BOOKS_COMMAND, hasBeanProperty("pager.pageSize", equalTo(
-					LIMITED_PAGE_SIZE))))
-			.andExpect(model().attribute(DISPLAY_BOOKS_COMMAND, hasBeanProperty("pager.pagesCount", equalTo(
-					LIMITED_PAGES_COUNT))))
-			.andExpect(model().attribute(DISPLAY_BOOKS_COMMAND, hasBeanProperty("pager.totalCount", equalTo(
-					LIMITED_TOTAL_COUNT))));
+			.andExpect(modelDisplayBooksCommand(allOf(
+					hasProperty("books", is(sameInstance(ASSEMBLER_RESULT_DATA))),
+					hasBeanProperty("pager.pageNumber", equalTo(LIMITED_PAGE_NUMBER)),
+					hasBeanProperty("pager.pageSize", equalTo(LIMITED_PAGE_SIZE)),
+					hasBeanProperty("pager.pagesCount", equalTo(LIMITED_PAGES_COUNT)),
+					hasBeanProperty("pager.totalCount", equalTo(LIMITED_TOTAL_COUNT)))));
+	}
+
+	private ResultMatcher modelDisplayBooksCommand(Matcher<?> matcher) {
+		return model().attribute(DISPLAY_BOOKS_COMMAND, matcher);
 	}
 
 	private static DisplayBooksCommand aBooksCommandWithMessages(

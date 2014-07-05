@@ -23,7 +23,6 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +50,7 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
@@ -85,7 +85,7 @@ public class CreateBookControllerComponentTest {
 		mvcMock = webAppContextSetup(wac)
 				.alwaysDo(print())
 				.build();
-		MockitoAnnotations.initMocks(this);
+		initMocks(this);
 		reset(createBookValidator);
 		reset(createBookAssembler);
 		reset(booksRepository);
@@ -143,13 +143,11 @@ public class CreateBookControllerComponentTest {
 	private void thenExpectValidationInvokedFor(CreateBookCommand createBooksCommand) {
 		verify(createBookValidator).validate(createBookCommandCaptor.capture(), any(Errors.class));
 		assertThat(createBookCommandCaptor.getValue(), is(sameInstance(createBooksCommand)));
-		verifyNoMoreInteractions(createBookValidator);
 	}
 
 	private void thenExpectAssemblingCommandToDomainInvokedFor(CreateBookCommand createBookCommand) {
 		verify(createBookAssembler).toDomain(createBookCommandCaptor.capture());
 		assertThat(createBookCommandCaptor.getValue(), is(sameInstance(createBookCommand)));
-		verifyNoMoreInteractions(createBookAssembler);
 	}
 
 	private void thenExpectAssemblingCommandToDomainNotInvoked() {

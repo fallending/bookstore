@@ -17,6 +17,7 @@
 
 package pl.jojczykp.bookstore.controllers.books;
 
+import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,6 +30,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.validation.Errors;
 import org.springframework.web.context.WebApplicationContext;
 import pl.jojczykp.bookstore.commands.books.ChangePagerCommand;
@@ -37,6 +39,7 @@ import pl.jojczykp.bookstore.utils.PageSorterColumn;
 import pl.jojczykp.bookstore.utils.PageSorterDirection;
 import pl.jojczykp.bookstore.validators.ChangePagerValidator;
 
+import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.mockito.BDDMockito.given;
@@ -46,7 +49,6 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
@@ -81,6 +83,7 @@ public class ChangeBooksPagerControllerComponentTest {
 
 	private MockMvc mvcMock;
 	private ResultActions mvcMockPerformResult;
+
 	@Autowired private BooksRepository booksRepository;
 	@Autowired private ChangePagerValidator changePagerValidator;
 	@Autowired private WebApplicationContext wac;
@@ -104,7 +107,6 @@ public class ChangeBooksPagerControllerComponentTest {
 
 		whenUrlActionPerformedWithCommand(URL_ACTION_SORT, command);
 
-		thenExpectValidationNotInvoked();
 		thenExpectSortedBy(sortColumn, sortDirection);
 		thenExpectNoFlashMessages(mvcMockPerformResult);
 		thenExpectHttpRedirectWith(command);
@@ -144,7 +146,6 @@ public class ChangeBooksPagerControllerComponentTest {
 
 		whenUrlActionPerformedWithCommand(URL_ACTION_GO_TO_PAGE, command);
 
-		thenExpectValidationNotInvoked();
 		assertThatScrolledToPage(pageNumber);
 		thenExpectNoFlashMessages(mvcMockPerformResult);
 		thenExpectHttpRedirectWith(command);
@@ -205,35 +206,32 @@ public class ChangeBooksPagerControllerComponentTest {
 		verifyNoMoreInteractions(changePagerValidator);
 	}
 
-	private void thenExpectValidationNotInvoked() {
-		verifyZeroInteractions(changePagerValidator);
-	}
-
 	private void assertThatScrolledToPage(int pageNumber) throws Exception {
 		mvcMockPerformResult
 				.andExpect(status().isFound())
-				.andExpect(flash().attribute(DISPLAY_BOOKS_COMMAND,
-						hasBeanProperty("pager.pageNumber", equalTo(pageNumber))))
-				.andExpect(flash().attribute(DISPLAY_BOOKS_COMMAND,
-						hasBeanProperty("pager.pageSize", equalTo(PAGE_SIZE))))
-				.andExpect(flash().attribute(DISPLAY_BOOKS_COMMAND,
-						hasBeanProperty("pager.pagesCount", equalTo(PAGES_COUNT))));
+				.andExpect(flashDisplayBooksCommand(allOf(
+						hasBeanProperty("pager.pageNumber", equalTo(pageNumber)),
+						hasBeanProperty("pager.pageSize", equalTo(PAGE_SIZE)),
+						hasBeanProperty("pager.pagesCount", equalTo(PAGES_COUNT)))));
 	}
 
 	private void thenExpectPageSizeSetTo(int pageSize) throws Exception {
 		mvcMockPerformResult
 				.andExpect(status().isFound())
-				.andExpect(flash().attribute(DISPLAY_BOOKS_COMMAND,
+				.andExpect(flashDisplayBooksCommand(
 						hasBeanProperty("pager.pageSize", equalTo(pageSize))));
 	}
 
 	private void thenExpectSortedBy(PageSorterColumn sortColumn, PageSorterDirection sortDirection) throws Exception {
 		mvcMockPerformResult
 				.andExpect(status().isFound())
-				.andExpect(flash().attribute(DISPLAY_BOOKS_COMMAND,
-						hasBeanProperty("pager.sorter.column", equalTo(sortColumn))))
-				.andExpect(flash().attribute(DISPLAY_BOOKS_COMMAND,
-						hasBeanProperty("pager.sorter.direction", equalTo(sortDirection))));
+				.andExpect(flashDisplayBooksCommand(allOf(
+						hasBeanProperty("pager.sorter.column", equalTo(sortColumn)),
+						hasBeanProperty("pager.sorter.direction", equalTo(sortDirection)))));
+	}
+
+	private ResultMatcher flashDisplayBooksCommand(Matcher<?> matcher) {
+		return flash().attribute(DISPLAY_BOOKS_COMMAND, matcher);
 	}
 
 	private void thenExpectHttpRedirectWith(ChangePagerCommand command) throws Exception {

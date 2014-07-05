@@ -24,7 +24,6 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +51,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
@@ -89,7 +88,7 @@ public class UpdateBookControllerComponentTest {
 		mvcMock = webAppContextSetup(wac)
 				.alwaysDo(print())
 				.build();
-		MockitoAnnotations.initMocks(this);
+		initMocks(this);
 		reset(updateBookValidator);
 		reset(updateBookAssembler);
 		reset(booksRepository);
@@ -103,7 +102,6 @@ public class UpdateBookControllerComponentTest {
 		whenControllerUpdatePerformedWithCommand(command);
 
 		thenExpectValidationInvokedFor(command);
-		thenExpectAssemblingCommandToDomainInvokedFor(command);
 		thenExpectUpdateInvokedOnRepository();
 		thenExpectInfoOnlyFlashMessages(mvcMockPerformResult, "Title updated.");
 		thenExpectHttpRedirectWith(command);
@@ -117,7 +115,6 @@ public class UpdateBookControllerComponentTest {
 		whenControllerUpdatePerformedWithCommand(command);
 
 		thenExpectValidationInvokedFor(command);
-		thenExpectAssemblingCommandToDomainInvokedFor(command);
 		thenExpectUpdateInvokedOnRepository();
 		thenExpectWarnOnlyFlashMessages(mvcMockPerformResult,
 				"Object updated or deleted by another user. Please try again with actual data.");
@@ -132,8 +129,6 @@ public class UpdateBookControllerComponentTest {
 		whenControllerUpdatePerformedWithCommand(command);
 
 		thenExpectValidationInvokedFor(command);
-		thenExpectAssemblingCommandToDomainNotInvoked();
-		thenExpectUpdateNotInvokedOnRepository();
 		thenExpectErrorOnlyFlashMessages(mvcMockPerformResult, VALIDATOR_ERROR_MESSAGE);
 		thenExpectHttpRedirectWith(command);
 	}
@@ -169,24 +164,10 @@ public class UpdateBookControllerComponentTest {
 		verifyNoMoreInteractions(updateBookValidator);
 	}
 
-	private void thenExpectAssemblingCommandToDomainInvokedFor(UpdateBookCommand updateBookCommand) {
-		verify(updateBookAssembler).toDomain(updateBookCommandCaptor.capture());
-		assertThat(updateBookCommandCaptor.getValue(), is(sameInstance(updateBookCommand)));
-		verifyNoMoreInteractions(updateBookAssembler);
-	}
-
-	private void thenExpectAssemblingCommandToDomainNotInvoked() {
-		verifyZeroInteractions(updateBookAssembler);
-	}
-
 	private void thenExpectUpdateInvokedOnRepository() {
 		verify(booksRepository).update(updatedBookCaptor.capture());
 		assertThat(updatedBookCaptor.getValue(), is(sameInstance(book)));
 		verifyNoMoreInteractions(booksRepository);
-	}
-
-	private void thenExpectUpdateNotInvokedOnRepository() {
-		verifyZeroInteractions(booksRepository);
 	}
 
 	private void thenExpectHttpRedirectWith(UpdateBookCommand command) throws Exception {

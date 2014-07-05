@@ -59,6 +59,18 @@ public class ChangeBooksPagerController {
 		return redirect(request, displayBooksCommand, redirectAttributes);
 	}
 
+	@RequestMapping(value = URL_ACTION_GO_TO_PAGE, method = POST)
+	public RedirectView goToPage(
+			@ModelAttribute(CHANGE_PAGER_COMMAND) ChangePagerCommand changePagerCommand,
+			RedirectAttributes redirectAttributes,
+			HttpServletRequest request)
+	{
+		DisplayBooksCommand displayBooksCommand = new DisplayBooksCommand();
+		displayBooksCommand.setPager(changePagerCommand.getPager());
+
+		return redirect(request, displayBooksCommand, redirectAttributes);
+	}
+
 	@RequestMapping(value = URL_ACTION_SET_PAGE_SIZE, method = POST)
 	public RedirectView setPageSize(
 			@ModelAttribute(CHANGE_PAGER_COMMAND) ChangePagerCommand changePagerCommand,
@@ -98,18 +110,6 @@ public class ChangeBooksPagerController {
 		displayBooksCommand.getMessages().addInfos("Page size changed.");
 
 		return displayBooksCommand;
-	}
-
-	@RequestMapping(value = URL_ACTION_GO_TO_PAGE, method = POST)
-	public RedirectView goToPage(
-			@ModelAttribute(CHANGE_PAGER_COMMAND) ChangePagerCommand changePagerCommand,
-			RedirectAttributes redirectAttributes,
-			HttpServletRequest request)
-	{
-		DisplayBooksCommand displayBooksCommand = new DisplayBooksCommand();
-		displayBooksCommand.setPager(changePagerCommand.getPager());
-
-		return redirect(request, displayBooksCommand, redirectAttributes);
 	}
 
 	private RedirectView redirect(HttpServletRequest request, DisplayBooksCommand displayBooksCommand,
