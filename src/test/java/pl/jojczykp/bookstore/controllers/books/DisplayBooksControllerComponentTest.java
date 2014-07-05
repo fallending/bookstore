@@ -156,20 +156,20 @@ public class DisplayBooksControllerComponentTest {
 	}
 
 	@Test
-	public void shouldUseDefaultBooksCommandWhenNoCommandPresent() throws Exception {
-		whenControllerReadPerformedWithNoCommand();
-
-		thenExpectProcessedCommandInstance(defaultCommand);
-		thenExpectCorrectViewSelectedAndModelSet();
-	}
-
-	@Test
-	public void shouldWalkThroughComponentsAndReturnData() throws Exception {
+	public void shouldDisplay() throws Exception {
 		DisplayBooksCommand command = aBooksCommandWithPager();
 
 		whenControllerReadPerformedWith(command);
 
 		thenExpectProcessedCommandInstance(command);
+		thenExpectCorrectViewSelectedAndModelSet();
+	}
+
+	@Test
+	public void shouldDisplayForDefaultBooksCommandWhenNotPresent() throws Exception {
+		whenControllerReadPerformedWithNoCommand();
+
+		thenExpectProcessedCommandInstance(defaultCommand);
 		thenExpectCorrectViewSelectedAndModelSet();
 	}
 
