@@ -19,67 +19,66 @@ package pl.jojczykp.bookstore.controllers.books;
 
 import junitparams.Parameters;
 import org.junit.Test;
-import pl.jojczykp.bookstore.consts.BooksConsts;
-import pl.jojczykp.bookstore.testutils.controllers.security.SecutityControllersTestAbstract;
+import pl.jojczykp.bookstore.testutils.controllers.security.HttpAccessVerifier;
+import pl.jojczykp.bookstore.testutils.controllers.security.SecurityControllersTestAbstract;
+
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 import static junitparams.JUnitParamsRunner.$;
+import static pl.jojczykp.bookstore.consts.BooksConsts.URL_ACTION_CREATE;
+import static pl.jojczykp.bookstore.consts.BooksConsts.URL_ACTION_DELETE;
+import static pl.jojczykp.bookstore.consts.BooksConsts.URL_ACTION_DISPLAY;
+import static pl.jojczykp.bookstore.consts.BooksConsts.URL_ACTION_DOWNLOAD;
+import static pl.jojczykp.bookstore.consts.BooksConsts.URL_ACTION_GO_TO_PAGE;
+import static pl.jojczykp.bookstore.consts.BooksConsts.URL_ACTION_SET_PAGE_SIZE;
+import static pl.jojczykp.bookstore.consts.BooksConsts.URL_ACTION_SORT;
+import static pl.jojczykp.bookstore.consts.BooksConsts.URL_ACTION_UPDATE;
+import static pl.jojczykp.bookstore.testutils.controllers.security.HttpAccessVerifier.allow;
+import static pl.jojczykp.bookstore.testutils.controllers.security.HttpAccessVerifier.deny;
 
-public class BooksControllersSecurityComponentTest extends SecutityControllersTestAbstract {
+public class BooksControllersSecurityComponentTest extends SecurityControllersTestAbstract {
 
-	public static Object[] accessibleViaPost() {
-		return cartesian(booksUrlsViaPost(), $(ROLE_USER, ROLE_ADMIN));
-	}
-
-	public static Object[] deniedViaPost() {
-		return cartesian(booksUrlsViaPost(), $(ROLE_UNAUTHORIZED));
-	}
-
-	public static Object[] accessibleViaGet() {
-		return cartesian(booksUrlsViaGet(), $(ROLE_USER, ROLE_ADMIN));
-	}
-
-	public static Object[] deniedViaGet() {
-		return cartesian(booksUrlsViaGet(), $(ROLE_UNAUTHORIZED));
-	}
-
-	@Test
-	@Parameters(method = "accessibleViaPost")
-	public void shouldBeAccessibleViaPost(String url, String role) {
-		verifyAccessibleViaPost(url, role);
-	}
-
-	@Test
-	@Parameters(method = "deniedViaPost")
-	public void shouldBeDeniedViaPost(String url, String role) {
-		verifyDeniedViaPost(url, role);
-	}
-
-	@Test
-	@Parameters(method = "accessibleViaGet")
-	public void shouldBeAccessibleViaGet(String url, String role) {
-		verifyAccessibleViaGet(url, role);
-	}
-
-	@Test
-	@Parameters(method = "deniedViaGet")
-	public void shouldBeDeniedViaGet(String url, String role) {
-		verifyDeniedViaGet(url, role);
-	}
-
-	private static Object[] booksUrlsViaPost() {
+	public static Object[] rules() {
 		return $(
-				BooksConsts.URL_ACTION_CREATE,
-				BooksConsts.URL_ACTION_UPDATE,
-				BooksConsts.URL_ACTION_DELETE,
-				BooksConsts.URL_ACTION_SORT,
-				BooksConsts.URL_ACTION_GO_TO_PAGE,
-				BooksConsts.URL_ACTION_SET_PAGE_SIZE);
+			allow().method(POST).url(URL_ACTION_CREATE).role(ROLE_ADMIN),
+			deny().method(POST).url(URL_ACTION_CREATE).role(ROLE_USER),
+			deny().method(POST).url(URL_ACTION_CREATE).role(ROLE_UNAUTHORIZED),
+
+			allow().method(POST).url(URL_ACTION_UPDATE).role(ROLE_ADMIN),
+			deny().method(POST).url(URL_ACTION_UPDATE).role(ROLE_USER),
+			deny().method(POST).url(URL_ACTION_UPDATE).role(ROLE_UNAUTHORIZED),
+
+			allow().method(POST).url(URL_ACTION_DELETE).role(ROLE_ADMIN),
+			deny().method(POST).url(URL_ACTION_DELETE).role(ROLE_USER),
+			deny().method(POST).url(URL_ACTION_DELETE).role(ROLE_UNAUTHORIZED),
+
+			deny().method(POST).url(URL_ACTION_SORT).role(ROLE_ADMIN),
+			allow().method(POST).url(URL_ACTION_SORT).role(ROLE_USER),
+			deny().method(POST).url(URL_ACTION_SORT).role(ROLE_UNAUTHORIZED),
+
+			deny().method(POST).url(URL_ACTION_GO_TO_PAGE).role(ROLE_ADMIN),
+			allow().method(POST).url(URL_ACTION_GO_TO_PAGE).role(ROLE_USER),
+			deny().method(POST).url(URL_ACTION_GO_TO_PAGE).role(ROLE_UNAUTHORIZED),
+
+			deny().method(POST).url(URL_ACTION_SET_PAGE_SIZE).role(ROLE_ADMIN),
+			allow().method(POST).url(URL_ACTION_SET_PAGE_SIZE).role(ROLE_USER),
+			deny().method(POST).url(URL_ACTION_SET_PAGE_SIZE).role(ROLE_UNAUTHORIZED),
+
+			allow().method(GET).url(URL_ACTION_DISPLAY).role(ROLE_USER),
+			deny().method(GET).url(URL_ACTION_DISPLAY).role(ROLE_ADMIN),
+			deny().method(GET).url(URL_ACTION_DISPLAY).role(ROLE_UNAUTHORIZED),
+
+			allow().method(GET).url(URL_ACTION_DOWNLOAD).role(ROLE_USER),
+			deny().method(GET).url(URL_ACTION_DOWNLOAD).role(ROLE_ADMIN),
+			deny().method(GET).url(URL_ACTION_DOWNLOAD).role(ROLE_UNAUTHORIZED)
+		);
 	}
 
-	private static Object[] booksUrlsViaGet() {
-		return $(
-				BooksConsts.URL_ACTION_DISPLAY,
-				BooksConsts.URL_ACTION_DOWNLOAD);
+	@Test
+	@Parameters(method = "rules")
+	public void shouldBeHaveDesiredAccess(HttpAccessVerifier verifier) {
+		verifier.verify(getMockedContext());
 	}
 
 }

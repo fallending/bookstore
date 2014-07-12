@@ -19,28 +19,31 @@ package pl.jojczykp.bookstore.controllers.auth;
 
 import junitparams.Parameters;
 import org.junit.Test;
-import pl.jojczykp.bookstore.testutils.controllers.security.SecutityControllersTestAbstract;
+import pl.jojczykp.bookstore.testutils.controllers.security.HttpAccessVerifier;
+import pl.jojczykp.bookstore.testutils.controllers.security.SecurityControllersTestAbstract;
 
 import static junitparams.JUnitParamsRunner.$;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static pl.jojczykp.bookstore.testutils.controllers.security.HttpAccessVerifier.allowFind;
 
-public class AuthControllerActionSecurityComponentTest extends SecutityControllersTestAbstract {
+public class AuthControllerActionSecurityComponentTest extends SecurityControllersTestAbstract {
 
-	public static final Object[] ALL_ROLES = $(ROLE_USER, ROLE_ADMIN, ROLE_UNAUTHORIZED);
+	public static Object[] rules() {
+		return $(
+				allowFind().method(POST).url("/auth/login").role(ROLE_USER),
+				allowFind().method(POST).url("/auth/login").role(ROLE_ADMIN),
+				allowFind().method(POST).url("/auth/login").role(ROLE_UNAUTHORIZED),
 
-	public static Object[] loginActionAccessibleViaPost() {
-		return cartesian($("/auth/login"), ALL_ROLES);
-	}
-
-	public static Object[] logoutActionAccessibleViaPost() {
-		return cartesian($("/auth/logout"), ALL_ROLES);
+				allowFind().method(POST).url("/auth/logout").role(ROLE_USER),
+				allowFind().method(POST).url("/auth/logout").role(ROLE_ADMIN),
+				allowFind().method(POST).url("/auth/logout").role(ROLE_UNAUTHORIZED)
+		);
 	}
 
 	@Test
-	@Parameters(method = "loginActionAccessibleViaPost, logoutActionAccessibleViaPost")
-	public void shouldLoginBeAccessibleViaPost(String url, String role) {
-		verifyAccess(post(url), role, status().isFound());
+	@Parameters(method = "rules")
+	public void shouldBeHaveDesiredAccess(HttpAccessVerifier verifier) {
+		verifier.verify(getMockedContext());
 	}
 
 }

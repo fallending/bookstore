@@ -48,7 +48,7 @@ public class UpdateBookController {
 	@Autowired private BooksRepository booksRepository;
 	@Autowired private UpdateBookAssembler updateBookAssembler;
 
-	@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = URL_ACTION_UPDATE, method = POST)
 	public RedirectView update(
 			@ModelAttribute(UPDATE_BOOK_COMMAND) UpdateBookCommand updateBookCommand,

@@ -48,7 +48,7 @@ public class ChangeBooksPagerController {
 
 	@Value("${view.books.defaultPageSize}") private int defaultPageSize;
 
-	@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_USER')")
 	@RequestMapping(value = URL_ACTION_SORT, method = POST)
 	public RedirectView sort(
 			@ModelAttribute(CHANGE_PAGER_COMMAND) ChangePagerCommand changePagerCommand,
@@ -61,7 +61,7 @@ public class ChangeBooksPagerController {
 		return redirect(request, displayBooksCommand, redirectAttributes);
 	}
 
-	@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_USER')")
 	@RequestMapping(value = URL_ACTION_GO_TO_PAGE, method = POST)
 	public RedirectView goToPage(
 			@ModelAttribute(CHANGE_PAGER_COMMAND) ChangePagerCommand changePagerCommand,
@@ -74,7 +74,7 @@ public class ChangeBooksPagerController {
 		return redirect(request, displayBooksCommand, redirectAttributes);
 	}
 
-	@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_USER')")
 	@RequestMapping(value = URL_ACTION_SET_PAGE_SIZE, method = POST)
 	public RedirectView setPageSize(
 			@ModelAttribute(CHANGE_PAGER_COMMAND) ChangePagerCommand changePagerCommand,

@@ -52,7 +52,7 @@ public class DisplayBooksController {
 		return booksCommandFactory.create();
 	}
 
-	@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_USER')")
 	@RequestMapping(value = URL_ACTION_DISPLAY, method = GET)
 	public ModelAndView display(
 			@ModelAttribute(DISPLAY_BOOKS_COMMAND) DisplayBooksCommand displayBooksCommand)

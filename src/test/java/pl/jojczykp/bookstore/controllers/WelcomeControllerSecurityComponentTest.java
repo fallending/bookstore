@@ -19,20 +19,29 @@ package pl.jojczykp.bookstore.controllers;
 
 import junitparams.Parameters;
 import org.junit.Test;
-import pl.jojczykp.bookstore.testutils.controllers.security.SecutityControllersTestAbstract;
+import pl.jojczykp.bookstore.testutils.controllers.security.HttpAccessVerifier;
+import pl.jojczykp.bookstore.testutils.controllers.security.SecurityControllersTestAbstract;
 
 import static junitparams.JUnitParamsRunner.$;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static pl.jojczykp.bookstore.testutils.controllers.security.HttpAccessVerifier.allow;
 
-public class WelcomeControllerSecurityComponentTest extends SecutityControllersTestAbstract {
+public class WelcomeControllerSecurityComponentTest extends SecurityControllersTestAbstract {
 
-	public static Object[] accessible() {
-		return cartesian($("/"), $(ROLE_USER, ROLE_ADMIN, ROLE_UNAUTHORIZED));
+	private static final String URL = "/";
+
+	public static Object[] rules() {
+		return $(
+				allow().method(GET).url(URL).role(ROLE_ADMIN),
+				allow().method(GET).url(URL).role(ROLE_USER),
+				allow().method(GET).url(URL).role(ROLE_UNAUTHORIZED)
+		);
 	}
 
 	@Test
-	@Parameters(method = "accessible")
-	public void shouldBeAccessibleViaGet(String url, String role) {
-		verifyAccessibleViaGet(url, role);
+	@Parameters(method = "rules")
+	public void shouldBeHaveDesiredAccess(HttpAccessVerifier verifier) {
+		verifier.verify(getMockedContext());
 	}
 
 }

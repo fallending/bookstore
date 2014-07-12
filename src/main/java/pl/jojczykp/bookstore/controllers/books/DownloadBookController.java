@@ -45,7 +45,7 @@ public class DownloadBookController {
 
 	@Autowired private BooksRepository booksRepository;
 
-	@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_USER')")
 	@RequestMapping(value = URL_ACTION_DOWNLOAD, method = GET)
 	@Transactional
 	public void downloadBook(

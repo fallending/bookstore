@@ -30,15 +30,9 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.web.context.WebApplicationContext;
 
 import javax.servlet.Filter;
-import java.util.ArrayList;
-import java.util.List;
 
-import static junitparams.JUnitParamsRunner.$;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 @RunWith(JUnitParamsRunner.class)
@@ -48,16 +42,16 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 		"classpath:spring/controllers-mock-context.xml" ,
 		"classpath:spring/authentication-provider-mock-context.xml",
 		"classpath:spring/applicationContext/security-context.xml"})
-public abstract class SecutityControllersTestAbstract {
+public abstract class SecurityControllersTestAbstract {
 
 	public static final String ROLE_USER = "USER";
 	public static final String ROLE_ADMIN = "ADMIN";
 	public static final String ROLE_UNAUTHORIZED = "UNAUTHORIZED";
 
 	private MockMvc mvcMock;
+
 	@Autowired private WebApplicationContext wac;
 	@Autowired private Filter springSecurityFilterChain;
-
 	@Before
 	public void setUpContext() throws Exception {
 		new TestContextManager(getClass()).prepareTestInstance(this);
@@ -65,22 +59,6 @@ public abstract class SecutityControllersTestAbstract {
 				.addFilters(springSecurityFilterChain)
 				.alwaysDo(print())
 				.build();
-	}
-
-	public void verifyAccessibleViaPost(String url, String role) {
-		verifyAccess(post(url), role, status().isAccepted());
-	}
-
-	public void verifyDeniedViaPost(String url, String role) {
-		verifyAccess(post(url), role, status().isForbidden());
-	}
-
-	public void verifyAccessibleViaGet(String url, String role) {
-		verifyAccess(get(url), role, status().isAccepted());
-	}
-
-	public void verifyDeniedViaGet(String url, String role) {
-		verifyAccess(get(url), role, status().isForbidden());
 	}
 
 	public void verifyAccess(MockHttpServletRequestBuilder methodAndUrl, String roles, ResultMatcher resultMatcher) {
@@ -93,15 +71,8 @@ public abstract class SecutityControllersTestAbstract {
 		}
 	}
 
-	public static Object[] cartesian(Object[] elements1, Object[] elements2) {
-		List<Object[]> result = new ArrayList<>(elements1.length * elements2.length);
-		for (Object element1 : elements1) {
-			for (Object element2 : elements2) {
-				result.add($(element1, element2));
-			}
-		}
-
-		return result.toArray();
+	public MockMvc getMockedContext() {
+		return mvcMock;
 	}
 
 }

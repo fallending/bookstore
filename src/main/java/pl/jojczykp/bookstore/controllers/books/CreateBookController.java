@@ -47,7 +47,7 @@ public class CreateBookController {
 	@Autowired private BooksRepository booksRepository;
 	@Autowired private CreateBookAssembler createBookAssembler;
 
-	@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN')")
 	@RequestMapping(value = URL_ACTION_CREATE, method = POST)
 	public RedirectView create(
 			@ModelAttribute(CREATE_BOOK_COMMAND) CreateBookCommand createBookCommand,

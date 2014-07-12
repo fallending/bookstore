@@ -43,7 +43,7 @@ public class DeleteBookController {
 
 	@Autowired private BooksRepository booksRepository;
 
-	@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = URL_ACTION_DELETE, method = POST)
 	public RedirectView delete(
 			@ModelAttribute(DELETE_BOOKS_COMMAND) DeleteBooksCommand deleteBooksCommand,

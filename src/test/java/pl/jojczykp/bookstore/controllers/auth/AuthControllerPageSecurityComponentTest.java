@@ -19,26 +19,31 @@ package pl.jojczykp.bookstore.controllers.auth;
 
 import junitparams.Parameters;
 import org.junit.Test;
-import pl.jojczykp.bookstore.testutils.controllers.security.SecutityControllersTestAbstract;
+import pl.jojczykp.bookstore.testutils.controllers.security.HttpAccessVerifier;
+import pl.jojczykp.bookstore.testutils.controllers.security.SecurityControllersTestAbstract;
 
 import static junitparams.JUnitParamsRunner.$;
-import static pl.jojczykp.bookstore.consts.SecurityConsts.URL_PAGE_LOGIN;
-import static pl.jojczykp.bookstore.consts.SecurityConsts.URL_PAGE_LOGOUT;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static pl.jojczykp.bookstore.testutils.controllers.security.HttpAccessVerifier.allow;
 
-public class AuthControllerPageSecurityComponentTest extends SecutityControllersTestAbstract {
+public class AuthControllerPageSecurityComponentTest extends SecurityControllersTestAbstract {
 
-	public static Object[] loginPageAccessibleViaGet() {
-		return cartesian($(URL_PAGE_LOGIN), $(ROLE_USER, ROLE_ADMIN, ROLE_UNAUTHORIZED));
-	}
+	public static Object[] rules() {
+		return $(
+				allow().method(GET).url("/auth/loginPage").role(ROLE_USER),
+				allow().method(GET).url("/auth/loginPage").role(ROLE_ADMIN),
+				allow().method(GET).url("/auth/loginPage").role(ROLE_UNAUTHORIZED),
 
-	public static Object[] logoutPageAccessibleViaGet() {
-		return cartesian($(URL_PAGE_LOGOUT), $(ROLE_USER, ROLE_ADMIN, ROLE_UNAUTHORIZED));
+				allow().method(GET).url("/auth/logoutPage").role(ROLE_USER),
+				allow().method(GET).url("/auth/logoutPage").role(ROLE_ADMIN),
+				allow().method(GET).url("/auth/logoutPage").role(ROLE_UNAUTHORIZED)
+		);
 	}
 
 	@Test
-	@Parameters(method = "loginPageAccessibleViaGet, logoutPageAccessibleViaGet")
-	public void shouldBeAccessibleViaGet(String url, String role) {
-		verifyAccessibleViaGet(url, role);
+	@Parameters(method = "rules")
+	public void shouldBeHaveDesiredAccess(HttpAccessVerifier verifier) {
+		verifier.verify(getMockedContext());
 	}
 
 }
