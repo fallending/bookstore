@@ -18,6 +18,7 @@
 package pl.jojczykp.bookstore.controllers.books;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -46,6 +47,7 @@ public class CreateBookController {
 	@Autowired private BooksRepository booksRepository;
 	@Autowired private CreateBookAssembler createBookAssembler;
 
+	@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
 	@RequestMapping(value = URL_ACTION_CREATE, method = POST)
 	public RedirectView create(
 			@ModelAttribute(CREATE_BOOK_COMMAND) CreateBookCommand createBookCommand,

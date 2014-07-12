@@ -16,9 +16,9 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
-	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	   xmlns:aop="http://www.springframework.org/schema/aop"
-	   xsi:schemaLocation="
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="
 			http://www.springframework.org/schema/beans
 			http://www.springframework.org/schema/beans/spring-beans.xsd
 			http://www.springframework.org/schema/aop
@@ -26,6 +26,6 @@
 
 	<aop:aspectj-autoproxy/>
 
-	<bean id="requestMappingLoggingAspect" class="pl.jojczykp.bookstore.aspects.LoggingRequestMappingAspect"/>
+	<bean class="pl.jojczykp.bookstore.testutils.controllers.security.MakeControllerAcceptAnyRequestsAspect"/>
 
 </beans>

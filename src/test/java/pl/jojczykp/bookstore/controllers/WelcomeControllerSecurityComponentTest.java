@@ -17,21 +17,32 @@
 
 package pl.jojczykp.bookstore.controllers;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.view.RedirectView;
+import junitparams.Parameters;
+import org.junit.Test;
+import pl.jojczykp.bookstore.testutils.controllers.security.SecutityControllersTestAbstract;
 
-import javax.servlet.http.HttpServletRequest;
+import static junitparams.JUnitParamsRunner.$;
 
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static pl.jojczykp.bookstore.consts.BooksConsts.URL_ACTION_DISPLAY;
+public class WelcomeControllerSecurityComponentTest extends SecutityControllersTestAbstract {
 
-@Controller
-public class WelcomeController {
+	public static Object[] accessible() {
+		return cartesian($("/"), $(ROLE_USER, ROLE_ADMIN));
+	}
 
-	@RequestMapping(value = "/", method = GET)
-	public RedirectView redirectToWelcomePage(HttpServletRequest request) {
-		return new RedirectView(request.getContextPath() + URL_ACTION_DISPLAY);
+	public static Object[] denied() {
+		return cartesian($("/"), $(ROLE_UNAUTHORIZED));
+	}
+
+	@Test
+	@Parameters(method = "accessible")
+	public void shouldBeAccessibleViaGet(String url, String role) {
+		verifyAccessibleViaGet(url, role);
+	}
+
+	@Test
+	@Parameters(method = "denied")
+	public void shouldBeDeniedViaGet(String url, String role) {
+		verifyDeniedViaGet(url, role);
 	}
 
 }

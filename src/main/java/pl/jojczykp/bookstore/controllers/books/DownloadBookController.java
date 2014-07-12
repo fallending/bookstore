@@ -18,6 +18,7 @@
 package pl.jojczykp.bookstore.controllers.books;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -44,6 +45,7 @@ public class DownloadBookController {
 
 	@Autowired private BooksRepository booksRepository;
 
+	@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
 	@RequestMapping(value = URL_ACTION_DOWNLOAD, method = GET)
 	@Transactional
 	public void downloadBook(

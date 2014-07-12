@@ -18,6 +18,7 @@
 package pl.jojczykp.bookstore.controllers.errors;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -29,6 +30,12 @@ import static pl.jojczykp.bookstore.consts.BooksConsts.EXCEPTION_VIEW;
 
 @ControllerAdvice
 public class ControllerExceptionHandler {
+
+	@ExceptionHandler(AccessDeniedException.class)
+	@ResponseStatus(value = HttpStatus.FORBIDDEN)
+	public ModelAndView handleAccessDeniedException(AccessDeniedException ex) {
+		return redirectToExceptionView(ex);
+	}
 
 	@ExceptionHandler(ResourceNotFoundException.class)
 	@ResponseStatus(value = HttpStatus.NOT_FOUND)

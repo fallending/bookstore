@@ -53,7 +53,7 @@
 
 <#macro sectionHint>
 <div class="hint">
-	Sample credentials: admin/admin, user/user
+	Sample credentials: admin/admin, user/user, unauthorized/unauthorized
 </div>
 </#macro>
 

@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -52,6 +53,11 @@ public class ControllerExceptionHandlerComponentTest {
 		mvcMock = webAppContextSetup(wac)
 				.alwaysDo(print())
 				.build();
+	}
+
+	@Test
+	public void shouldHandleAccessDeniedExceptionFromController() throws Exception {
+		shouldHandleExceptionFromController(AccessDeniedException.class, HttpStatus.FORBIDDEN);
 	}
 
 	@Test

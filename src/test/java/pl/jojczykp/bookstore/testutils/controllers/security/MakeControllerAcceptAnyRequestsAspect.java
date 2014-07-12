@@ -15,23 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
  */
 
-package pl.jojczykp.bookstore.controllers;
+package pl.jojczykp.bookstore.testutils.controllers.security;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.view.RedirectView;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 
-import javax.servlet.http.HttpServletRequest;
+@Aspect
+public class MakeControllerAcceptAnyRequestsAspect {
 
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static pl.jojczykp.bookstore.consts.BooksConsts.URL_ACTION_DISPLAY;
-
-@Controller
-public class WelcomeController {
-
-	@RequestMapping(value = "/", method = GET)
-	public RedirectView redirectToWelcomePage(HttpServletRequest request) {
-		return new RedirectView(request.getContextPath() + URL_ACTION_DISPLAY);
+	@Before("execution(@org.springframework.web.bind.annotation.RequestMapping * *.*(..))")
+	public void acceptAnyRequest() {
+		throw new MakeControllerAcceptAnyRequestException();
 	}
 
 }

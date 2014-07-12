@@ -15,23 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
  */
 
-package pl.jojczykp.bookstore.controllers;
+package pl.jojczykp.bookstore.testutils.controllers.security;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.view.RedirectView;
+public class MakeControllerAcceptAnyRequestException extends RuntimeException {
 
-import javax.servlet.http.HttpServletRequest;
-
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static pl.jojczykp.bookstore.consts.BooksConsts.URL_ACTION_DISPLAY;
-
-@Controller
-public class WelcomeController {
-
-	@RequestMapping(value = "/", method = GET)
-	public RedirectView redirectToWelcomePage(HttpServletRequest request) {
-		return new RedirectView(request.getContextPath() + URL_ACTION_DISPLAY);
-	}
+	private static final long serialVersionUID = -5760028681191938673L;
 
 }

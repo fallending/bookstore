@@ -18,6 +18,7 @@
 package pl.jojczykp.bookstore.controllers.errors;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,6 +34,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 @Controller
 public class HttpErrorController {
 
+	@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
 	@RequestMapping(value = "/httpError/{id}", method = {GET, POST})
 	public ModelAndView handleHttpError(@PathVariable int id, HttpServletRequest request) {
 		HttpErrorCommand httpErrorCommand = httpErrorCommandFor(id, request);

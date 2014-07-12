@@ -15,23 +15,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
  */
 
-package pl.jojczykp.bookstore.controllers;
+package pl.jojczykp.bookstore.testutils.controllers.security;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
-import javax.servlet.http.HttpServletRequest;
+@ControllerAdvice
+public class MakeControllerAcceptAnyRequestsAdvice {
 
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static pl.jojczykp.bookstore.consts.BooksConsts.URL_ACTION_DISPLAY;
-
-@Controller
-public class WelcomeController {
-
-	@RequestMapping(value = "/", method = GET)
-	public RedirectView redirectToWelcomePage(HttpServletRequest request) {
-		return new RedirectView(request.getContextPath() + URL_ACTION_DISPLAY);
+	@ExceptionHandler(MakeControllerAcceptAnyRequestException.class)
+	@ResponseStatus(value = HttpStatus.ACCEPTED)
+	public void handleAccessDeniedException() {
 	}
 
 }
