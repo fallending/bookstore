@@ -24,5 +24,5 @@ public abstract class SecurityConsts {
 
 	public static final String LOGIN_VIEW = "loginPage";
 
-	public static final String LOGOUT_ATTRIBUTE = "loggedOut";
+	public static final String IS_LOGGED_OUT_ATTRIBUTE = "loggedOut";
 }

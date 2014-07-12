@@ -34,7 +34,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 @Controller
 public class HttpErrorController {
 
-	@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+	@PreAuthorize("isAuthenticated()")
 	@RequestMapping(value = "/httpError/{id}", method = {GET, POST})
 	public ModelAndView handleHttpError(@PathVariable int id, HttpServletRequest request) {
 		HttpErrorCommand httpErrorCommand = httpErrorCommandFor(id, request);

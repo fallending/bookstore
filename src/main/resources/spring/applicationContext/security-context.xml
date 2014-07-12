@@ -30,7 +30,7 @@
 	<http pattern="/img/public/*" security="none" />
 	<http pattern="/favicon.ico" security="none" />
 
-	<http>
+	<http use-expressions="true">
 		<form-login login-page="/auth/loginPage"
 					login-processing-url="/auth/login"
 					authentication-failure-url="/auth/loginPage"
@@ -40,7 +40,7 @@
 		<logout logout-url="/auth/logout"
 				logout-success-url="/auth/logoutPage" />
 
-		<intercept-url pattern="/**" access="ROLE_USER,ROLE_ADMIN" />
+		<intercept-url pattern="/**" access="isAuthenticated()" />
 	</http>
 
 	<beans:bean name="bCryptEncoder"

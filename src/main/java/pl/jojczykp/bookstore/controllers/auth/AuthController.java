@@ -24,7 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static pl.jojczykp.bookstore.consts.SecurityConsts.LOGIN_VIEW;
-import static pl.jojczykp.bookstore.consts.SecurityConsts.LOGOUT_ATTRIBUTE;
+import static pl.jojczykp.bookstore.consts.SecurityConsts.IS_LOGGED_OUT_ATTRIBUTE;
 import static pl.jojczykp.bookstore.consts.SecurityConsts.URL_PAGE_LOGIN;
 import static pl.jojczykp.bookstore.consts.SecurityConsts.URL_PAGE_LOGOUT;
 
@@ -38,7 +38,7 @@ public class AuthController {
 
 	@RequestMapping(value = URL_PAGE_LOGOUT, method = GET)
 	public ModelAndView logoutPage() {
-		ModelMap modelMap = new ModelMap().addAttribute(LOGOUT_ATTRIBUTE, true);
+		ModelMap modelMap = new ModelMap().addAttribute(IS_LOGGED_OUT_ATTRIBUTE, true);
 		return new ModelAndView(LOGIN_VIEW, modelMap);
 	}
 

@@ -26,23 +26,13 @@ import static junitparams.JUnitParamsRunner.$;
 public class WelcomeControllerSecurityComponentTest extends SecutityControllersTestAbstract {
 
 	public static Object[] accessible() {
-		return cartesian($("/"), $(ROLE_USER, ROLE_ADMIN));
-	}
-
-	public static Object[] denied() {
-		return cartesian($("/"), $(ROLE_UNAUTHORIZED));
+		return cartesian($("/"), $(ROLE_USER, ROLE_ADMIN, ROLE_UNAUTHORIZED));
 	}
 
 	@Test
 	@Parameters(method = "accessible")
 	public void shouldBeAccessibleViaGet(String url, String role) {
 		verifyAccessibleViaGet(url, role);
-	}
-
-	@Test
-	@Parameters(method = "denied")
-	public void shouldBeDeniedViaGet(String url, String role) {
-		verifyDeniedViaGet(url, role);
 	}
 
 }

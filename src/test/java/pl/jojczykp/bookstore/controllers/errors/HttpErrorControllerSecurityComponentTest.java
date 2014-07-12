@@ -26,11 +26,7 @@ import static junitparams.JUnitParamsRunner.$;
 public class HttpErrorControllerSecurityComponentTest extends SecutityControllersTestAbstract {
 
 	public static Object[] accessibleViaGetAndPost() {
-		return cartesian(urls(), $(ROLE_USER, ROLE_ADMIN));
-	}
-
-	public static Object[] deniedViaGetAndPost() {
-		return cartesian(urls(), $(ROLE_UNAUTHORIZED));
+		return cartesian(urls(), $(ROLE_USER, ROLE_ADMIN, ROLE_UNAUTHORIZED));
 	}
 
 	@Test
@@ -43,18 +39,6 @@ public class HttpErrorControllerSecurityComponentTest extends SecutityController
 	@Parameters(method = "accessibleViaGetAndPost")
 	public void shouldBeAccessibleViaPost(String url, String role) {
 		verifyAccessibleViaPost(url, role);
-	}
-
-	@Test
-	@Parameters(method = "deniedViaGetAndPost")
-	public void shouldBeDeniedViaGet(String url, String role) {
-		verifyDeniedViaGet(url, role);
-	}
-
-	@Test
-	@Parameters(method = "deniedViaGetAndPost")
-	public void shouldBeDeniedViaPost(String url, String role) {
-		verifyDeniedViaPost(url, role);
 	}
 
 	private static Object[] urls() {
