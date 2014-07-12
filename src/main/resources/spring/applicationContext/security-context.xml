@@ -24,21 +24,21 @@
 	http://www.springframework.org/schema/security
 	http://www.springframework.org/schema/security/spring-security.xsd">
 
-	<http pattern="/security/loginPage" security="none" />
-	<http pattern="/security/logoutPage" security="none" />
+	<http pattern="/auth/loginPage" security="none" />
+	<http pattern="/auth/logoutPage" security="none" />
 	<http pattern="/css/public/*" security="none" />
 	<http pattern="/img/public/*" security="none" />
 	<http pattern="/favicon.ico" security="none" />
 
 	<http>
-		<form-login login-page="/security/loginPage"
-					login-processing-url="/security/login"
-					authentication-failure-url="/security/loginPage"
+		<form-login login-page="/auth/loginPage"
+					login-processing-url="/auth/login"
+					authentication-failure-url="/auth/loginPage"
 					username-parameter="username"
 					password-parameter="password"
 					default-target-url="/" />
-		<logout logout-url="/security/logout"
-				logout-success-url="/security/logoutPage" />
+		<logout logout-url="/auth/logout"
+				logout-success-url="/auth/logoutPage" />
 
 		<intercept-url pattern="/**" access="ROLE_USER,ROLE_ADMIN" />
 	</http>

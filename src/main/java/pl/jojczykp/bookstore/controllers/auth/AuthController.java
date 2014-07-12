@@ -15,30 +15,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
  */
 
-package pl.jojczykp.bookstore.controllers.security;
+package pl.jojczykp.bookstore.controllers.auth;
 
-import junitparams.Parameters;
-import org.junit.Test;
-import pl.jojczykp.bookstore.testutils.controllers.security.SecutityControllersTestAbstract;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
-import static junitparams.JUnitParamsRunner.$;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static pl.jojczykp.bookstore.consts.SecurityConsts.LOGIN_VIEW;
+import static pl.jojczykp.bookstore.consts.SecurityConsts.LOGOUT_ATTRIBUTE;
 import static pl.jojczykp.bookstore.consts.SecurityConsts.URL_PAGE_LOGIN;
 import static pl.jojczykp.bookstore.consts.SecurityConsts.URL_PAGE_LOGOUT;
 
-public class SecurityControllerSecurityPageComponentTest extends SecutityControllersTestAbstract {
+@Controller
+public class AuthController {
 
-	public static Object[] loginPageAccessibleViaGet() {
-		return cartesian($(URL_PAGE_LOGIN), $(ROLE_USER, ROLE_ADMIN, ROLE_UNAUTHORIZED));
+	@RequestMapping(value = URL_PAGE_LOGIN, method = GET)
+	public ModelAndView loginPage() {
+		return new ModelAndView(LOGIN_VIEW);
 	}
 
-	public static Object[] logoutPageAccessibleViaGet() {
-		return cartesian($(URL_PAGE_LOGOUT), $(ROLE_USER, ROLE_ADMIN, ROLE_UNAUTHORIZED));
-	}
-
-	@Test
-	@Parameters(method = "loginPageAccessibleViaGet, logoutPageAccessibleViaGet")
-	public void shouldBeAccessibleViaGet(String url, String role) {
-		verifyAccessibleViaGet(url, role);
+	@RequestMapping(value = URL_PAGE_LOGOUT, method = GET)
+	public ModelAndView logoutPage() {
+		ModelMap modelMap = new ModelMap().addAttribute(LOGOUT_ATTRIBUTE, true);
+		return new ModelAndView(LOGIN_VIEW, modelMap);
 	}
 
 }

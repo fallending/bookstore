@@ -58,7 +58,7 @@
 </#macro>
 
 <#macro sectionLoginTable>
-	<form method="POST" action="<@spring.url '/security/login'/>">
+	<form method="POST" action="<@spring.url '/auth/login'/>">
 		<div class="sectionTable">
 			<table>
 				<tr>

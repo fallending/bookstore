@@ -19,8 +19,8 @@ package pl.jojczykp.bookstore.consts;
 
 public abstract class SecurityConsts {
 
-	public static final String URL_PAGE_LOGIN = "/security/loginPage";
-	public static final String URL_PAGE_LOGOUT = "/security/logoutPage";
+	public static final String URL_PAGE_LOGIN = "/auth/loginPage";
+	public static final String URL_PAGE_LOGOUT = "/auth/logoutPage";
 
 	public static final String LOGIN_VIEW = "loginPage";
 

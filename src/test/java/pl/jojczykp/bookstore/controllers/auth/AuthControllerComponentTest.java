@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
  */
 
-package pl.jojczykp.bookstore.controllers.security;
+package pl.jojczykp.bookstore.controllers.auth;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -81,13 +81,13 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 		"classpath:spring/applicationContext/security-context.xml",
 		"classpath:spring/dispatcherServletContext/resources-context.xml",
 		"classpath:spring/dispatcherServletContext/views-context.xml"})
-public class SecurityControllerComponentTest {
+public class AuthControllerComponentTest {
 
-	private static final String URL_LOGIN_PAGE = "/security/loginPage";
-	private static final String URL_LOGIN = "/security/login";
+	private static final String URL_LOGIN_PAGE = "/auth/loginPage";
+	private static final String URL_LOGIN = "/auth/login";
 	private static final String URL_LOGIN_SUCCESS = "/";
-	private static final String URL_LOGOUT = "/security/logout";
-	private static final String URL_LOGOUT_PAGE = "/security/logoutPage";
+	private static final String URL_LOGOUT = "/auth/logout";
+	private static final String URL_LOGOUT_PAGE = "/auth/logoutPage";
 
 	private static final String VIEW_LOGIN_PAGE = "loginPage";
 	private static final String VIEW_EXCEPTION_PAGE = "exception";

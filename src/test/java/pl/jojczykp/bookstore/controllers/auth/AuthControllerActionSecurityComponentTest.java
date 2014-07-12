@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
  */
 
-package pl.jojczykp.bookstore.controllers.security;
+package pl.jojczykp.bookstore.controllers.auth;
 
 import junitparams.Parameters;
 import org.junit.Test;
@@ -25,16 +25,16 @@ import static junitparams.JUnitParamsRunner.$;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class SecurityControllerSecurityActionComponentTest extends SecutityControllersTestAbstract {
+public class AuthControllerActionSecurityComponentTest extends SecutityControllersTestAbstract {
 
 	public static final Object[] ALL_ROLES = $(ROLE_USER, ROLE_ADMIN, ROLE_UNAUTHORIZED);
 
 	public static Object[] loginActionAccessibleViaPost() {
-		return cartesian($("/security/login"), ALL_ROLES);
+		return cartesian($("/auth/login"), ALL_ROLES);
 	}
 
 	public static Object[] logoutActionAccessibleViaPost() {
-		return cartesian($("/security/logout"), ALL_ROLES);
+		return cartesian($("/auth/logout"), ALL_ROLES);
 	}
 
 	@Test
