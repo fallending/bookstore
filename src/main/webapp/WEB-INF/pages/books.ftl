@@ -24,6 +24,8 @@
 <#assign pagesCount = displayBooksCommand.pager.pagesCount>
 <#assign totalCount = displayBooksCommand.pager.totalCount>
 
+<#assign canEdit = Session['SPRING_SECURITY_CONTEXT'].authentication.authorities?seq_contains("ROLE_ADMIN")/>
+
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
@@ -55,7 +57,9 @@
 			<#else>
 				No books to display.
 			</#if>
-			<@sectionCreate/>
+			<#if canEdit>
+				<@sectionCreate/>
+			</#if>
 		</div>
 	</div>
 	<@common.sectionFooter/>
@@ -168,14 +172,20 @@
 			<#list displayBooksCommand.books as book>
 				<tr>
 					<td>
-						<input type="checkbox"
+						<#if canEdit>
+							<input type="checkbox"
 								class="deleteCheckbox"
 								bookId="${displayBooksCommand.books[book_index].id}"/>
+						</#if>
 					</td>
 					<td>#${book.id}</td>
 					<td>
-						<@spring.formHiddenInput "displayBooksCommand.books[" + book_index + "].version"/>
-						<@spring.formInput "displayBooksCommand.books[" + book_index + "].title" "class='updateInput'"/>
+						<#if canEdit>
+							<@spring.formHiddenInput "displayBooksCommand.books[" + book_index + "].version"/>
+							<@spring.formInput "displayBooksCommand.books[" + book_index + "].title" "class='updateInput'"/>
+						<#else>
+							<@spring.formInput "displayBooksCommand.books[" + book_index + "].title" "class='updateInput' disabled='disabled'"/>
+						</#if>
 					</td>
 					<td>
 						<a href="download?id=${displayBooksCommand.books[book_index].id}" class="downloadLink"
@@ -185,16 +195,20 @@
 						</a>
 					</td>
 					<td>
-						<input type="button" value="update"
+						<#if canEdit>
+							<input type="button" value="update"
 								onClick="sendUpdate(${displayBooksCommand.books[book_index].id}, ${book_index})"/>
+						</#if>
 					</td>
 				</tr>
 			</#list>
 		</table>
 	</div>
-	<div class="sectionBottomButtons">
-		<input type="button" value="delete selected" class="deleteButton" onClick="sendDelete()"/>
-	</div>
+	<#if canEdit>
+		<div class="sectionBottomButtons">
+			<input type="button" value="delete selected" class="deleteButton" onClick="sendDelete()"/>
+		</div>
+	</#if>
 </#macro>
 
 <#macro sectionDataTableSorter columnName columnTitle>
