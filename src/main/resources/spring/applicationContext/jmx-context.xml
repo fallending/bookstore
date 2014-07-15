@@ -32,7 +32,7 @@
 
 	<bean id="rmiRegistry" class="org.springframework.remoting.rmi.RmiRegistryFactoryBean" p:port="${jmx.port}"/>
 
-	<bean id="jmx.authenticator" class="pl.jojczykp.bookstore.jmx.JmxSecurityAuthenticator"/>
+	<bean id="jmx.authenticator" class="pl.jojczykp.bookstore.jmx.CustomJmxAuthenticator"/>
 
 	<util:constant id="jmx.auth.attribute" static-field="javax.management.remote.JMXConnectorServer.AUTHENTICATOR"/>
 

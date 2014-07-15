@@ -30,7 +30,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import pl.jojczykp.bookstore.entities.Authority;
 import pl.jojczykp.bookstore.entities.User;
-import pl.jojczykp.bookstore.repositories.SecurityRepository;
+import pl.jojczykp.bookstore.repositories.AuthRepository;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -55,7 +55,7 @@ public class CustomDbAuthenticationProviderUnitTest {
 			.build();
 
 	@Captor private ArgumentCaptor<String> usernameCaptor;
-	@Mock private SecurityRepository securityRepository;
+	@Mock private AuthRepository authRepository;
 
 	@InjectMocks private CustomDbAuthenticationProvider testee;
 
@@ -85,18 +85,18 @@ public class CustomDbAuthenticationProviderUnitTest {
 	}
 
 	private void givenRepositoryWith(User user) {
-		given(securityRepository.findByName(user.getName())).willReturn(user);
+		given(authRepository.findByName(user.getName())).willReturn(user);
 	}
 
 
 	private void givenBrokenRepository() {
-		given(securityRepository.findByName(anyString())).willThrow(new DataAccessException("") { });
+		given(authRepository.findByName(anyString())).willThrow(new DataAccessException("") { });
 	}
 
 	private void assertThatReadFromRepository(User user) {
-		verify(securityRepository).findByName(usernameCaptor.capture());
+		verify(authRepository).findByName(usernameCaptor.capture());
 		assertThat(usernameCaptor.getValue(), is(equalTo(user.getName())));
-		verifyNoMoreInteractions(securityRepository);
+		verifyNoMoreInteractions(authRepository);
 	}
 
 	private void assertThatSimplePropertiesAreEqual(UserDetails userDetails, User user) {

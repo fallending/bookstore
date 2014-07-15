@@ -37,7 +37,7 @@ import static pl.jojczykp.bookstore.testutils.repositories.BooksRepositorySpy.ID
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:spring/repositories-test-context.xml")
 @Transactional
-public class SecurityRepositoryIntegrationTest {
+public class AuthRepositoryIntegrationTest {
 
 	private User userA = anUser()
 			.withId(ID_TO_GENERATE)
@@ -54,7 +54,7 @@ public class SecurityRepositoryIntegrationTest {
 			.build();
 
 	@Autowired private BooksRepositorySpy booksRepositorySpy;
-	@Autowired private SecurityRepository testee;
+	@Autowired private AuthRepository testee;
 
 	@Test
 	public void shouldFindUser() {

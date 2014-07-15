@@ -29,7 +29,7 @@ import javax.management.remote.JMXAuthenticator;
 import javax.management.remote.JMXPrincipal;
 import javax.security.auth.Subject;
 
-public class JmxSecurityAuthenticator implements JMXAuthenticator {
+public class CustomJmxAuthenticator implements JMXAuthenticator {
 
 	private static final String ROLE_GRANTING_ACCESS = "ROLE_JMX";
 

@@ -47,7 +47,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.argThat;
 
 @RunWith(MockitoJUnitRunner.class)
-public class JmxSecurityAuthenticatorUnitTest {
+public class CustomJmxAuthenticatorUnitTest {
 
 	private static final Set<String> ROLES_GRANTING_ACCESS = newHashSet("ROLE_JMX");
 	private static final Set<String> ROLES_NOT_GRANTING_ACCESS = newHashSet("ROLE_OTHER");
@@ -58,7 +58,7 @@ public class JmxSecurityAuthenticatorUnitTest {
 	@Mock private Authentication authentication;
 	@Mock private AuthenticationManager authenticationManager;
 
-	@InjectMocks private JmxSecurityAuthenticator testee;
+	@InjectMocks private CustomJmxAuthenticator testee;
 
 	@Test
 	public void shouldAuthenticateAndAuthorize() {

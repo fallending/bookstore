@@ -25,18 +25,18 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import pl.jojczykp.bookstore.entities.Authority;
 import pl.jojczykp.bookstore.entities.User;
-import pl.jojczykp.bookstore.repositories.SecurityRepository;
+import pl.jojczykp.bookstore.repositories.AuthRepository;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public class CustomDbAuthenticationProvider implements UserDetailsService {
 
-	@Autowired private SecurityRepository securityRepository;
+	@Autowired private AuthRepository authRepository;
 
 	@Override
 	public UserDetails loadUserByUsername(String name) {
-		User user = securityRepository.findByName(name);
+		User user = authRepository.findByName(name);
 
 		if (user == null) {
 			throw new UsernameNotFoundException("User '" + name + "' not found.");

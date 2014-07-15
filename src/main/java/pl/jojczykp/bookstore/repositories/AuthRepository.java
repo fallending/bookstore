@@ -28,7 +28,7 @@ import static org.hibernate.criterion.Restrictions.eq;
 
 @Repository
 @Transactional
-public class SecurityRepository {
+public class AuthRepository {
 
 	@Autowired private SessionFactory sessionFactory;
 
