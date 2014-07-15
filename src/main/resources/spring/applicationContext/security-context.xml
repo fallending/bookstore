@@ -47,7 +47,7 @@
 				class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"
 				c:strength="10"/>
 
-	<authentication-manager>
+	<authentication-manager alias="authenticationManager">
 		<authentication-provider user-service-ref="authenticationProvider">
 			<password-encoder ref="bCryptEncoder"/>
 		</authentication-provider>

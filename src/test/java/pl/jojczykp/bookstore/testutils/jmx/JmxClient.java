@@ -23,15 +23,23 @@ import org.springframework.jmx.support.MBeanServerConnectionFactoryBean;
 import javax.management.MBeanServerConnection;
 import javax.management.ObjectName;
 
+import static com.google.common.collect.ImmutableMap.of;
+import static javax.management.remote.JMXConnector.CREDENTIALS;
+
 public class JmxClient {
 
 	private MBeanServerConnection mBeanServerConnection;
 	private ObjectName objectName;
 
-	public JmxClient(String jmxServiceUrl, String jmxObjectName) {
+	public static String[] credentials(String username, String password) {
+		return new String[] {username, password};
+	}
+
+	public JmxClient(String jmxServiceUrl, String[] credentials, String jmxObjectName) {
 		try {
 			MBeanServerConnectionFactoryBean factory = new MBeanServerConnectionFactoryBean();
 			factory.setServiceUrl(jmxServiceUrl);
+			factory.setEnvironmentMap(of(CREDENTIALS, credentials));
 			factory.afterPropertiesSet();
 			mBeanServerConnection = factory.getObject();
 			objectName = new ObjectName(jmxObjectName);

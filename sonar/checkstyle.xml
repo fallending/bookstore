@@ -107,6 +107,7 @@
 		</module>
 		<module name="VisibilityModifier">
 			<property name="severity" value="warning"/>
+			<property name="publicMemberPattern" value="^expectedException$"/>
 		</module>
 		<module name="EmptyStatement">
 			<property name="severity" value="info"/>
