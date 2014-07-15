@@ -19,6 +19,7 @@
 	   xmlns:context="http://www.springframework.org/schema/context"
 	   xmlns:util="http://www.springframework.org/schema/util"
 	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:p="http://www.springframework.org/schema/p"
 	   xsi:schemaLocation="
 			http://www.springframework.org/schema/beans
 			http://www.springframework.org/schema/beans/spring-beans.xsd
@@ -29,9 +30,7 @@
 
 	<context:mbean-export />
 
-	<bean id="rmiRegistry" class="org.springframework.remoting.rmi.RmiRegistryFactoryBean">
-		<property name="port" value="${jmx.port}" />
-	</bean>
+	<bean id="rmiRegistry" class="org.springframework.remoting.rmi.RmiRegistryFactoryBean" p:port="${jmx.port}"/>
 
 	<bean id="jmx.authenticator" class="pl.jojczykp.bookstore.jmx.JmxSecurityAuthenticator"/>
 
@@ -43,10 +42,9 @@
 
 	<bean id="bookstoreJmxServer"
 		  class="org.springframework.jmx.support.ConnectorServerFactoryBean"
-		  depends-on="rmiRegistry">
-		<property name="objectName" value="connector:name=rmi" />
-		<property name="serviceUrl" value="service:jmx:rmi://localhost/jndi/rmi://localhost:${jmx.port}/${jmx.connector.name}" />
-		<property name="environmentMap" ref="jmx.environment" />
-	</bean>
+		  depends-on="rmiRegistry"
+		  p:objectName="connector:name=rmi"
+		  p:serviceUrl="service:jmx:rmi://localhost/jndi/rmi://localhost:${jmx.port}/${jmx.connector.name}"
+		  p:environmentMap-ref="jmx.environment" />
 
 </beans>
