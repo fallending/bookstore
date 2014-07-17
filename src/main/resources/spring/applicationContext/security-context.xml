@@ -38,7 +38,8 @@
 					password-parameter="password"
 					default-target-url="/" />
 		<logout logout-url="/auth/logout"
-				logout-success-url="/auth/logoutPage" />
+				logout-success-url="/auth/logoutPage"
+				delete-cookies="JSESSIONID" />
 
 		<intercept-url pattern="/**" access="isAuthenticated()" />
 	</http>
