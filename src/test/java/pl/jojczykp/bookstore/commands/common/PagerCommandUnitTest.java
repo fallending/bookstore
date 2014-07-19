@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
  */
 
-package pl.jojczykp.bookstore.commands.parts;
+package pl.jojczykp.bookstore.commands.common;
 
 import org.junit.Before;
 import org.junit.Test;

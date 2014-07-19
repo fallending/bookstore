@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import pl.jojczykp.bookstore.assemblers.DisplayBookAssembler;
 import pl.jojczykp.bookstore.commands.books.DisplayBooksCommand;
-import pl.jojczykp.bookstore.commands.parts.PagerCommand;
+import pl.jojczykp.bookstore.commands.common.PagerCommand;
 import pl.jojczykp.bookstore.entities.Book;
 import pl.jojczykp.bookstore.repositories.BooksRepository;
 import pl.jojczykp.bookstore.utils.BooksCommandFactory;

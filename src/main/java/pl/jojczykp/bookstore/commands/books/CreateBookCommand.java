@@ -18,7 +18,7 @@
 package pl.jojczykp.bookstore.commands.books;
 
 import org.springframework.web.multipart.MultipartFile;
-import pl.jojczykp.bookstore.commands.parts.PagerCommand;
+import pl.jojczykp.bookstore.commands.common.PagerCommand;
 
 public class CreateBookCommand {
 

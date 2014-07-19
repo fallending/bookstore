@@ -18,7 +18,7 @@
 package pl.jojczykp.bookstore.utils;
 
 import org.springframework.stereotype.Service;
-import pl.jojczykp.bookstore.commands.parts.PagerCommand;
+import pl.jojczykp.bookstore.commands.common.PagerCommand;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;

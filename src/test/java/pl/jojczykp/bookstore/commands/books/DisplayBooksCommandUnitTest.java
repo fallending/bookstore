@@ -19,8 +19,8 @@ package pl.jojczykp.bookstore.commands.books;
 
 import org.junit.Before;
 import org.junit.Test;
-import pl.jojczykp.bookstore.commands.parts.MessagesCommand;
-import pl.jojczykp.bookstore.commands.parts.PagerCommand;
+import pl.jojczykp.bookstore.commands.common.MessagesCommand;
+import pl.jojczykp.bookstore.commands.common.PagerCommand;
 
 import java.util.ArrayList;
 import java.util.List;
