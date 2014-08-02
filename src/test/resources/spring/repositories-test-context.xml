@@ -53,8 +53,9 @@
 
 	<jdbc:embedded-database id="dataSource">
 		<jdbc:script location="classpath:spring/sql/schema/01_auth_schema.sql"/>
-		<jdbc:script location="classpath:spring/sql/schema/02_book_files_schema.sql"/>
-		<jdbc:script location="classpath:spring/sql/schema/03_books_schema.sql"/>
+		<jdbc:script location="classpath:spring/sql/schema/02_remember_me_schema.sql"/>
+		<jdbc:script location="classpath:spring/sql/schema/03_book_files_schema.sql"/>
+		<jdbc:script location="classpath:spring/sql/schema/04_books_schema.sql"/>
 	</jdbc:embedded-database>
 
 </beans>

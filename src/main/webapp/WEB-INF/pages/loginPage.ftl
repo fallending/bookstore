@@ -69,6 +69,10 @@
 					<td>Password:</td>
 					<td><input type="password" name="password" /></td>
 				</tr>
+				<tr>
+					<td></td>
+					<td><input type="checkbox" name="rememberMe" /> remember me</td>
+				</tr>
 			</table>
 		</div>
 		<div class="sectionBottomButtons">

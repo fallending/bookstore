@@ -42,7 +42,7 @@ public class AuthControllerActionSecurityComponentTest extends SecurityControlle
 
 	@Test
 	@Parameters(method = "rules")
-	public void shouldBeHaveDesiredAccess(HttpAccessVerifier verifier) {
+	public void shouldHaveDesiredAccess(HttpAccessVerifier verifier) {
 		verifier.verify(getMockedContext());
 	}
 

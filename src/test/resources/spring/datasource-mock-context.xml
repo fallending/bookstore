@@ -24,6 +24,6 @@
 			http://www.mockito.org/spring/mockito
 			http://www.mockito.org/spring/mockito.xsd">
 
-	<mockito:mock id="authenticationProvider" class="org.springframework.security.core.userdetails.UserDetailsService"/>
+	<mockito:mock id="dataSource" class="javax.sql.DataSource"/>
 
 </beans>

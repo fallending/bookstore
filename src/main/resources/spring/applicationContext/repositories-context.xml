@@ -53,11 +53,12 @@
 
 	<jdbc:embedded-database id="dataSource" type="HSQL">
 		<jdbc:script location="classpath:spring/sql/schema/01_auth_schema.sql"/>
-		<jdbc:script location="classpath:spring/sql/schema/02_book_files_schema.sql"/>
-		<jdbc:script location="classpath:spring/sql/schema/03_books_schema.sql"/>
+		<jdbc:script location="classpath:spring/sql/schema/02_remember_me_schema.sql"/>
+		<jdbc:script location="classpath:spring/sql/schema/03_book_files_schema.sql"/>
+		<jdbc:script location="classpath:spring/sql/schema/04_books_schema.sql"/>
 		<jdbc:script location="classpath:spring/sql/data/01_auth_data.sql"/>
-		<jdbc:script location="classpath:spring/sql/data/02_book_files_data.sql"/>
-		<jdbc:script location="classpath:spring/sql/data/03_books_data.sql"/>
+		<jdbc:script location="classpath:spring/sql/data/03_book_files_data.sql"/>
+		<jdbc:script location="classpath:spring/sql/data/04_books_data.sql"/>
 	</jdbc:embedded-database>
 
 </beans>

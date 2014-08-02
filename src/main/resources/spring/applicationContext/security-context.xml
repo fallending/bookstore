@@ -31,17 +31,21 @@
 	<http pattern="/favicon.ico" security="none" />
 
 	<http use-expressions="true">
+		<intercept-url pattern="/**" access="isAuthenticated()" />
 		<form-login login-page="/auth/loginPage"
 					login-processing-url="/auth/login"
 					authentication-failure-url="/auth/loginPage"
 					username-parameter="username"
 					password-parameter="password"
 					default-target-url="/" />
+		<remember-me
+				token-validity-seconds="1209600"
+				remember-me-parameter="rememberMe"
+				user-service-ref="authenticationProvider"
+				data-source-ref="dataSource"/>
 		<logout logout-url="/auth/logout"
 				logout-success-url="/auth/logoutPage"
-				delete-cookies="JSESSIONID" />
-
-		<intercept-url pattern="/**" access="isAuthenticated()" />
+				delete-cookies="JSESSIONID,SPRING_SECURITY_REMEMBER_ME_COOKIE" />
 	</http>
 
 	<beans:bean name="bCryptEncoder"
