@@ -21,16 +21,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
-import pl.jojczykp.bookstore.assemblers.CreateBookAssembler;
 import pl.jojczykp.bookstore.commands.books.DisplayBooksCommand;
 import pl.jojczykp.bookstore.commands.books.CreateBookCommand;
-import pl.jojczykp.bookstore.repositories.BooksRepository;
-import pl.jojczykp.bookstore.validators.CreateBookValidator;
+import pl.jojczykp.bookstore.services.books.CreateBookService;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -43,9 +40,7 @@ import static pl.jojczykp.bookstore.consts.BooksConsts.URL_ACTION_DISPLAY;
 @Controller
 public class CreateBookController {
 
-	@Autowired private CreateBookValidator createBookValidator;
-	@Autowired private BooksRepository booksRepository;
-	@Autowired private CreateBookAssembler createBookAssembler;
+	@Autowired private CreateBookService createBookService;
 
 	@PreAuthorize("hasAnyRole('ROLE_ADMIN')")
 	@RequestMapping(value = URL_ACTION_CREATE, method = POST)
@@ -55,42 +50,8 @@ public class CreateBookController {
 			BindingResult bindingResult,
 			HttpServletRequest request)
 	{
-		createBookValidator.validate(createBookCommand, bindingResult);
+		DisplayBooksCommand displayBooksCommand = createBookService.create(createBookCommand, bindingResult);
 
-		DisplayBooksCommand displayBooksCommand;
-		if (bindingResult.hasErrors()) {
-			displayBooksCommand = processWhenCommandInvalid(createBookCommand, bindingResult);
-		} else {
-			displayBooksCommand = processWhenCommandValid(createBookCommand);
-		}
-
-		return redirect(request, displayBooksCommand, redirectAttributes);
-	}
-
-	private DisplayBooksCommand processWhenCommandInvalid(
-										CreateBookCommand createBookCommand, BindingResult bindingResult) {
-		DisplayBooksCommand displayBooksCommand = new DisplayBooksCommand();
-		displayBooksCommand.setPager(createBookCommand.getPager());
-
-		for (ObjectError error: bindingResult.getAllErrors()) {
-			displayBooksCommand.getMessages().addErrors(error.getDefaultMessage());
-		}
-
-		return displayBooksCommand;
-	}
-
-	private DisplayBooksCommand processWhenCommandValid(CreateBookCommand createBookCommand) {
-		booksRepository.create(createBookAssembler.toDomain(createBookCommand));
-
-		DisplayBooksCommand displayBooksCommand = new DisplayBooksCommand();
-		displayBooksCommand.setPager(createBookCommand.getPager());
-		displayBooksCommand.getMessages().addInfos("Object created.");
-
-		return displayBooksCommand;
-	}
-
-	private RedirectView redirect(HttpServletRequest request, DisplayBooksCommand displayBooksCommand,
-									RedirectAttributes redirectAttributes) {
 		redirectAttributes.addFlashAttribute(DISPLAY_BOOKS_COMMAND, displayBooksCommand);
 		return new RedirectView(request.getContextPath() + URL_ACTION_DISPLAY);
 	}

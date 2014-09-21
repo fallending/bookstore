@@ -27,7 +27,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 import pl.jojczykp.bookstore.commands.books.DisplayBooksCommand;
 import pl.jojczykp.bookstore.commands.books.UpdateBookCommand;
-import pl.jojczykp.bookstore.services.UpdateBookService;
+import pl.jojczykp.bookstore.services.books.UpdateBookService;
 
 import javax.servlet.http.HttpServletRequest;
 

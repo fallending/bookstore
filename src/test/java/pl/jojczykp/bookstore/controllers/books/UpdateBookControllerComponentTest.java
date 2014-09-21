@@ -30,7 +30,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.context.WebApplicationContext;
 import pl.jojczykp.bookstore.commands.books.DisplayBooksCommand;
 import pl.jojczykp.bookstore.commands.books.UpdateBookCommand;
-import pl.jojczykp.bookstore.services.UpdateBookService;
+import pl.jojczykp.bookstore.services.books.UpdateBookService;
 
 import static org.hamcrest.Matchers.sameInstance;
 import static org.mockito.BDDMockito.given;
