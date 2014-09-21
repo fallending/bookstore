@@ -45,6 +45,7 @@
 
 	<mockito:mock id="booksCreateService" class="pl.jojczykp.bookstore.services.books.CreateBookService" />
 	<mockito:mock id="booksUpdateService" class="pl.jojczykp.bookstore.services.books.UpdateBookService" />
+	<mockito:mock id="booksDeleteService" class="pl.jojczykp.bookstore.services.books.DeleteBookService" />
 
 	<mockito:mock id="displayBookAssembler" class="pl.jojczykp.bookstore.assemblers.DisplayBookAssembler"/>
 	<mockito:mock id="createBookAssembler" class="pl.jojczykp.bookstore.assemblers.CreateBookAssembler"/>

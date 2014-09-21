@@ -78,7 +78,7 @@ public class UpdateBookServiceUnitTest {
 	}
 
 	@Test
-	public void shouldUpdateBook() throws Exception {
+	public void shouldUpdateBook() {
 		final UpdateBookCommand command = new UpdateBookCommand();
 
 		DisplayBooksCommand displayBooksCommand = testee.update(command, bindingResult);
@@ -90,7 +90,7 @@ public class UpdateBookServiceUnitTest {
 	}
 
 	@Test
-	public void shouldFailConcurrentlyUpdatingUpdatedBook() throws Exception {
+	public void shouldFailConcurrentlyUpdatingUpdatedBook() {
 		final UpdateBookCommand command = new UpdateBookCommand();
 		givenObjectConcurrentlyUpdated();
 
@@ -104,7 +104,7 @@ public class UpdateBookServiceUnitTest {
 	}
 
 	@Test
-	public void shouldFailOnCommandValidationError() throws Exception {
+	public void shouldFailOnCommandValidationError() {
 		final UpdateBookCommand command = new UpdateBookCommand();
 		givenNegativeValidation();
 

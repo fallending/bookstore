@@ -76,7 +76,7 @@ public class CreateBookServiceUnitTest {
 	}
 
 	@Test
-	public void shouldCreateBook() throws Exception {
+	public void shouldCreateBook() {
 		final CreateBookCommand command = new CreateBookCommand();
 
 		DisplayBooksCommand displayBooksCommand = testee.create(command, bindingResult);
@@ -89,7 +89,7 @@ public class CreateBookServiceUnitTest {
 	}
 
 	@Test
-	public void shouldFailOnCommandValidationError() throws Exception {
+	public void shouldFailOnCommandValidationError() {
 		final CreateBookCommand command = new CreateBookCommand();
 		givenNegativeValidation();
 

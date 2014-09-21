@@ -17,7 +17,6 @@
 
 package pl.jojczykp.bookstore.controllers.books;
 
-import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -27,8 +26,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 import pl.jojczykp.bookstore.commands.books.DisplayBooksCommand;
 import pl.jojczykp.bookstore.commands.books.DeleteBooksCommand;
-import pl.jojczykp.bookstore.commands.common.MessagesCommand;
-import pl.jojczykp.bookstore.repositories.BooksRepository;
+import pl.jojczykp.bookstore.services.books.DeleteBookService;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -41,7 +39,7 @@ import static pl.jojczykp.bookstore.consts.BooksConsts.URL_ACTION_DISPLAY;
 @Controller
 public class DeleteBookController {
 
-	@Autowired private BooksRepository booksRepository;
+	@Autowired private DeleteBookService deleteBookService;
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = URL_ACTION_DELETE, method = POST)
@@ -50,27 +48,8 @@ public class DeleteBookController {
 			RedirectAttributes redirectAttributes,
 			HttpServletRequest request)
 	{
-		DisplayBooksCommand displayBooksCommand = new DisplayBooksCommand();
-		displayBooksCommand.setPager(deleteBooksCommand.getPager());
+		DisplayBooksCommand displayBooksCommand = deleteBookService.delete(deleteBooksCommand);
 
-		for (Integer id : deleteBooksCommand.getIds()) {
-			deleteBookFromRepository(id, displayBooksCommand.getMessages());
-		}
-
-		return redirect(request, displayBooksCommand, redirectAttributes);
-	}
-
-	private void deleteBookFromRepository(int bookId, MessagesCommand messagesContainer) {
-		try {
-			booksRepository.delete(bookId);
-			messagesContainer.addInfos("Object deleted.");
-		} catch (ObjectNotFoundException ex) {
-			messagesContainer.addWarns("Object already deleted.");
-		}
-	}
-
-	private RedirectView redirect(HttpServletRequest request, DisplayBooksCommand displayBooksCommand,
-									RedirectAttributes redirectAttributes) {
 		redirectAttributes.addFlashAttribute(DISPLAY_BOOKS_COMMAND, displayBooksCommand);
 		return new RedirectView(request.getContextPath() + URL_ACTION_DISPLAY);
 	}
