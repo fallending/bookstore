@@ -17,165 +17,88 @@
 
 package pl.jojczykp.bookstore.controllers.books;
 
-import org.hibernate.StaleObjectStateException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.validation.Errors;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.context.WebApplicationContext;
-import pl.jojczykp.bookstore.assemblers.UpdateBookAssembler;
+import pl.jojczykp.bookstore.commands.books.DisplayBooksCommand;
 import pl.jojczykp.bookstore.commands.books.UpdateBookCommand;
-import pl.jojczykp.bookstore.entities.Book;
-import pl.jojczykp.bookstore.repositories.BooksRepository;
-import pl.jojczykp.bookstore.validators.UpdateBookValidator;
+import pl.jojczykp.bookstore.services.UpdateBookService;
 
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
-import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doThrow;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
-import static pl.jojczykp.bookstore.testutils.controllers.MessagesControllerTestUtils.thenExpectErrorOnlyFlashMessages;
-import static pl.jojczykp.bookstore.testutils.controllers.MessagesControllerTestUtils.thenExpectInfoOnlyFlashMessages;
-import static pl.jojczykp.bookstore.testutils.controllers.MessagesControllerTestUtils.thenExpectWarnOnlyFlashMessages;
-import static pl.jojczykp.bookstore.testutils.matchers.HasBeanProperty.hasBeanProperty;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration("classpath:spring/controllers-test-context.xml")
 public class UpdateBookControllerComponentTest {
 
-	private static final String VALIDATOR_ERROR_MESSAGE = "An error message from validator.";
-
 	private MockMvc mvcMock;
 	private ResultActions mvcMockPerformResult;
-	@Autowired private UpdateBookValidator updateBookValidator;
-	@Autowired private UpdateBookAssembler updateBookAssembler;
-	@Autowired private BooksRepository booksRepository;
 	@Autowired private WebApplicationContext wac;
+	@Autowired private UpdateBookService updateBookService;
 
-	@Captor private ArgumentCaptor<UpdateBookCommand> updateBookCommandCaptor;
-	@Captor private ArgumentCaptor<Book> updatedBookCaptor;
-
-	@Mock private StaleObjectStateException staleObjectStateException;
-	@Mock private Book book;
+	private UpdateBookCommand updateBookCommand = new UpdateBookCommand();
+	private DisplayBooksCommand displayBooksCommand = new DisplayBooksCommand();
 
 	@Before
 	public void setUp() {
 		mvcMock = webAppContextSetup(wac)
 				.alwaysDo(print())
 				.build();
-		initMocks(this);
-		reset(updateBookValidator);
-		reset(updateBookAssembler);
-		reset(booksRepository);
-		given(updateBookAssembler.toDomain(any(UpdateBookCommand.class))).willReturn(book);
+		reset(updateBookService);
+		given(updateBookService.update(eq(updateBookCommand), any(BindingResult.class)))
+				.willReturn(displayBooksCommand);
 	}
 
 	@Test
-	public void shouldUpdateBook() throws Exception {
-		final UpdateBookCommand command = new UpdateBookCommand();
+	public void shouldUseService() throws Exception {
+		whenControllerUpdatePerformedWithCommand(updateBookCommand);
 
-		whenControllerUpdatePerformedWithCommand(command);
-
-		thenExpectValidationInvokedFor(command);
-		thenExpectUpdateInvokedOnRepository();
-		thenExpectInfoOnlyFlashMessages(mvcMockPerformResult, "Title updated.");
-		thenExpectHttpRedirectWith(command);
+		thenExpectServiceInvokedFor(updateBookCommand);
 	}
 
 	@Test
-	public void shouldFailConcurrentlyUpdatingUpdatedBook() throws Exception {
-		final UpdateBookCommand command = new UpdateBookCommand();
-		givenObjectConcurrentlyUpdated();
+	public void shouldRedirect() throws Exception {
+		whenControllerUpdatePerformedWithCommand(updateBookCommand);
 
-		whenControllerUpdatePerformedWithCommand(command);
-
-		thenExpectValidationInvokedFor(command);
-		thenExpectUpdateInvokedOnRepository();
-		thenExpectWarnOnlyFlashMessages(mvcMockPerformResult,
-				"Object updated or deleted by another user. Please try again with actual data.");
-		thenExpectHttpRedirectWith(command);
+		thenExpectHttpRedirectWith(displayBooksCommand);
 	}
 
-	@Test
-	public void shouldFailOnCommandValidationError() throws Exception {
-		final UpdateBookCommand command = new UpdateBookCommand();
-		givenNegativeValidation();
-
-		whenControllerUpdatePerformedWithCommand(command);
-
-		thenExpectValidationInvokedFor(command);
-		thenExpectErrorOnlyFlashMessages(mvcMockPerformResult, VALIDATOR_ERROR_MESSAGE);
-		thenExpectHttpRedirectWith(command);
-	}
-
-	private void givenObjectConcurrentlyUpdated() {
-		doThrow(staleObjectStateException).when(booksRepository).update(any(Book.class));
-	}
-
-	private void givenNegativeValidation() {
-		doAnswer(validationError())
-				.when(updateBookValidator).validate(anyObject(), any(Errors.class));
-	}
-
-	private Answer<Void> validationError() {
-		return new Answer<Void>() {
-			@Override
-			public Void answer(InvocationOnMock invocation) {
-				Errors errors = (Errors) invocation.getArguments()[1];
-				errors.rejectValue("title", "title.empty", VALIDATOR_ERROR_MESSAGE);
-				return null;
-			}
-		};
-	}
-
-	private void whenControllerUpdatePerformedWithCommand(UpdateBookCommand command) throws Exception {
+	private void whenControllerUpdatePerformedWithCommand(UpdateBookCommand updateBookCommand) throws Exception {
 		mvcMockPerformResult = mvcMock.perform(post("/books/update")
-				.flashAttr("updateBookCommand", command));
+				.flashAttr("updateBookCommand", updateBookCommand));
 	}
 
-	private void thenExpectValidationInvokedFor(UpdateBookCommand updateBookCommand) {
-		verify(updateBookValidator).validate(updateBookCommandCaptor.capture(), any(Errors.class));
-		assertThat(updateBookCommandCaptor.getValue(), is(sameInstance(updateBookCommand)));
-		verifyNoMoreInteractions(updateBookValidator);
+	private void thenExpectServiceInvokedFor(UpdateBookCommand updateBookCommand) {
+		verify(updateBookService).update(eq(updateBookCommand), any(BindingResult.class));
+		verifyNoMoreInteractions(updateBookService);
 	}
 
-	private void thenExpectUpdateInvokedOnRepository() {
-		verify(booksRepository).update(updatedBookCaptor.capture());
-		assertThat(updatedBookCaptor.getValue(), is(sameInstance(book)));
-		verifyNoMoreInteractions(booksRepository);
-	}
-
-	private void thenExpectHttpRedirectWith(UpdateBookCommand command) throws Exception {
+	private void thenExpectHttpRedirectWith(DisplayBooksCommand displayBooksCommand) throws Exception {
 		mvcMockPerformResult
 				.andExpect(status().isFound())
 				.andExpect(redirectedUrl("/books/display"))
 				.andExpect(flash().attribute("displayBooksCommand",
-						hasBeanProperty("pager", sameInstance(command.getPager()))));
+						sameInstance(displayBooksCommand)));
 	}
 
 }
