@@ -17,12 +17,9 @@
 
 package pl.jojczykp.bookstore.controllers.books;
 
-import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
@@ -30,22 +27,18 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.ResultMatcher;
-import org.springframework.validation.Errors;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.context.WebApplicationContext;
 import pl.jojczykp.bookstore.commands.books.ChangePagerCommand;
-import pl.jojczykp.bookstore.repositories.BooksRepository;
+import pl.jojczykp.bookstore.commands.books.DisplayBooksCommand;
+import pl.jojczykp.bookstore.services.books.ChangeBooksPagerService;
 import pl.jojczykp.bookstore.utils.PageSorterColumn;
 import pl.jojczykp.bookstore.utils.PageSorterDirection;
-import pl.jojczykp.bookstore.validators.ChangePagerValidator;
 
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -55,13 +48,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
-import static pl.jojczykp.bookstore.testutils.controllers.MessagesControllerTestUtils.thenExpectErrorOnlyFlashMessages;
-import static pl.jojczykp.bookstore.testutils.controllers.MessagesControllerTestUtils.thenExpectInfoOnlyFlashMessages;
-import static pl.jojczykp.bookstore.testutils.controllers.MessagesControllerTestUtils.thenExpectNoFlashMessages;
-import static pl.jojczykp.bookstore.testutils.matchers.HasBeanProperty.hasBeanProperty;
 import static pl.jojczykp.bookstore.utils.PageSorterColumn.BOOK_TITLE;
 import static pl.jojczykp.bookstore.utils.PageSorterDirection.ASC;
-import static pl.jojczykp.bookstore.utils.PageSorterDirection.DESC;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -83,163 +71,83 @@ public class ChangeBooksPagerControllerComponentTest {
 
 	private MockMvc mvcMock;
 	private ResultActions mvcMockPerformResult;
-
-	@Autowired private BooksRepository booksRepository;
-	@Autowired private ChangePagerValidator changePagerValidator;
 	@Autowired private WebApplicationContext wac;
+	@Autowired private ChangeBooksPagerService changeBooksPagerService;
 
 	@Value("${view.books.defaultPageSize}") private int defaultPageSize;
+
+	private ChangePagerCommand changePagerCommand = new ChangePagerCommand();
+	private DisplayBooksCommand displayBooksCommand = new DisplayBooksCommand();
 
 	@Before
 	public void setUp() {
 		mvcMock = webAppContextSetup(wac)
 				.alwaysDo(print())
 				.build();
-		givenRepositoryMockConfigured();
-		reset(changePagerValidator);
+		reset(changeBooksPagerService);
 	}
 
 	@Test
 	public void shouldSort() throws Exception {
-		final PageSorterColumn sortColumn = BOOK_TITLE;
-		final PageSorterDirection sortDirection = DESC;
-		final ChangePagerCommand command = aChangeSortCommand(sortColumn, sortDirection);
+		given(changeBooksPagerService.sort(eq(changePagerCommand), any(BindingResult.class)))
+				.willReturn(displayBooksCommand);
 
-		whenUrlActionPerformedWithCommand(URL_ACTION_SORT, command);
+		whenServicePerformedWithUrlAndCommand("/books/sort", changePagerCommand);
 
-		thenExpectSortedBy(sortColumn, sortDirection);
-		thenExpectNoFlashMessages(mvcMockPerformResult);
-		thenExpectHttpRedirectWith(command);
+		thenExpectServiceSortInvokedFor(changePagerCommand);
+		thenExpectHttpRedirectWith(displayBooksCommand);
+	}
+
+	private void thenExpectServiceSortInvokedFor(ChangePagerCommand changePagerCommand) {
+		verify(changeBooksPagerService).sort(eq(changePagerCommand), any(BindingResult.class));
+		verifyNoMoreInteractions(changeBooksPagerService);
 	}
 
 	@Test
 	public void shouldSetPageSize() throws Exception {
-		final int pageSize = 9;
-		final ChangePagerCommand command = aChangePageSizeCommand(pageSize);
+		given(changeBooksPagerService.setPageSize(eq(changePagerCommand), any(BindingResult.class)))
+				.willReturn(displayBooksCommand);
 
-		whenUrlActionPerformedWithCommand(URL_ACTION_SET_PAGE_SIZE, command);
+		whenServicePerformedWithUrlAndCommand("/books/setPageSize", changePagerCommand);
 
-		thenExpectValidationInvoked();
-		thenExpectPageSizeSetTo(pageSize);
-		thenExpectInfoOnlyFlashMessages(mvcMockPerformResult, "Page size changed.");
-		thenExpectHttpRedirectWith(command);
+		thenExpectServiceSetPageSizeInvokedFor(changePagerCommand);
+		thenExpectHttpRedirectWith(displayBooksCommand);
 	}
 
-	@Test
-	public void shouldSetPageSizeFailOnNotPositiveValue() throws Exception {
-		final int pageSize = -1;
-		final ChangePagerCommand command = aChangePageSizeCommand(pageSize);
-		givenNegativeValidation();
-
-		whenUrlActionPerformedWithCommand(URL_ACTION_SET_PAGE_SIZE, command);
-
-		thenExpectValidationInvoked();
-		thenExpectPageSizeSetTo(defaultPageSize);
-		thenExpectErrorOnlyFlashMessages(mvcMockPerformResult, VALIDATOR_ERROR_MESSAGE);
-		thenExpectHttpRedirectWith(command);
+	private void thenExpectServiceSetPageSizeInvokedFor(ChangePagerCommand changePagerCommand) {
+		verify(changeBooksPagerService).setPageSize(eq(changePagerCommand), any(BindingResult.class));
+		verifyNoMoreInteractions(changeBooksPagerService);
 	}
 
 	@Test
 	public void shouldGoToPage() throws Exception {
-		final int pageNumber = 3;
-		final ChangePagerCommand command = aPageNumberPagerCommand(pageNumber);
+		given(changeBooksPagerService.goToPage(eq(changePagerCommand), any(BindingResult.class)))
+				.willReturn(displayBooksCommand);
 
-		whenUrlActionPerformedWithCommand(URL_ACTION_GO_TO_PAGE, command);
+		whenServicePerformedWithUrlAndCommand("/books/goToPage", changePagerCommand);
 
-		assertThatScrolledToPage(pageNumber);
-		thenExpectNoFlashMessages(mvcMockPerformResult);
-		thenExpectHttpRedirectWith(command);
+		thenExpectServiceGoToPageInvokedFor(changePagerCommand);
+		thenExpectHttpRedirectWith(displayBooksCommand);
 	}
 
-	private void givenRepositoryMockConfigured() {
-		given(booksRepository.totalCount()).willReturn(PAGES_COUNT * PAGE_SIZE - 2);
+	private void thenExpectServiceGoToPageInvokedFor(ChangePagerCommand changePagerCommand) {
+		verify(changeBooksPagerService).goToPage(eq(changePagerCommand), any(BindingResult.class));
+		verifyNoMoreInteractions(changeBooksPagerService);
 	}
 
-	private void whenUrlActionPerformedWithCommand(String action, ChangePagerCommand changePagerCommand)
-																									throws Exception {
-		mvcMockPerformResult = mvcMock.perform(post(action)
+	private void whenServicePerformedWithUrlAndCommand(String url, ChangePagerCommand changePagerCommand)
+			throws Exception
+	{
+		mvcMockPerformResult = mvcMock.perform(post(url)
 				.flashAttr("changePagerCommand", changePagerCommand));
 	}
 
-	private ChangePagerCommand aPageNumberPagerCommand(int pageNumber) {
-		return aChangePagerCommand(pageNumber, PAGE_SIZE, PAGES_COUNT, SORT_COLUMN, SORT_DIRECTION);
-	}
-
-	private ChangePagerCommand aChangeSortCommand(PageSorterColumn sortColumn, PageSorterDirection sortDirection) {
-		return aChangePagerCommand(PAGE_NUMBER, PAGE_SIZE, PAGES_COUNT, sortColumn, sortDirection);
-	}
-
-	private ChangePagerCommand aChangePageSizeCommand(int pageSize) {
-		return aChangePagerCommand(PAGE_NUMBER, pageSize, PAGES_COUNT, SORT_COLUMN, SORT_DIRECTION);
-	}
-
-	private ChangePagerCommand aChangePagerCommand(int pageNumber, int pageSize, int pagesCount,
-												   PageSorterColumn sortColumn, PageSorterDirection sortDirection) {
-		ChangePagerCommand command = new ChangePagerCommand();
-		command.getPager().setPageNumber(pageNumber);
-		command.getPager().setPageSize(pageSize);
-		command.getPager().setPagesCount(pagesCount);
-		command.getPager().getSorter().setColumn(sortColumn);
-		command.getPager().getSorter().setDirection(sortDirection);
-
-		return command;
-	}
-
-	private void givenNegativeValidation() {
-		doAnswer(validationError())
-				.when(changePagerValidator).validate(anyObject(), any(Errors.class));
-	}
-
-	private Answer<Void> validationError() {
-		return new Answer<Void>() {
-			@Override
-			public Void answer(InvocationOnMock invocation) {
-				Errors errors = (Errors) invocation.getArguments()[1];
-				errors.rejectValue("pager.pageSize", "pager.pageSize.notPositive", VALIDATOR_ERROR_MESSAGE);
-				return null;
-			}
-		};
-	}
-
-	private void thenExpectValidationInvoked() {
-		verify(changePagerValidator).validate(anyObject(), any(Errors.class));
-		verifyNoMoreInteractions(changePagerValidator);
-	}
-
-	private void assertThatScrolledToPage(int pageNumber) throws Exception {
-		mvcMockPerformResult
-				.andExpect(status().isFound())
-				.andExpect(flashDisplayBooksCommand(allOf(
-						hasBeanProperty("pager.pageNumber", equalTo(pageNumber)),
-						hasBeanProperty("pager.pageSize", equalTo(PAGE_SIZE)),
-						hasBeanProperty("pager.pagesCount", equalTo(PAGES_COUNT)))));
-	}
-
-	private void thenExpectPageSizeSetTo(int pageSize) throws Exception {
-		mvcMockPerformResult
-				.andExpect(status().isFound())
-				.andExpect(flashDisplayBooksCommand(
-						hasBeanProperty("pager.pageSize", equalTo(pageSize))));
-	}
-
-	private void thenExpectSortedBy(PageSorterColumn sortColumn, PageSorterDirection sortDirection) throws Exception {
-		mvcMockPerformResult
-				.andExpect(status().isFound())
-				.andExpect(flashDisplayBooksCommand(allOf(
-						hasBeanProperty("pager.sorter.column", equalTo(sortColumn)),
-						hasBeanProperty("pager.sorter.direction", equalTo(sortDirection)))));
-	}
-
-	private ResultMatcher flashDisplayBooksCommand(Matcher<?> matcher) {
-		return flash().attribute(DISPLAY_BOOKS_COMMAND, matcher);
-	}
-
-	private void thenExpectHttpRedirectWith(ChangePagerCommand command) throws Exception {
+	private void thenExpectHttpRedirectWith(DisplayBooksCommand displayBooksCommand) throws Exception {
 		mvcMockPerformResult
 				.andExpect(status().isFound())
 				.andExpect(redirectedUrl("/books/display"))
 				.andExpect(flash().attribute("displayBooksCommand",
-						hasBeanProperty("pager", sameInstance(command.getPager()))));
+						sameInstance(displayBooksCommand)));
 	}
 
 }

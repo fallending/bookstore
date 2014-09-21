@@ -18,18 +18,16 @@
 package pl.jojczykp.bookstore.controllers.books;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 import pl.jojczykp.bookstore.commands.books.ChangePagerCommand;
 import pl.jojczykp.bookstore.commands.books.DisplayBooksCommand;
-import pl.jojczykp.bookstore.validators.ChangePagerValidator;
+import pl.jojczykp.bookstore.services.books.ChangeBooksPagerService;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -44,19 +42,17 @@ import static pl.jojczykp.bookstore.consts.BooksConsts.URL_ACTION_SORT;
 @Controller
 public class ChangeBooksPagerController {
 
-	@Autowired private ChangePagerValidator changePagerValidator;
-
-	@Value("${view.books.defaultPageSize}") private int defaultPageSize;
+	@Autowired private ChangeBooksPagerService changeBooksPagerService;
 
 	@PreAuthorize("hasRole('ROLE_USER')")
 	@RequestMapping(value = URL_ACTION_SORT, method = POST)
 	public RedirectView sort(
 			@ModelAttribute(CHANGE_PAGER_COMMAND) ChangePagerCommand changePagerCommand,
 			RedirectAttributes redirectAttributes,
+			BindingResult bindingResult,
 			HttpServletRequest request)
 	{
-		DisplayBooksCommand displayBooksCommand = new DisplayBooksCommand();
-		displayBooksCommand.setPager(changePagerCommand.getPager());
+		DisplayBooksCommand displayBooksCommand = changeBooksPagerService.sort(changePagerCommand, bindingResult);
 
 		return redirect(request, displayBooksCommand, redirectAttributes);
 	}
@@ -66,10 +62,10 @@ public class ChangeBooksPagerController {
 	public RedirectView goToPage(
 			@ModelAttribute(CHANGE_PAGER_COMMAND) ChangePagerCommand changePagerCommand,
 			RedirectAttributes redirectAttributes,
+			BindingResult bindingResult,
 			HttpServletRequest request)
 	{
-		DisplayBooksCommand displayBooksCommand = new DisplayBooksCommand();
-		displayBooksCommand.setPager(changePagerCommand.getPager());
+		DisplayBooksCommand displayBooksCommand = changeBooksPagerService.goToPage(changePagerCommand, bindingResult);
 
 		return redirect(request, displayBooksCommand, redirectAttributes);
 	}
@@ -82,38 +78,10 @@ public class ChangeBooksPagerController {
 			BindingResult bindingResult,
 			HttpServletRequest request)
 	{
-		changePagerValidator.validate(changePagerCommand, bindingResult);
-
-		DisplayBooksCommand displayBooksCommand;
-		if (bindingResult.hasErrors()) {
-			displayBooksCommand = processWhenSetPageSizeCommandInvalid(changePagerCommand, bindingResult);
-		} else {
-			displayBooksCommand = processWhenSetPageSizeCommandValid(changePagerCommand);
-		}
+		DisplayBooksCommand displayBooksCommand = changeBooksPagerService
+														.setPageSize(changePagerCommand, bindingResult);
 
 		return redirect(request, displayBooksCommand, redirectAttributes);
-	}
-
-	private DisplayBooksCommand processWhenSetPageSizeCommandInvalid(
-							ChangePagerCommand changePagerCommand, BindingResult bindingResult) {
-		DisplayBooksCommand displayBooksCommand = new DisplayBooksCommand();
-		displayBooksCommand.setPager(changePagerCommand.getPager());
-
-		displayBooksCommand.getPager().setPageSize(defaultPageSize);
-		for(ObjectError error: bindingResult.getAllErrors()) {
-			displayBooksCommand.getMessages().addErrors(error.getDefaultMessage());
-		}
-
-		return displayBooksCommand;
-	}
-
-	private DisplayBooksCommand processWhenSetPageSizeCommandValid(ChangePagerCommand changePagerCommand) {
-		DisplayBooksCommand displayBooksCommand = new DisplayBooksCommand();
-		displayBooksCommand.setPager(changePagerCommand.getPager());
-
-		displayBooksCommand.getMessages().addInfos("Page size changed.");
-
-		return displayBooksCommand;
 	}
 
 	private RedirectView redirect(HttpServletRequest request, DisplayBooksCommand displayBooksCommand,
