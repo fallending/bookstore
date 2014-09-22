@@ -24,15 +24,9 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-import pl.jojczykp.bookstore.assemblers.DisplayBookAssembler;
 import pl.jojczykp.bookstore.commands.books.DisplayBooksCommand;
-import pl.jojczykp.bookstore.commands.common.PagerCommand;
-import pl.jojczykp.bookstore.entities.Book;
-import pl.jojczykp.bookstore.repositories.BooksRepository;
+import pl.jojczykp.bookstore.services.books.DisplayBooksService;
 import pl.jojczykp.bookstore.utils.BooksCommandFactory;
-import pl.jojczykp.bookstore.utils.PagerLimiter;
-
-import java.util.List;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static pl.jojczykp.bookstore.consts.BooksConsts.DISPLAY_BOOKS_COMMAND;
@@ -43,9 +37,7 @@ import static pl.jojczykp.bookstore.consts.BooksConsts.URL_ACTION_DISPLAY;
 public class DisplayBooksController {
 
 	@Autowired private BooksCommandFactory booksCommandFactory;
-	@Autowired private PagerLimiter pagerLimiter;
-	@Autowired private BooksRepository booksRepository;
-	@Autowired private DisplayBookAssembler displayBookAssembler;
+	@Autowired private DisplayBooksService displayBooksService;
 
 	@ModelAttribute(DISPLAY_BOOKS_COMMAND)
 	public DisplayBooksCommand getDefaultCommand() {
@@ -57,26 +49,9 @@ public class DisplayBooksController {
 	public ModelAndView display(
 			@ModelAttribute(DISPLAY_BOOKS_COMMAND) DisplayBooksCommand displayBooksCommand)
 	{
-		PagerCommand limitedPager = pagerLimiter.createLimited(
-														displayBooksCommand.getPager(), booksRepository.totalCount());
-		displayBooksCommand.setPager(limitedPager);
+		DisplayBooksCommand resultDisplayBooksCommand = displayBooksService.display(displayBooksCommand);
 
-		List<Book> books = read(displayBooksCommand.getPager());
-		displayBooksCommand.setBooks(displayBookAssembler.toCommands(books));
-
-		return new ModelAndView(DISPLAY_BOOKS_VIEW, aModelFor(displayBooksCommand));
-	}
-
-	private List<Book> read(PagerCommand pager) {
-		int pageSize = pager.getPageSize();
-		int pageNumber = pager.getPageNumber();
-		int offset = (pageNumber - 1) * pageSize;
-
-		return booksRepository.read(
-					offset,
-					pageSize,
-					pager.getSorter().getColumn(),
-					pager.getSorter().getDirection());
+		return new ModelAndView(DISPLAY_BOOKS_VIEW, aModelFor(resultDisplayBooksCommand));
 	}
 
 	private ModelMap aModelFor(DisplayBooksCommand displayBooksCommand) {
