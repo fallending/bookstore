@@ -65,21 +65,16 @@ public class CreateBookControllerComponentTest {
 				.alwaysDo(print())
 				.build();
 		reset(createBookService);
-		given(createBookService.create(eq(createBookCommand), any(BindingResult.class)))
-				.willReturn(displayBooksCommand);
 	}
 
 	@Test
-	public void shouldUseService() throws Exception {
+	public void shouldCreate() throws Exception {
+		given(createBookService.create(eq(createBookCommand), any(BindingResult.class)))
+				.willReturn(displayBooksCommand);
+
 		whenControllerCreatePerformedWithCommand(createBookCommand);
 
 		thenExpectServiceInvokedFor(createBookCommand);
-	}
-
-	@Test
-	public void shouldRedirect() throws Exception {
-		whenControllerCreatePerformedWithCommand(createBookCommand);
-
 		thenExpectHttpRedirectWith(displayBooksCommand);
 	}
 

@@ -32,8 +32,6 @@ import org.springframework.web.context.WebApplicationContext;
 import pl.jojczykp.bookstore.commands.books.ChangePagerCommand;
 import pl.jojczykp.bookstore.commands.books.DisplayBooksCommand;
 import pl.jojczykp.bookstore.services.books.ChangeBooksPagerService;
-import pl.jojczykp.bookstore.utils.PageSorterColumn;
-import pl.jojczykp.bookstore.utils.PageSorterDirection;
 
 import static org.hamcrest.Matchers.sameInstance;
 import static org.mockito.BDDMockito.given;
@@ -48,26 +46,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
-import static pl.jojczykp.bookstore.utils.PageSorterColumn.BOOK_TITLE;
-import static pl.jojczykp.bookstore.utils.PageSorterDirection.ASC;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration("classpath:spring/controllers-test-context.xml")
 public class ChangeBooksPagerControllerComponentTest {
-
-	private static final String DISPLAY_BOOKS_COMMAND = "displayBooksCommand";
-
-	private static final String URL_ACTION_SORT = "/books/sort";
-	private static final String URL_ACTION_GO_TO_PAGE = "/books/goToPage";
-	private static final String URL_ACTION_SET_PAGE_SIZE = "/books/setPageSize";
-
-	private static final int PAGE_NUMBER = 2;
-	private static final int PAGE_SIZE = 13;
-	private static final int PAGES_COUNT = 4;
-	private static final PageSorterColumn SORT_COLUMN = BOOK_TITLE;
-	private static final PageSorterDirection SORT_DIRECTION = ASC;
-	private static final String VALIDATOR_ERROR_MESSAGE = "Negative or zero page size is not allowed. Defaults used.";
 
 	private MockMvc mvcMock;
 	private ResultActions mvcMockPerformResult;

@@ -65,21 +65,16 @@ public class UpdateBookControllerComponentTest {
 				.alwaysDo(print())
 				.build();
 		reset(updateBookService);
-		given(updateBookService.update(eq(updateBookCommand), any(BindingResult.class)))
-				.willReturn(displayBooksCommand);
 	}
 
 	@Test
-	public void shouldUseService() throws Exception {
+	public void shouldUpdate() throws Exception {
+		given(updateBookService.update(eq(updateBookCommand), any(BindingResult.class)))
+				.willReturn(displayBooksCommand);
+
 		whenControllerUpdatePerformedWithCommand(updateBookCommand);
 
 		thenExpectServiceInvokedFor(updateBookCommand);
-	}
-
-	@Test
-	public void shouldRedirect() throws Exception {
-		whenControllerUpdatePerformedWithCommand(updateBookCommand);
-
 		thenExpectHttpRedirectWith(displayBooksCommand);
 	}
 

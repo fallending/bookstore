@@ -63,20 +63,15 @@ public class DeleteBookControllerComponentTest {
 				.alwaysDo(print())
 				.build();
 		reset(deleteBookService);
-		given(deleteBookService.delete(eq(deleteBooksCommand))).willReturn(displayBooksCommand);
 	}
 
 	@Test
-	public void shouldUseService() throws Exception {
+	public void shouldDelete() throws Exception {
+		given(deleteBookService.delete(eq(deleteBooksCommand))).willReturn(displayBooksCommand);
+
 		whenControllerDeletePerformedWithCommand(deleteBooksCommand);
 
 		thenExpectServiceInvokedFor(deleteBooksCommand);
-	}
-
-	@Test
-	public void shouldRedirect() throws Exception {
-		whenControllerDeletePerformedWithCommand(deleteBooksCommand);
-
 		thenExpectHttpRedirectWith(displayBooksCommand);
 	}
 

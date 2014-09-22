@@ -83,13 +83,12 @@ public class DownloadBookControllerComponentTest {
 		mvcMock = webAppContextSetup(wac)
 				.alwaysDo(print())
 				.build();
-
 		initMocks(this);
 		reset(downloadBookService);
 	}
 
 	@Test
-	public void shouldDownloadBook() throws Exception {
+	public void shouldDownload() throws Exception {
 		DownloadBookCommand command = downloadBookCommandWith(ID);
 		givenBookReturnedByService(command, TITLE, FILE_TYPE, CONTENT_TYPE, CONTENT);
 
