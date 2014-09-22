@@ -39,8 +39,6 @@
 
 	<mvc:annotation-driven/>
 
-	<mockito:mock id="pageParamsLimiter" class="pl.jojczykp.bookstore.utils.PagerLimiter"/>
-
 	<mockito:mock id="booksCommandFactory" class="pl.jojczykp.bookstore.utils.BooksCommandFactory" />
 
 	<mockito:mock id="booksCreateService" class="pl.jojczykp.bookstore.services.books.CreateBookService" />
@@ -49,15 +47,5 @@
 	<mockito:mock id="booksDisplayService" class="pl.jojczykp.bookstore.services.books.DisplayBooksService" />
 	<mockito:mock id="changeBooksPagerService" class="pl.jojczykp.bookstore.services.books.ChangeBooksPagerService" />
 	<mockito:mock id="downloadBookService" class="pl.jojczykp.bookstore.services.books.DownloadBookService" />
-
-	<mockito:mock id="displayBookAssembler" class="pl.jojczykp.bookstore.assemblers.DisplayBookAssembler"/>
-	<mockito:mock id="createBookAssembler" class="pl.jojczykp.bookstore.assemblers.CreateBookAssembler"/>
-	<mockito:mock id="updateBookAssembler" class="pl.jojczykp.bookstore.assemblers.UpdateBookAssembler"/>
-
-	<mockito:mock id="booksRepository" class="pl.jojczykp.bookstore.repositories.BooksRepository"/>
-
-	<mockito:mock id="booksCreateValidator" class="pl.jojczykp.bookstore.validators.CreateBookValidator" />
-	<mockito:mock id="booksUpdateValidator" class="pl.jojczykp.bookstore.validators.UpdateBookValidator" />
-	<mockito:mock id="booksSetPageSizeValidator" class="pl.jojczykp.bookstore.validators.ChangePagerValidator" />
 
 </beans>
