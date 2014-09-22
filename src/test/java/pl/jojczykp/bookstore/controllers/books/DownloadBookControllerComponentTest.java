@@ -31,11 +31,11 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.web.context.WebApplicationContext;
 import pl.jojczykp.bookstore.commands.books.DownloadBookCommand;
+import pl.jojczykp.bookstore.controllers.errors.ResourceNotFoundException;
 import pl.jojczykp.bookstore.entities.Book;
 import pl.jojczykp.bookstore.entities.BookFile;
-import pl.jojczykp.bookstore.repositories.BooksRepository;
+import pl.jojczykp.bookstore.services.books.DownloadBookService;
 
-import static java.lang.Integer.parseInt;
 import static java.lang.String.format;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.equalTo;
@@ -61,19 +61,19 @@ import static pl.jojczykp.bookstore.utils.BlobUtils.aSerialBlobWith;
 @ContextConfiguration("classpath:spring/controllers-test-context.xml")
 public class DownloadBookControllerComponentTest {
 
-	private static final String EXISTING_ID = "7";
-	private static final String NOT_EXISTING_ID = "13";
-	private static final String NOT_PARSABLE_ID = "someString";
+	private static final String ID = "7";
 	private static final String TITLE = "Some Book Title";
 	private static final String FILE_TYPE = "fileType";
 	private static final String CONTENT_TYPE = "content/type";
 	private static final byte[] CONTENT = {1, 2, 3, 4, 5};
+	private static final String SERVICE_EXCEPTION_MESSAGE = "Service Exception Message";
+	private static final Exception SERVICE_EXCEPTION = new ResourceNotFoundException(SERVICE_EXCEPTION_MESSAGE);
 
 	private MockMvc mvcMock;
 	private ResultActions mvcMockPerformResult;
 	@Autowired private WebApplicationContext wac;
 
-	@Autowired private BooksRepository booksRepository;
+	@Autowired private DownloadBookService downloadBookService;
 
 	@Mock private Book book;
 	@Mock private BookFile bookFile;
@@ -85,13 +85,13 @@ public class DownloadBookControllerComponentTest {
 				.build();
 
 		initMocks(this);
-		reset(booksRepository);
+		reset(downloadBookService);
 	}
 
 	@Test
 	public void shouldDownloadBook() throws Exception {
-		DownloadBookCommand command = downloadBookCommandWith(EXISTING_ID);
-		givenBookReadFromRepositoryWith(EXISTING_ID, TITLE, FILE_TYPE, CONTENT_TYPE, CONTENT);
+		DownloadBookCommand command = downloadBookCommandWith(ID);
+		givenBookReturnedByService(command, TITLE, FILE_TYPE, CONTENT_TYPE, CONTENT);
 
 		whenControllerDownloadPerformedWithCommand(command);
 
@@ -101,26 +101,15 @@ public class DownloadBookControllerComponentTest {
 	}
 
 	@Test
-	public void shouldFailDownloadingNotExistingBook() throws Exception {
-		DownloadBookCommand command = downloadBookCommandWith(NOT_EXISTING_ID);
-		givenBookReadFromRepositoryWith(EXISTING_ID, TITLE, FILE_TYPE, CONTENT_TYPE, CONTENT);
+	public void shouldFailDownloadingOnServiceException() throws Exception {
+		DownloadBookCommand command = downloadBookCommandWith(ID);
+		givenExceptionReturnedByService(command);
 
 		whenControllerDownloadPerformedWithCommand(command);
 
 		thenExpectStatusIsNotFound();
 		thenExpectViewName("exception");
-		thenExpectCorrectExceptionCommandFor(NOT_EXISTING_ID);
-	}
-
-	@Test
-	public void shouldFailDownloadingBookForNotParsableId() throws Exception {
-		DownloadBookCommand command = downloadBookCommandWith(NOT_PARSABLE_ID);
-
-		whenControllerDownloadPerformedWithCommand(command);
-
-		thenExpectStatusIsNotFound();
-		thenExpectViewName("exception");
-		thenExpectCorrectExceptionCommandFor(NOT_PARSABLE_ID);
+		thenExpectCorrectExceptionCommand();
 	}
 
 	private DownloadBookCommand downloadBookCommandWith(String id) {
@@ -130,15 +119,19 @@ public class DownloadBookControllerComponentTest {
 		return command;
 	}
 
-	private void givenBookReadFromRepositoryWith(String id, String title, String fileType,
-												String contentType, byte[] content) {
-		given(booksRepository.find(parseInt(id))).willReturn(book);
+	private void givenBookReturnedByService(DownloadBookCommand command, String title, String fileType,
+											String contentType, byte[] content) {
+		given(downloadBookService.download(command)).willReturn(book);
 		given(book.getTitle()).willReturn(title);
 		given(book.getBookFile()).willReturn(bookFile);
 		given(bookFile.getFileType()).willReturn(fileType);
 		given(bookFile.getContentType()).willReturn(contentType);
 		given(bookFile.getContentLength()).willReturn(content.length);
 		given(bookFile.getContent()).willReturn(aSerialBlobWith(content));
+	}
+
+	private void givenExceptionReturnedByService(DownloadBookCommand command) {
+		given(downloadBookService.download(command)).willThrow(SERVICE_EXCEPTION);
 	}
 
 	private void whenControllerDownloadPerformedWithCommand(DownloadBookCommand command) throws Exception {
@@ -172,11 +165,11 @@ public class DownloadBookControllerComponentTest {
 				.andExpect(view().name(viewName));
 	}
 
-	private void thenExpectCorrectExceptionCommandFor(String id) throws Exception {
+	private void thenExpectCorrectExceptionCommand() throws Exception {
 		mvcMockPerformResult
 				.andExpect(modelExceptionCommand(allOf(
 					hasBeanProperty("stackTraceAsString", not(isEmptyOrNullString())),
-					hasBeanProperty("message", is(equalTo(format("Content of book with id '%s' not found.", id)))))));
+						hasBeanProperty("message", is(equalTo(SERVICE_EXCEPTION_MESSAGE))))));
 	}
 
 	private ResultMatcher modelExceptionCommand(Matcher<?> matcher) {

@@ -24,16 +24,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pl.jojczykp.bookstore.commands.books.DownloadBookCommand;
-import pl.jojczykp.bookstore.controllers.errors.ResourceNotFoundException;
 import pl.jojczykp.bookstore.entities.Book;
-import pl.jojczykp.bookstore.repositories.BooksRepository;
+import pl.jojczykp.bookstore.services.books.DownloadBookService;
 
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-import static java.lang.Integer.parseInt;
-import static java.lang.String.format;
 import static org.apache.commons.io.IOUtils.copy;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static pl.jojczykp.bookstore.consts.BooksConsts.DOWNLOAD_BOOK_COMMAND;
@@ -43,28 +40,16 @@ import static pl.jojczykp.bookstore.utils.BlobUtils.blobInputStream;
 @Controller
 public class DownloadBookController {
 
-	@Autowired private BooksRepository booksRepository;
+	@Autowired private DownloadBookService downloadBookService;
 
 	@PreAuthorize("hasRole('ROLE_USER')")
 	@RequestMapping(value = URL_ACTION_DOWNLOAD, method = GET)
 	@Transactional
-	public void downloadBook(
+	public void download(
 			@ModelAttribute(DOWNLOAD_BOOK_COMMAND) DownloadBookCommand downloadBookCommand,
-			HttpServletResponse response) throws IOException {
-		try {
-			Book book = booksRepository.find(parseInt(downloadBookCommand.getId()));
-			verifyBookFound(downloadBookCommand.getId(), book);
-			setResponse(response, book);
-		} catch (NumberFormatException e) {
-			throw new ResourceNotFoundException(exceptionMessageFor(downloadBookCommand.getId()), e);
-		}
-
-	}
-
-	private void verifyBookFound(String id, Book book) {
-		if (book == null) {
-			throw new ResourceNotFoundException(exceptionMessageFor(id));
-		}
+			HttpServletResponse response) throws IOException
+	{
+		setResponse(response, downloadBookService.download(downloadBookCommand));
 	}
 
 	private void setResponse(HttpServletResponse response, Book book) throws IOException {
@@ -84,10 +69,6 @@ public class DownloadBookController {
 
 	private void setResponseBody(HttpServletResponse response, Book book) throws IOException {
 		copy(blobInputStream(book.getBookFile().getContent()), response.getOutputStream());
-	}
-
-	private String exceptionMessageFor(String id) {
-		return format("Content of book with id '%s' not found.", id);
 	}
 
 }
