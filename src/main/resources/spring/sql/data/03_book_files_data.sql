@@ -1,18 +1,3 @@
--- Copyright (C) 2013-2014 Paweł Jojczyk
---
--- This program is free software: you can redistribute it and/or modify
--- it under the terms of the GNU General Public License as published by
--- the Free Software Foundation, either CONTENT_TYPE 3 of the License, or
--- (at your option) any later CONTENT_TYPE.
---
--- This program is distributed in the hope that it will be useful,
--- but WITHOUT ANY WARRANTY; without even the implied warranty of
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
--- GNU General Public License for more details.
---
--- You should have received a copy of the GNU General Public License
--- along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
-
 INSERT INTO BOOK_FILES (ID, FILE_TYPE, CONTENT_TYPE, CONTENT_LENGTH, CONTENT) VALUES (01, 'txt', 'text/plain; charset=utf-8', 47, x'54 68 65 20 42 6F 6F 6B 20 30 31 0D 0A 47 C4 99 C5 9B 6C C4 85 20 6A 61 C5 BA C5 84 20 C5 BA 64 C5 BA 62 C5 82 6F 20 6D C4 99 C5 82 6F 0D 0A');
 INSERT INTO BOOK_FILES (ID, FILE_TYPE, CONTENT_TYPE, CONTENT_LENGTH, CONTENT) VALUES (02, 'txt', 'text/plain; charset=utf-8', 47, x'54 68 65 20 42 6F 6F 6B 20 30 33 0D 0A 47 C4 99 C5 9B 6C C4 85 20 6A 61 C5 BA C5 84 20 C5 BA 64 C5 BA 62 C5 82 6F 20 6D C4 99 C5 82 6F 0D 0A');
 INSERT INTO BOOK_FILES (ID, FILE_TYPE, CONTENT_TYPE, CONTENT_LENGTH, CONTENT) VALUES (03, 'txt', 'text/plain; charset=utf-8', 47, x'54 68 65 20 42 6F 6F 6B 20 30 35 0D 0A 47 C4 99 C5 9B 6C C4 85 20 6A 61 C5 BA C5 84 20 C5 BA 64 C5 BA 62 C5 82 6F 20 6D C4 99 C5 82 6F 0D 0A');
